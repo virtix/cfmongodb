@@ -51,9 +51,12 @@ function $updatePerson(){
   mongo = createObject('component','Mongo');
   id = mongo.put(person); //name/value or struct
   person.name = 'ed';
-  newperson = mongo.update(person);
+  newperson = mongo.update(id,person);
+  //debug(newperson.hashCode());
   debug(newperson);
-  
+  person._id = id.toString();
+  debug(person);
+  return;
   
   mongo.delete('NAME','bill');
   mongo.delete('NAME','ed');
