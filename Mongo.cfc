@@ -15,19 +15,17 @@ collection = db.getCollection(collection_name);
 
 
 //------------------------------------------------------------------------//
+function add(key,value,o){
+  //add key value pair to object ... todo
+}
 
-function put(){ 
+function put(o){ 
  var doc =  createObject('java', 'com.mongodb.BasicDBObject').init();
- //var o = arguments[1];
-  if(arguments.size() eq 1){
-    doc.putAll(arguments[1]);
-    arguments[1]._id = doc.get("_id"); 
-  }
-  else {
-   doc.put(arguments[1],arguments[2]);
-  }
-  
-  return collection.insert(doc).get("_id");
+ var id = chr(0);
+  doc.putAll(o);
+  id = collection.insert(doc).get("_id");
+  o._id = id;
+  return id;
 }//end function
 
 
@@ -48,8 +46,16 @@ function find(){
 } //end function
 
 
+function delete(o){
+  var  obj = get("_id", o._id);
+  return collection.remove(obj); //id's of deleted items
+} //end function
 
-function delete(field,value){
+
+
+
+//old
+function __delete(field,value){
   var q = createObject('java', 'com.mongodb.BasicDBObject').init(field,value);
   return collection.remove(q); //id's of deleted items
 } //end function
@@ -62,8 +68,15 @@ function delete(field,value){
 //in the structure.
 
 //update by object id  ..._id
-function update(_id,o){
-  var obj = get("_id", _id);
+
+//testing if pass in map what it return
+function findSame(o){
+ var new_object = createObject('java', 'com.mongodb.BasicDBObject').init(o);
+ return collection.findOne(new_object);
+}
+
+function update(o){
+  var obj = get("_id", o._id);
   var new_object = createObject('java', 'com.mongodb.BasicDBObject').init(o);
   return collection.update(obj, new_object, false, false);
     

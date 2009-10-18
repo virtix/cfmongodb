@@ -26,6 +26,16 @@
     friend=friend  
   };
   
+
+function testSerializeJSONThis(){
+  var p = createObject('component','Person');
+  var j = serializeJSON(p);
+  debug(j);
+  mongo = createObject('component','Mongo');
+  id = mongo.put(p);
+  o = mongo.get('_id',id);
+  debug(o);
+}  
   
 function $endToEndSyntax(){
   mongo = createObject('component','Mongo');
@@ -45,7 +55,15 @@ function $endToEndSyntax(){
   debug( mongo.count() );
 }
   
-
+function $testFindSame(){
+ return;
+  mongo = createObject('component','Mongo');
+  //id = mongo.put(person); //name/value or struct
+  person.name = 'ed';
+  newperson = mongo.findSame(person);
+  debug(person);
+  debug(newperson);
+}
 
 function $updatePerson(){
   mongo = createObject('component','Mongo');
