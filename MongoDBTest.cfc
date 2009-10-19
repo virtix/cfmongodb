@@ -28,56 +28,49 @@
   
 
 function testSerializeJSONThis(){
-  var p = createObject('component','Person');
+  var p = createObject('component','Blog');
   var j = serializeJSON(p);
   debug(j);
-  mongo = createObject('component','Mongo');
+  mongo = createObject('component','MongoDB');
   id = mongo.put(p);
   o = mongo.get('_id',id);
   debug(o);
+  mongo.delete(p);
 }  
   
 function $endToEndSyntax(){
-  mongo = createObject('component','Mongo');
+  mongo = createObject('component','MongoDB');
   id = mongo.put(person); //name/value or struct
-  id2 = mongo.put('asdasd','xcvxcvxc');
   the_guy = mongo.get('_id',id);
   debug(id.toString());
-  debug(id2.toString());
-  the = mongo.get('_id',id2);
-  //debug(the);
-  
   debug( mongo.count() );
+  assert(1==mongo.count());
+  mongo.delete(person);
   
-  return;
-  mongo.delete('NAME','bill');
-  mongo.delete('asdasd','xcvxcvxc');
-  debug( mongo.count() );
 }
   
 function $testFindSame(){
  return;
-  mongo = createObject('component','Mongo');
+  mongo = createObject('component','MongoDB');
   //id = mongo.put(person); //name/value or struct
   person.name = 'ed';
   newperson = mongo.findSame(person);
   debug(person);
   debug(newperson);
+  mongo.delete(person);
+  assertEquals(newperson.name,'ed');
 }
 
 function $updatePerson(){
-  mongo = createObject('component','Mongo');
-  id = mongo.put(person); //name/value or struct
+  mongo = createObject('component','MongoDB');
+  mongo.put(person); //name/value or struct
   person.name = 'ed';
-  newperson = mongo.update(id,person);
+  newperson = mongo.update(person);
   //debug(newperson.hashCode());
   debug(newperson);
-  person._id = id.toString();
-  debug(person);
-  return;
+   
+  mongo.delete(person);
   
-  mongo.delete('NAME','bill');
-  mongo.delete('NAME','ed');
   
 }
   
@@ -88,38 +81,22 @@ function $updatePerson(){
    email='bill@bill.com'
   };
   
-  
- function basicDbTest() {
-   db = mongo.getDB("mydb");
-   assertEquals("com.mongodb.DBTCP", db.getClass().getName() );
+  function getByStringIdTest(){
+   var localp ={
+   		name='shmoopy',
+   		email='shmoopy@bshmoopy.com'
+  		};
+    var id = mongo.put(localp);
+    var fetched_from_db_person = mongo.getById( id.toString() );
+    debug(fetched_from_db_person);
+    mongo.deleteById(id.toString());
+    assertEquals(fetched_from_db_person.name,'shmoopy');
     
-   coll = db.getCollection("testCollection");
-   
-   doc =  createObject('java', 'com.mongodb.BasicDBObject').init();
-   doc.putAll(person);
-   
-   coll.insert(doc);
-   
- }
-  
-  
-  function smokeServerPort(){
-    debug("these are defaults");
-    assert( 'localhost'== mongo.getServer() );
-    assert( '27017'== mongo.getPort() );
-    assert( 'default_db'== mongo.getDBName() );
-  }
-   
-  function mongoShouldBeCool() {
-     assertSame(mongo, mongo);
-     assertEquals(mongo, mongo);
-     //debug(mongo);
   }
   
-
-  
+   
   function setUp(){
-     mongo = createObject('component','MongoDB').init();
+     mongo = createObject('component','MongoDB');
   }
   
   function tearDown(){

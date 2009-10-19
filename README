@@ -5,6 +5,30 @@ This is simple proof of concept of using ColdFusion and MongoDB.
 
 Conclusion: sweet
 
+Description: Inserts CFML structs into MongoDB
+Basic Usage:
+
+mongo = createObject('component','MongoDB');
+
+person = {
+    name="bill",
+    email = 'bill@mxunit.org',
+    address = {
+      street = '123 main st',
+      city = 'anytown',
+      state = 'here',
+      zip = '12345',
+      country = 'usa'
+    },
+  };
+
+id = mongo.put(person);
+person.city = 'some other town';
+mongo.update(person);
+fetched_person = mongo.get
+  
+mongo.delete(person); 
+
 Installation:
 
 1. Download and install MongoDB: http://www.mongodb.org/

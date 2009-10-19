@@ -9,7 +9,7 @@ collection_name = 'default_collection';
 	
 //maybe this goes in super class?	
 mongo = createObject('java', 'com.mongodb.Mongo').init( variables.server_name , variables.server_port );
-db = mongo.getDb(db_name);
+db = mongo.getDb(db_name);	
 collection = db.getCollection(collection_name);
 
 
@@ -36,6 +36,12 @@ function get(field,value){
   return cursor.next();
 } //end function
 
+
+//when only a string id is available
+function getById(id){
+  var objId = createObject('java','com.mongodb.ObjectId').init(id);
+  return get("_id", objId);
+ } //en
 
 
 function count(){

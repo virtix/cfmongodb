@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>MongoDB/ColdFusion Ajax Demo</title>
+<title>MongoDB/ColdFusion Blog Demo</title>
  <link type="text/css" rel="stylesheet" href="http://jqueryui.com/themes/base/ui.all.css" />
 
 <script src="http://www.google.com/jsapi"></script>
@@ -44,7 +44,7 @@
 </script>
 </head>
 <body>
-<h2>MongoDB/ColdFusion Ajax Demo</h2>
+<h2>MongoDB/ColdFusion Blog Demo</h2>
 <form>
 Blog Title: <input type="text" name="title"><br />
 Author: <input type="text" name="author"><br />
