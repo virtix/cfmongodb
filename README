@@ -1,0 +1,22 @@
+10.18.2009 
+bill shelton
+
+This is simple proof of concept of using ColdFusion and MongoDB.
+
+Conclusion: sweet
+
+Installation:
+
+1. Download and install MongoDB: http://www.mongodb.org/
+2. Make sure mongod is running. The examples use MongoDB's defaults:
+   server_name = 'localhost', server_port = 27017
+3. Download the MongoDB Java Driver: http://github.com/mongodb/mongo-java-driver/downloads
+4. Place the Java MongoDB Driver in your CF Server's classpath (some /lib somewhere)
+5. Copy the CFMongoDB files to your web root; e.g, /cfmongo.
+6. Start the server and point your browser to http://localhost:8888/cfmongo/demo.cfm
+
+Notes: This was built and tested on Railo 3.1.1 Express and Ubuntu 9.04. Would like to
+test this in other environments.
+
+
+
