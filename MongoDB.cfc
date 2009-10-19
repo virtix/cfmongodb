@@ -54,8 +54,9 @@ function findOne(){
 } //
 
 
-function find(){
-   var sort_spec =  createObject('java', 'com.mongodb.BasicDBObject').init({pub_date :-1});;	
+function findAll(){
+   var sort = {pub_date = -1};
+   var sort_spec =  createObject('java', 'com.mongodb.BasicDBObject').init(sort);	
    return collection.find().sort( sort_spec ).toArray(); 
 } //end function
 

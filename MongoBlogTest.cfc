@@ -4,7 +4,7 @@
     blog = createObject('component', 'Blog');
     
 
-   blog.title = 'Title 1';
+    blog.title = 'Title 1';
   	blog.text = 'Text 1';
   	blog.author = 'bill-1';
   	mongo.put(blog);
@@ -21,10 +21,10 @@
     
    /*  weird. setUp appears to not be called in Railo? */
   
-  function tearDown(){
-    items = mongo.find();
-    for(item in items){
-      o = items[item];
+  function _tearDown(){
+    items = mongo.findAll();
+    for(i=1; i<=arrayLen(items);i++){
+      o = items[i];
       mongo.deleteById( o['_id'].toString() );
       debug( o['_id'].toString() );
     }
@@ -32,7 +32,7 @@
    
    
   function testFindIterator(){
-     items = mongo.find();
+     items = mongo.findAll();
      assertEquals(3,items.size());
    }
    
