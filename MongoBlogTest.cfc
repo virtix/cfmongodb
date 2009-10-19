@@ -1,6 +1,38 @@
 <cfcomponent output="false" extends="mxunit.framework.TestCase">
 <cfscript>
    mongo = createObject('component', 'MongoDB');
+
+    blog = createObject('component', 'Blog');
+    
+    blog.title = 'Title 1';
+  	blog.text = 'Text 1';
+  	blog.author = 'bill-1';
+  	mongo.put(blog);
+    
+    blog.title = 'Title 2';
+  	blog.text = 'Text 2';
+  	blog.author = 'bill-2';
+  	mongo.put(blog);
+    
+    blog.title = 'Title 3';
+  	blog.text = 'Text 3';
+  	blog.author = 'bill-3';
+    mongo.put(blog);
+   
+   /*   */
+   
+   
+   function testFindIterator(){
+     items = mongo.find();
+     debug(items)
+     for(item in items){
+      post =  items[item];
+      debug(post["_id"].toString());
+     }
+     
+    
+   }
+   
    
   function testBlog() {
     
@@ -27,7 +59,7 @@
     // blog.author = 'ed';
     // mongo.update(blog);
      
-    // mongo.delete(blog);
+     mongo.delete(blog);
     
     bb = mongo.findOne();
     debug(bb);

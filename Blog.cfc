@@ -1,10 +1,11 @@
 <cfcomponent output="false">
 <cfscript>
+this.id = '';
 this.title = '';
 this.body = '';
 this.tags = [];
 this.author = '';
-this.pub_data = now();
+this.pub_date = now();
 this.comments = [
   comment= {
   comment_author = 'Coward',

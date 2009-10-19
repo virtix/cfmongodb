@@ -1,14 +1,13 @@
 <cfcomponent output="false">
-<!--- Maybe should extend an Abstract Mongo? --->
 
 <cfscript>
-//And this is configurable.
+//This is configurable.
 server_name = 'localhost';
 server_port = 27017;
 db_name = 'default_db';
 collection_name = 'default_collection';	
 	
-//maybe this goes in super class	
+//maybe this goes in super class?	
 mongo = createObject('java', 'com.mongodb.Mongo').init( variables.server_name , variables.server_port );
 db = mongo.getDb(db_name);
 collection = db.getCollection(collection_name);
@@ -18,6 +17,7 @@ collection = db.getCollection(collection_name);
 function add(key,value,o){
   //add key value pair to object ... todo
 }
+
 
 function put(o){ 
  var doc =  createObject('java', 'com.mongodb.BasicDBObject').init();
@@ -42,12 +42,15 @@ function count(){
   return collection.getCount();
 }
 
+
 function findOne(){
   return collection.findOne();
 } //
 
-function find(){
 
+function find(){
+   var sort_spec =  createObject('java', 'com.mongodb.BasicDBObject').init({pub_date :-1});;	
+   return collection.find().sort( sort_spec ).toArray(); 
 } //end function
 
 
@@ -56,6 +59,15 @@ function delete(o){
   return collection.remove(obj); //id's of deleted items
 } //end function
 
+
+//Note the ObjectId object. This creates an ObjectId from
+//the string representation of 
+
+function deleteById(id){
+  var objId = createObject('java','com.mongodb.ObjectId').init(id);
+  var  obj = get("_id", objId);
+  return collection.remove(obj); //id's of deleted items
+} //en
 
 
 function update(o){
@@ -74,7 +86,4 @@ function switchCollection(collection_name){
 
 </cfscript>
 
-<cffunction name="dump">
-  <cfdump var="#doc#">
-</cffunction>
 </cfcomponent>
