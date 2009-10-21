@@ -6,6 +6,63 @@
  keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
 
 
+function testLTE(){
+  builder.start();
+  temp = builder.$lte( 'TS', 9999999999999999999999);
+  debug(builder.get());
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find( q, keys );
+  ia = items.toArray(); 
+  debug(items.count());
+  //debug(items.toArray().toString());
+  assertEquals( 1000 , items.count() );
+}
+
+
+function testLT(){
+  builder.start();
+  temp = builder.$lt( 'TS', 9999999999999999999999);
+  debug(builder.get());
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find( q, keys );
+  ia = items.toArray(); 
+  debug(items.count());
+  //debug(items.toArray().toString());
+  assertEquals( 1000 , items.count() );
+}
+
+
+function testGT(){
+  builder.start();
+  temp = builder.$gt( 'TS', 0);
+  debug(builder.get());
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find( q, keys );
+  ia = items.toArray(); 
+  debug(items.count());
+  //debug(items.toArray().toString());
+  assertEquals( 1000 , items.count() );
+}
+
+
+function testGTE(){
+  builder.start();
+  temp = builder.$gte( 'TS', 0);
+  debug(builder.get());
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find( q, keys );
+  ia = items.toArray(); 
+  debug(items.count());
+  //debug(items.toArray().toString());
+  assertEquals( 1000 , items.count() );
+}
+
+
+
 function testRegEx(){
   temp = builder.regex( 'TITLE', '.*No.600$');
   q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
@@ -17,17 +74,6 @@ function testRegEx(){
   assert( ia.size() );
   assertEquals( ia[1]["TITLE"], "Blog Title No.600" );
   assertEquals( ia[1]["AUTHOR"], "bill_600" );
-}
-
-
-function testGT(){
-  temp = builder.$gt( 'TS', 1256148921000);
-  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
-  items = coll.find( q, keys );
-  ia = items.toArray(); 
-  debug(items.count());
-  debug(items.toArray().toString());
-  fail( 'last test of the day. must.go.home.' );
 }
 
 

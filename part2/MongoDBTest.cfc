@@ -34,7 +34,7 @@
 	 
     exp = createObject('java', 'com.mongodb.BasicDBObjectBuilder').start();
 	exp.add( '$gte', javacast('long',1256148921000 ) );
-	exp.add( '$lte', javacast('long',1256148921000 ) );
+	//exp.add( '$lte', javacast('long',1256148921000 ) );
 	
 	debug( exp.get() );
 	
@@ -69,10 +69,6 @@
 	assert(items.count() > 0);
     
   }
-  
-<<<<<<< HEAD:part2/MongoDBTest.cfc
-=======
-  -------------------------------------------------------------------------------------*/
   
   
   
@@ -144,8 +140,6 @@
     
   }
   
->>>>>>> 027af5559af71a7aecf8e46492703e2a803df92a:part2/MongoDBTest.cfc
- 
   function $findByRegEx(){
     coll = mongo.getCollection('blog');
     //raw = mongo.getMongo(); //raw jo
