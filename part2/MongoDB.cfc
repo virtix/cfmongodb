@@ -101,6 +101,9 @@ function getCollection(collection_name){
   return collection;
 }
 
+
+
+
 </cfscript>
 
 </cfcomponent>
