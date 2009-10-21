@@ -31,9 +31,6 @@
                     mod('field','value').
                     size('field','value').
 					regex('field','value').
-<<<<<<< HEAD:part2/MongoDBTest.cfc
->>>>>>> 027af5559af71a7aecf8e46492703e2a803df92a:part2/MongoDBTest.cfc
-=======
 >>>>>>> 027af5559af71a7aecf8e46492703e2a803df92a:part2/MongoDBTest.cfc
                     search('title,author,date');
     
@@ -125,81 +122,6 @@
     
   }
   
-<<<<<<< HEAD:part2/MongoDBTest.cfc
-=======
-  -------------------------------------------------------------------------------------*/
-  
-  
-  
-  function $exploreStringSearchExpression(){
-    coll = mongo.getCollection('blog');
- 
-    key_exp = {TITLE=1,TS=1,AUTHOR=1};
-	keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
-	 
-	debug( 'bill' > 'z' );
-	 
-    exp = createObject('java', 'com.mongodb.BasicDBObjectBuilder').start();
-	//exp.add( '$ne',  javacast('long',1256148920969)   ); //bill_792
-	exp.add( '$gt',  'bill_792' );
-	
-	debug( exp.get() );
-	
-	q = createObject('java', 'com.mongodb.BasicDBObject').init("AUTHOR", exp.get() );
-	items = coll.find( q, keys );
-	debug(items.count());
-    debug(items.toArray().toString());
-    
-  }
-  
-  
-   function $buildSearchExpressionWithBuilder(){
-    coll = mongo.getCollection('blog');
-    
-	// BasicDBObjectBuilder.start().add( "name" , "eliot" ).add( "number" , 17 ).get()
-   
-    key_exp = {TITLE=1,TS=1};
-	keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
-	 
-    exp = createObject('java', 'com.mongodb.BasicDBObjectBuilder').start();
-	exp.add( '$gte', javacast('long',1256148921000 ) );
-	exp.add( '$lte', javacast('long',1256148921000 ) );
-	
-	debug( exp.get() );
-	
-	q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", exp.get() );
-	items = coll.find( q, keys );
-	debug(items.count());
-    debug(items.toArray().toString());
-    
-  }
-  
-  
-   function $findByExpression(){
-    coll = mongo.getCollection('blog');
-   
-    key_exp = {TITLE=1,TS=1};
-    keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
-	
-	// { a : { $gt: 3 } } 
-	//exp['$where'] = 'this.TS > 1256133363469';
-	//exp = { $gt=1256133363469  };
-	//exp = {};
-	exp['$gte']= javacast('long',1256148921000 );
-	exp['$lte']= javacast('long',1256148921000 );   
-    debug( exp );
-	
-	//q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", javacast('long',1256148921000)  );
-	q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", exp );
-    items = coll.find( q, keys );
-
-    debug(items.count());
-    debug(items.toArray().toString());
-	assert(items.count() > 0);
-    
-  }
-  
->>>>>>> 027af5559af71a7aecf8e46492703e2a803df92a:part2/MongoDBTest.cfc
  
   function $findByRegEx(){
     coll = mongo.getCollection('blog');
