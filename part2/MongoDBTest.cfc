@@ -23,18 +23,105 @@
                     gte('field','value').
                     lte('field','value').
                     in('field','value').
+<<<<<<< HEAD:part2/MongoDBTest.cfc
                     
+=======
+                    nin('field','value').
+                    exits('field','value').
+                    mod('field','value').
+                    size('field','value').
+					regex('field','value').
+>>>>>>> 027af5559af71a7aecf8e46492703e2a803df92a:part2/MongoDBTest.cfc
                     search('title,author,date');
     
     
     Come up with DSL for MongoDB searches:
     
     
+<<<<<<< HEAD:part2/MongoDBTest.cfc
     search([keys_to_return]);
+=======
+    search(keys=[keys_to_return],limit=num,start=num);
+    
+	Use BasicDBObjectBuilder.start().add( "name" , "eliot" ).add( "number" , 17 ).get()
+	
+    Note: Look at aggregation
+>>>>>>> 027af5559af71a7aecf8e46492703e2a803df92a:part2/MongoDBTest.cfc
   
   
   
-  */
+  -------------------------------------------------------------------------------------*/
+  
+  
+  
+  function $exploreStringSearchExpression(){
+    coll = mongo.getCollection('blog');
+ 
+    key_exp = {TITLE=1,TS=1,AUTHOR=1};
+	keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
+	 
+	debug( 'bill' > 'z' );
+	 
+    exp = createObject('java', 'com.mongodb.BasicDBObjectBuilder').start();
+	//exp.add( '$ne',  javacast('long',1256148920969)   ); //bill_792
+	exp.add( '$gt',  'bill_792' );
+	
+	debug( exp.get() );
+	
+	q = createObject('java', 'com.mongodb.BasicDBObject').init("AUTHOR", exp.get() );
+	items = coll.find( q, keys );
+	debug(items.count());
+    debug(items.toArray().toString());
+    
+  }
+  
+  
+   function $buildSearchExpressionWithBuilder(){
+    coll = mongo.getCollection('blog');
+    
+	// BasicDBObjectBuilder.start().add( "name" , "eliot" ).add( "number" , 17 ).get()
+   
+    key_exp = {TITLE=1,TS=1};
+	keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
+	 
+    exp = createObject('java', 'com.mongodb.BasicDBObjectBuilder').start();
+	exp.add( '$gte', javacast('long',1256148921000 ) );
+	exp.add( '$lte', javacast('long',1256148921000 ) );
+	
+	debug( exp.get() );
+	
+	q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", exp.get() );
+	items = coll.find( q, keys );
+	debug(items.count());
+    debug(items.toArray().toString());
+    
+  }
+  
+  
+   function $findByExpression(){
+    coll = mongo.getCollection('blog');
+   
+    key_exp = {TITLE=1,TS=1};
+    keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
+	
+	// { a : { $gt: 3 } } 
+	//exp['$where'] = 'this.TS > 1256133363469';
+	//exp = { $gt=1256133363469  };
+	//exp = {};
+	exp['$gte']= javacast('long',1256148921000 );
+	exp['$lte']= javacast('long',1256148921000 );   
+    debug( exp );
+	
+	//q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", javacast('long',1256148921000)  );
+	q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", exp );
+    items = coll.find( q, keys );
+
+    debug(items.count());
+    debug(items.toArray().toString());
+	assert(items.count() > 0);
+    
+  }
+  
  
   function $findByRegEx(){
     coll = mongo.getCollection('blog');
@@ -44,8 +131,8 @@
     //import java.util.regex.Pattern;
     //import java.util.regex.Matcher;
     p = createObject('java', 'java.util.regex.Pattern').compile('bill_6[0-2].*');
-    exp = { AUTHOR=p, };
-    key_exp = {AUTHR=1,TITLE=1};
+    exp = { AUTHOR=p };
+    key_exp = {AUTHOR=1,TITLE=1,TS=1};
     keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
     q = createObject('java', 'com.mongodb.BasicDBObject').init(exp);
     items = coll.find( q, keys );
@@ -80,7 +167,7 @@
 	for(i; i < 1000;i++){
 	 entry.title = 'Blog Title No.' & i;
 	 entry.author = 'bill_' & i;
-	 entry.ts = getTickCount();
+	 entry.ts = javacast('long',getTickCount());
 	 entry.body = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eu justo lectus. Morbi aliquet consectetur consequat. Mauris mauris nulla, condimentum in aliquet nec, suscipit in lacus. Donec vel ante ut metus imperdiet interdum. Curabitur non sapien at felis egestas bibendum in eu urna. In rutrum ligula erat. Integer tristique viverra consequat. Curabitur tristique velit vel nunc aliquet congue eleifend lacus cursus. Aenean a lorem a arcu tincidunt tempus. Nulla faucibus diam in sem consequat tincidunt. Aenean quis nunc vitae leo luctus porta. Etiam justo enim, imperdiet vel commodo sed, placerat nec dolor. Nunc placerat sapien id ligula varius eget tempus est eleifend.
 
 Vivamus ipsum justo, interdum ut blandit feugiat, tempus id erat. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla dignissim eros quis velit vestibulum ullamcorper. Donec mattis venenatis augue sed semper. Donec egestas dapibus mauris cursus elementum. Phasellus egestas porta quam vitae sodales. Vestibulum ut tortor vitae enim mollis placerat. Sed tortor orci, venenatis sit amet auctor in, condimentum vitae enim. In vel nulla velit. Proin ultrices vehicula nibh a interdum. Integer rhoncus luctus est sit amet placerat. In commodo, mauris id consectetur pulvinar, massa nibh condimentum nunc, non fermentum lacus turpis vitae nisl. Curabitur at dui eu leo laoreet luctus in eu diam. Aliquam ante velit, venenatis sit amet sollicitudin non, adipiscing in orci. Curabitur tristique bibendum volutpat. Donec blandit tempor vestibulum. Sed lorem justo, fringilla vel hendrerit sit amet, pellentesque lobortis turpis. Integer sed turpis quis dolor suscipit mollis in a nibh. Aenean blandit condimentum erat, eget consequat erat cursus eu. Vestibulum in massa tortor.
