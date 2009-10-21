@@ -1,62 +1,7 @@
 <cfcomponent output="false" extends="mxunit.framework.TestCase">
 <cfscript>
   
-  
-  /*---------------------------------------------------------------------
-  
-    exp = {
-      name='$eq'
-    };
-    
-    
-    mongo.expressionBuilder().
-    
-    mongo.search(collection, exp);
-    
-    //searches current collection
-    results = mongo.startsWith('name','foo').
-                    endsWith('title','bar').
-                    contains('field','value').
-                    eq('field','value').
-                    lt('field','value').
-                    gt('field','value').
-                    gte('field','value').
-                    lte('field','value').
-                    in('field','value').
-<<<<<<< HEAD:part2/MongoDBTest.cfc
-                    
-=======
-                    nin('field','value').
-                    exits('field','value').
-                    mod('field','value').
-                    size('field','value').
-					regex('field','value').
-<<<<<<< HEAD:part2/MongoDBTest.cfc
->>>>>>> 027af5559af71a7aecf8e46492703e2a803df92a:part2/MongoDBTest.cfc
-=======
->>>>>>> 027af5559af71a7aecf8e46492703e2a803df92a:part2/MongoDBTest.cfc
-                    search('title,author,date');
-    
-    
-    Come up with DSL for MongoDB searches:
-    
-    
-<<<<<<< HEAD:part2/MongoDBTest.cfc
-    search([keys_to_return]);
-=======
-    search(keys=[keys_to_return],limit=num,start=num);
-    
-	Use BasicDBObjectBuilder.start().add( "name" , "eliot" ).add( "number" , 17 ).get()
-	
-    Note: Look at aggregation
->>>>>>> 027af5559af71a7aecf8e46492703e2a803df92a:part2/MongoDBTest.cfc
-  
-  
-  
-  -------------------------------------------------------------------------------------*/
-  
-  
-  
+ 
   function $exploreStringSearchExpression(){
     coll = mongo.getCollection('blog');
  
