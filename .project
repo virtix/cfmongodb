@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>mongo-cf</name>
+	<name>cfmongodb</name>
 	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
 	</buildSpec>
 	<natures>
-		<nature>org.cfeclipse.cfml.CFENature</nature>
 	</natures>
 </projectDescription>
