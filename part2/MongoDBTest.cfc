@@ -17,13 +17,25 @@
     results = mongo.startsWith('name','foo').
                     endsWith('title','bar').
                     contains('field','value').
+                    eq('field','value').
+                    lt('field','value').
+                    gt('field','value').
+                    gte('field','value').
+                    lte('field','value').
+                    in('field','value').
+                    nin('field','value').
+                    exits('field','value').
+                    mod('field','value').
+                    size('field','value').
                     search('title,author,date');
     
     
     Come up with DSL for MongoDB searches:
     
     
-    search([keys_to_return]);
+    search(keys=[keys_to_return],limit=num,start=num);
+    
+    Note: Look at aggregation
   
   
   
