@@ -23,19 +23,14 @@
                     gte('field','value').
                     lte('field','value').
                     in('field','value').
-                    nin('field','value').
-                    exits('field','value').
-                    mod('field','value').
-                    size('field','value').
+                    
                     search('title,author,date');
     
     
     Come up with DSL for MongoDB searches:
     
     
-    search(keys=[keys_to_return],limit=num,start=num);
-    
-    Note: Look at aggregation
+    search([keys_to_return]);
   
   
   
