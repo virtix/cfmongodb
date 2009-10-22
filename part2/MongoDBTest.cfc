@@ -160,7 +160,7 @@
  
  
   function genDataTest(){
-    // genBlogData() ;
+    //genBlogData() ;
   }
   
    
@@ -190,7 +190,11 @@
 	mongo.getCollection('blog');
 	for(i; i < 1000;i++){
 	 createObject('java','java.util.Collections').shuffle(tags);
+	 r1 = randrange(1,max);
+	 r2 = randrange(r1,max)
 	 newTags = shuffled.subList(r1,r2);	
+	 //createObject('java','java.util.Collections').shuffle(newTags);
+	 
 	 entry.title = 'Blog Title No.' & i;
 	 entry.author = 'bill_' & i;
 	 entry.tags = newTags; 

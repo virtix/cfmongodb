@@ -64,7 +64,8 @@ function builder(){
 }
 
 function start(){
-  return builder.start();
+  builder.start();
+  return this;
 }
 
 function get(){
@@ -73,9 +74,13 @@ function get(){
 
 
 //May need at least some exception handling
+function where( js_expression ){
+ builder.add( '$where', js_expression );
+}
 
-function $tags(val){
-  builder.add( 'TAGS', val );
+function inArray(element, val){
+  builder.add( element, val );
+  return this;
 }
 
  //vals should be list or array
@@ -92,6 +97,7 @@ function $nin(element,vals){
 
 function $eq(element,val){
   builder.add( element, val );
+  return this;
 }
 
 

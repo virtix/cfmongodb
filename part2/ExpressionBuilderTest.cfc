@@ -5,7 +5,51 @@
  key_exp = {AUTHOR=1,TITLE=1,TS=1};
  keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
 
+
+
+function $testFluentChain(){
+ criteria = builder.start().
+             		inArray( 'TAGS', 'Java' ).
+             		$nin( 'AUTHOR', ['bill_1','bill_202','bill_101','bill_999','bogus_bill','bill_506'] ).
+             		exists('BODY' , 'orci').
+             		get();
+
+ q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
+ debug(q);
+ items = coll.find(q,keys);
+  debug(items.count());
+  debug(items.toArray().toString());
+}
+
+
+function $testWhereJSExpression(){
+  builder.start();
+  temp = builder.where( "this.TAGS == 'Java'");
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find(q,keys);
+  ia = items.toArray(); 
+  debug(items.count());
+  debug(items.toArray().toString());
+  assertEquals( 7, items.count() );
+}
+
+
+
 //array tests: search tags:
+function $testInArray(){
+  builder.start();
+  temp = builder.inArray( 'TAGS', 'Java' );
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find(q,keys);
+  ia = items.toArray(); 
+  debug(items.count());
+  debug(items.toArray().toString());
+  assertEquals( 69	 , items.count() );
+}
+
+
 function testNIN(){
   builder.start();
   temp = builder.$nin( 'AUTHOR', ['bill_1','bill_202','bill_101','bill_999','bogus_bill'] );
