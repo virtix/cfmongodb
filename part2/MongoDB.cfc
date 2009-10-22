@@ -12,6 +12,37 @@ mongo = createObject('java', 'com.mongodb.Mongo').init( variables.server_name , 
 db = mongo.getDb(db_name);	
 collection = db.getCollection(collection_name);
 
+  /*---------------------------------------------------------------------
+  
+    DSL for MongoDB searches:   
+    
+    mongo.expressionBuilder().
+    
+    results = mongo.startsWith('name','foo'). //string
+                    endsWith('title','bar').  //string
+                    exists('field','value').  //string
+					regex('field','value').   //string
+                    eq('field','value').      //numeric
+                    lt('field','value').      //numeric 
+                    gt('field','value').      //numeric
+                    gte('field','value').     //numeric
+                    lte('field','value').     //numeric
+                    in('field','value').      //array
+                    nin('field','value').     //array
+                    mod('field','value').     //numeric
+                    size('field','value').    //numeric
+                    search('title,author,date', limit, start);
+
+    search(keys=[keys_to_return],limit=num,start=num);
+    
+
+  
+  
+-------------------------------------------------------------------------------------*/
+
+builder = createObject('component','ExpressionBuilder');
+
+
 function getMongo(){
  return mongo;
 }

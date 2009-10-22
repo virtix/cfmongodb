@@ -72,7 +72,7 @@
   
   
   
-  function $exploreStringSearchExpression(){
+  function $exploreStringSearchExpression2(){
     coll = mongo.getCollection('blog');
  
     key_exp = {TITLE=1,TS=1,AUTHOR=1};
@@ -94,7 +94,7 @@
   }
   
   
-   function $buildSearchExpressionWithBuilder(){
+   function $buildSearchExpressionWithBuilder2(){
     coll = mongo.getCollection('blog');
     
 	// BasicDBObjectBuilder.start().add( "name" , "eliot" ).add( "number" , 17 ).get()
@@ -116,7 +116,7 @@
   }
   
   
-   function $findByExpression(){
+   function $findByExpression2(){
     coll = mongo.getCollection('blog');
    
     key_exp = {TITLE=1,TS=1};
@@ -160,7 +160,7 @@
  
  
   function genDataTest(){
-    //genBlogData() ;
+   // genBlogData() ;
   }
   
    
@@ -184,14 +184,15 @@
 	var max = arrayLen(tags);
 	var shuffled = createObject('java','java.util.ArrayList').init(tags);
 	var r1 = randrange(1,max);
-	var r2 = randrange(r1,max)
+	var r2 = randrange(r1,max);
 	var newTags = [];
+	
 	//Note case sensitivity!!
 	mongo.getCollection('blog');
 	for(i; i < 1000;i++){
 	 createObject('java','java.util.Collections').shuffle(tags);
 	 r1 = randrange(1,max);
-	 r2 = randrange(r1,max)
+	 r2 = randrange(r1,max);
 	 newTags = shuffled.subList(r1,r2);	
 	 //createObject('java','java.util.Collections').shuffle(newTags);
 	 

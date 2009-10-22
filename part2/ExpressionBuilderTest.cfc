@@ -8,9 +8,10 @@
 
 
 function $testFluentChain(){
+ name_list = ['bill_1','bill_202','bill_101','bill_999','bogus_bill','bill_506'] ;
  criteria = builder.start().
              		inArray( 'TAGS', 'Java' ).
-             		$nin( 'AUTHOR', ['bill_1','bill_202','bill_101','bill_999','bogus_bill','bill_506'] ).
+             		$nin( 'AUTHOR', name_list  ).
              		exists('BODY' , 'orci').
              		get();
 
@@ -52,7 +53,8 @@ function $testInArray(){
 
 function testNIN(){
   builder.start();
-  temp = builder.$nin( 'AUTHOR', ['bill_1','bill_202','bill_101','bill_999','bogus_bill'] );
+  names = ['bill_1','bill_202','bill_101','bill_999','bogus_bill'];
+  temp = builder.$nin( 'AUTHOR', names );
   q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
   debug(q);
   items = coll.find(q,keys);
@@ -92,7 +94,8 @@ function testInWithStringList(){
 
 function testIn(){
   builder.start();
-  temp = builder.$in( 'AUTHOR', ['bill_1','bill_202','bill_101','bill_999','bogus_bill'] );
+  names = ['bill_1','bill_202','bill_101','bill_999','bogus_bill'];
+  temp = builder.$in( 'AUTHOR', names );
   q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
   debug(q);
   items = coll.find(q,keys);
