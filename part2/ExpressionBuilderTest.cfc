@@ -5,6 +5,86 @@
  key_exp = {AUTHOR=1,TITLE=1,TS=1};
  keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
 
+//array tests: search tags:
+function testNIN(){
+  builder.start();
+  temp = builder.$nin( 'AUTHOR', ['bill_1','bill_202','bill_101','bill_999','bogus_bill'] );
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find(q,keys);
+  ia = items.toArray(); 
+  debug(items.count());
+  //debug(items.toArray().toString());
+  assertEquals( 996	 , items.count() );
+}
+
+
+function testNINWithStringList(){
+  builder.start();
+  temp = builder.$nin( 'AUTHOR', 'bill_1,bill_202,bill_101,bill_999,bogus_bill' );
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find(q,keys);
+  ia = items.toArray(); 
+  debug(items.count());
+  //debug(items.toArray().toString());
+  assertEquals( 996 , items.count() );
+  
+}
+
+
+function testInWithStringList(){
+  builder.start();
+  temp = builder.$in( 'AUTHOR', 'bill_1,bill_202,bill_101,bill_999,bogus_bill' );
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find(q,keys);
+  ia = items.toArray(); 
+  debug(items.count());
+  //debug(items.toArray().toString());
+  assertEquals( 4	 , items.count() );
+  
+}
+
+function testIn(){
+  builder.start();
+  temp = builder.$in( 'AUTHOR', ['bill_1','bill_202','bill_101','bill_999','bogus_bill'] );
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find(q,keys);
+  ia = items.toArray(); 
+  debug(items.count());
+  //debug(items.toArray().toString());
+  assertEquals( 4	 , items.count() );
+}
+
+
+function testEQ(){
+  builder.start();
+  temp = builder.$eq( 'TS', 1256174339614); //not good test - volitile
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find(q,keys);
+  ia = items.toArray(); 
+  debug(items.count());
+  //debug(items.toArray().toString());
+  assertEquals( 1	 , items.count() );
+}
+
+
+
+function testNEQ(){
+  builder.start();
+  temp = builder.$ne( 'TS', -9);
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  debug(q);
+  items = coll.find(q,keys);
+  ia = items.toArray(); 
+  debug(items.count());
+  //debug(items.toArray().toString());
+  assertEquals( 1000 , items.count() );
+}
+
 
 function testLTE(){
   builder.start();

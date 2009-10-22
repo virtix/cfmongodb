@@ -160,7 +160,7 @@
  
  
   function genDataTest(){
-    //genBlogData();
+    // genBlogData() ;
   }
   
    
@@ -180,10 +180,20 @@
 	var i = 0;
 	var entry = {foo='bar'};
 	var start = getTickCount();
+	var tags = ['Food','Java','Comics','Games','Python','NoSQL','Ruby','ColdFusion','TDD','JavaScript','JSON','MongoDB'];
+	var max = arrayLen(tags);
+	var shuffled = createObject('java','java.util.ArrayList').init(tags);
+	var r1 = randrange(1,max);
+	var r2 = randrange(r1,max)
+	var newTags = [];
+	//Note case sensitivity!!
 	mongo.getCollection('blog');
 	for(i; i < 1000;i++){
+	 createObject('java','java.util.Collections').shuffle(tags);
+	 newTags = shuffled.subList(r1,r2);	
 	 entry.title = 'Blog Title No.' & i;
 	 entry.author = 'bill_' & i;
+	 entry.tags = newTags; 
 	 entry.ts = javacast('long',getTickCount());
 	 entry.body = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eu justo lectus. Morbi aliquet consectetur consequat. Mauris mauris nulla, condimentum in aliquet nec, suscipit in lacus. Donec vel ante ut metus imperdiet interdum. Curabitur non sapien at felis egestas bibendum in eu urna. In rutrum ligula erat. Integer tristique viverra consequat. Curabitur tristique velit vel nunc aliquet congue eleifend lacus cursus. Aenean a lorem a arcu tincidunt tempus. Nulla faucibus diam in sem consequat tincidunt. Aenean quis nunc vitae leo luctus porta. Etiam justo enim, imperdiet vel commodo sed, placerat nec dolor. Nunc placerat sapien id ligula varius eget tempus est eleifend.
 

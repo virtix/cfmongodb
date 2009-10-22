@@ -72,14 +72,43 @@ function get(){
 }
 
 
-//may need at least some exception handling
+//May need at least some exception handling
+
+function $tags(val){
+  builder.add( 'TAGS', val );
+}
+
+ //vals should be list or array
+function $in(element,vals){
+  if(isArray(vals)) return addArrayCriteria(element,vals,'$in');
+  return addArrayCriteria(element, listToArray(vals),'$in');
+}
+
+function $nin(element,vals){
+  if(isArray(vals)) return addArrayCriteria(element,vals,'$nin');
+  return addArrayCriteria(element, listToArray(vals),'$nin');
+}
+
+
+function $eq(element,val){
+  builder.add( element, val );
+}
+
+
+function $ne(element,val){
+  return addNumericCriteria(element,val,'$ne');
+}
+
+
 function $lt(element,val){
   return addNumericCriteria(element,val,'$lt');
 }
 
+
 function $lte(element,val){
   return addNumericCriteria(element,val,'$lte');
 }
+
 
 function $gt(element,val){
   return addNumericCriteria(element,val,'$gt');
@@ -111,5 +140,18 @@ But, this also proved to be a very good refactor.
   		return this;
   	</cfscript>
 </cffunction>
+
+<cffunction name="addArrayCriteria" hint="refactored $expressions for numerics">
+	<cfargument name="element" type="string" hint="The array element in the document we're searching"/>
+    <cfargument name="val" type="array" hint="The value(s) of an element in the array" />
+	<cfargument name="type" type="string" hint="$in,$nin,etc." />
+	<cfscript>  
+  		var exp = {};
+  		exp[type] = val;
+  		builder.add( element, exp );
+  		return this;
+  	</cfscript>
+</cffunction>
+
 
 </cfcomponent>
