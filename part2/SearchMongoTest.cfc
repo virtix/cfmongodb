@@ -1,6 +1,11 @@
 <cfcomponent output="false" extends="mxunit.framework.TestCase">
 <cfscript>
   
+  function searchTitleContains() {
+    results = mongo.collection('blog').exists('TITLE','Blog Title No.60').search('TITLE,AUTHOR,PUB_DATE');
+    debug( results.toArray().toString()  );
+    assertEquals( 11,results.toArray().size() );
+  } 
    
   function searchTitleStartsWith() {
     results = mongo.collection('blog').startsWith('TITLE','Blog Title No.60').search('TITLE,AUTHOR,PUB_DATE');

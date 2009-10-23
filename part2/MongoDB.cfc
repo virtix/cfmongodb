@@ -174,7 +174,7 @@ function endsWith(element, val){
 
 function exists(element, val){
   var regex = '.*' & val & '.*';
-  expression_builder.exists( element, pattern.compile(regex) );
+  expression_builder.exists( element, regex );
   return this;
 }
 
