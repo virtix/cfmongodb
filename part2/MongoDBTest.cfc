@@ -51,16 +51,10 @@
    
     key_exp = {TITLE=1,TS=1};
     keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
-	
-	// { a : { $gt: 3 } } 
-	//exp['$where'] = 'this.TS > 1256133363469';
-	//exp = { $gt=1256133363469  };
-	//exp = {};
-	//exp['$gte']= javacast('long',1256148921000 );
+
 	exp['$gte']= javacast('long',1256148921000 );   
     debug( exp );
-	
-	//q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", javacast('long',1256148921000)  );
+    //q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", javacast('long',1256148921000)  );
 	q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", exp );
     items = coll.find( q, keys );
 
@@ -73,11 +67,7 @@
   
     function $findByRegEx(){
     coll = mongo.getCollection('blog');
-    //raw = mongo.getMongo(); //raw jo
     debug(coll.getName());
-    //debug(coll);
-    //import java.util.regex.Pattern;
-    //import java.util.regex.Matcher;
     p = createObject('java', 'java.util.regex.Pattern').compile('bill_6[0-2].*');
     exp = { AUTHOR=p };
     key_exp = {AUTHOR=1,TITLE=1,TS=1};
@@ -91,7 +81,8 @@
  
  
   function genDataTest(){
-   // genBlogData() ;
+    // uncomment next line to generate data :
+	// genBlogData() ;
   }
   
    
@@ -124,10 +115,9 @@
 	 createObject('java','java.util.Collections').shuffle(tags);
 	 r1 = randrange(1,max);
 	 r2 = randrange(r1,max);
-	 newTags = shuffled.subList(r1,r2);	
-	 //createObject('java','java.util.Collections').shuffle(newTags);
-	 
+	 newTags = shuffled.subList(r1,r2);	 
 	 entry.title = 'Blog Title No.' & i;
+	 entry.incr =  javacast('int',i);
 	 entry.author = 'bill_' & i;
 	 entry.tags = newTags; 
 	 entry.ts = javacast('long',getTickCount());

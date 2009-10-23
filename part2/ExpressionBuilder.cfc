@@ -76,6 +76,7 @@ function get(){
 //May need at least some exception handling
 function where( js_expression ){
  builder.add( '$where', js_expression );
+ return this;
 }
 
 function inArray(element, val){

@@ -17,7 +17,7 @@ config = {
 mongo = createObject('java', 'com.mongodb.Mongo').init( variables.config.server_name , variables.config.server_port );
 db = mongo.getDb(config.db_name);	
 collection = db.getCollection(config.collection_name);
-expression_builder = createObject('component', 'ExpressionBuilder') 
+expression_builder = createObject('component', 'ExpressionBuilder') ;
 
   /*---------------------------------------------------------------------
   
@@ -180,12 +180,13 @@ function exists(element, val){
 
 function regex(element, val){
   var regex = val;
-  expression_builder.regex( element, pattern.compile(regex) );
+  expression_builder.regex( element, regex );
   return this;
 }
 
 function where( js_expression ){
- expression_builder.where( '$where', js_expression );
+ expression_builder.where( js_expression );
+ return this;
 }
 
 function inArray(element, val){

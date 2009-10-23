@@ -59,7 +59,7 @@ function $testWhereJSExpression(){
   ia = items.toArray(); 
   debug(items.count());
   debug(items.toArray().toString());
-  assertEquals( 7, items.count() );
+  assertEquals( 5, items.count() );
 }
 
 

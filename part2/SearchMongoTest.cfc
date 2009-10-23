@@ -1,6 +1,37 @@
 <cfcomponent output="false" extends="mxunit.framework.TestCase">
 <cfscript>
   
+  function searchINCRWithNE(){
+    results = mongo.collection('blog').$ne( 'INCR', javacast('int',1) ).search('TITLE,TS,AUTHOR,PUB_DATE');
+    assertEquals( 999,results.toArray().size() );
+  }
+  
+  
+  function searchINCRWithWhere(){
+    results = mongo.collection('blog').where( "this.INCR == 1").search('TITLE,TS,AUTHOR,PUB_DATE');
+    assertEquals( 1,results.toArray().size() );
+	
+	results = mongo.collection('blog').where( "this.INCR > 0 && this.INCR < 100").search('TITLE,TS,AUTHOR,PUB_DATE');
+    assertEquals( 99,results.toArray().size() );
+  }
+  
+   //1256242383663
+   function searchTSWithWhere(){
+    results = mongo.collection('blog').where( "this.TS > 1256242383663").search('TITLE,TS,AUTHOR,PUB_DATE');
+    assertEquals( 1000,results.toArray().size() );
+  }
+  
+  function searchTAGSWithWhere(){
+    results = mongo.collection('blog').where( "this.TAGS == 'Java'").search('TITLE,TS,AUTHOR,PUB_DATE');
+    assert( results.toArray().size() > 1 );
+  }
+  
+  function searchTitleWithRegEx() {
+    results = mongo.collection('blog').regex('TITLE','Blog Title No.6[0]{1,1}').search('TITLE,AUTHOR,PUB_DATE');
+    debug( results.toArray().toString()  );
+    assertEquals( 11,results.toArray().size() );
+  }
+  
   function searchTitleContains() {
     results = mongo.collection('blog').exists('TITLE','Blog Title No.60').search('TITLE,AUTHOR,PUB_DATE');
     debug( results.toArray().toString()  );
