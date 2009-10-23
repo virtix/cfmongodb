@@ -1,16 +1,23 @@
 <cfcomponent output="false">
 
 <cfscript>
-//This is configurable.
-server_name = 'localhost';
-server_port = 27017;
-db_name = 'default_db';
-collection_name = 'default_collection';	
+//This maybe should be a config object
+config = {
+  server_name = 'localhost',
+  server_port = 27017,
+  db_name = 'default_db',
+  collection_name = 'default_collection'	
+ };
+
 	
-//maybe this goes in super class?	
-mongo = createObject('java', 'com.mongodb.Mongo').init( variables.server_name , variables.server_port );
-db = mongo.getDb(db_name);	
-collection = db.getCollection(collection_name);
+//maybe this goes in super class? Or make factory for returning mongos
+/*--------------------------------------------------------------------
+         mongo1 = factory.createMongo(config); 
+--------------------------------------------------------------------*/	
+mongo = createObject('java', 'com.mongodb.Mongo').init( variables.config.server_name , variables.config.server_port );
+db = mongo.getDb(config.db_name);	
+collection = db.getCollection(config.collection_name);
+expression_builder = createObject('component', 'ExpressionBuilder') 
 
   /*---------------------------------------------------------------------
   
@@ -18,7 +25,8 @@ collection = db.getCollection(collection_name);
     
     mongo.expressionBuilder().
     
-    results = mongo.startsWith('name','foo'). //string
+    results = mongo.getCollection('blog').
+                    startsWith('name','foo'). //string
                     endsWith('title','bar').  //string
                     exists('field','value').  //string
 					regex('field','value').   //string
@@ -33,7 +41,7 @@ collection = db.getCollection(collection_name);
                     size('field','value').    //numeric
                     search('title,author,date', limit, start);
 
-    search(keys=[keys_to_return],limit=num,start=num);
+    search(keys=list_of_keys_to_return,sort={field=direction},limit=num,start=num);
     
 
   
@@ -132,9 +140,123 @@ function getCollection(collection_name){
   return collection;
 }
 
+function collection(collection_name){
+  collection = db.getCollection(collection_name);
+  return this;
+}
+
+
+function listToStruct(list){
+  var item = '';
+  var s = {};
+  var i = 1;
+  for(i; i lte listlen(list); i++) {
+   s.put(listgetat(list,i),1);
+  }
+  return s;
+}
+
+
+/*---------------------------------------------------------
+        Expression Builder Wrappers
+   ---------------------------------------------------------*/
+
+function startsWith(element, val){
+  expression_builder.startsWith(element, val);
+  return this;
+}
+
+function endsWith(element, val){
+  expression_builder.endsWith(element, val);
+  return this;
+}
+
+
+function exists(element, val){
+  var regex = '.*' & val & '.*';
+  expression_builder.exists( element, pattern.compile(regex) );
+  return this;
+}
+
+function regex(element, val){
+  var regex = val;
+  expression_builder.regex( element, pattern.compile(regex) );
+  return this;
+}
+
+function where( js_expression ){
+ expression_builder.where( '$where', js_expression );
+}
+
+function inArray(element, val){
+  expression_builder.inArray( element, val );
+  return this;
+}
+
+ //vals should be list or array
+function $in(element,vals){
+  expression_builder.$in(element,vals);
+  return this;
+}
+
+function $nin(element,vals){
+  expression_builder.$in(element,vals);
+  return this;
+}
+
+
+function $eq(element,val){
+  expression_builder.$eq(element,val);
+  return this;
+}
+
+
+function $ne(element,val){
+  expression_builder.$ne(element,val);
+  return this;
+}
+
+
+function $lt(element,val){
+  expression_builder.$lt(element,val);
+  return this;
+  }
+
+
+function $lte(element,val){
+  expression_builder.$lte(element,val);
+  return this;
+}
+
+
+function $gt(element,val){
+  expression_builder.$gt(element,val);
+  return this;
+}
+
+
+function $gte(element,val){
+  expression_builder.$gte(element,val);
+  return this;
+}
+
 
 
 
 </cfscript>
+
+
+<cffunction name="search">
+  <cfargument name="keys_to_return" type="string" required="false" default="" hint="A list of keys to return" />
+  <cfscript>
+   var key_exp = listToStruct(keys_to_return);
+   var keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
+   var search_results = [];
+   var criteria = expression_builder.get(); 
+   var q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
+   search_results = collection.find(q,keys);
+   return search_results;
+  </cfscript>
+</cffunction>
 
 </cfcomponent>

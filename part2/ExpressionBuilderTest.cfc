@@ -6,6 +6,33 @@
  keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
 
 
+function $testKeys(){
+  var key_exp = {AUTHOR=1};
+  var keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
+  temp = builder.regex( 'TITLE', '.*No.600$');
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(builder.get());
+  items = coll.find( q, keys );
+  ia = items.toArray(); 
+  debug(items.toArray());
+  debug(items.toArray().toString());
+  
+}
+
+
+function $testInRange(){
+  fail('not implemented. but good idea');
+ 
+  criteria = builder.start().
+               		inRange( 'TS', 0, 9999999999).
+             		get();
+
+  q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
+  debug(q);
+  items = coll.find(q,keys);
+  debug(items.count());
+  debug(items.toArray().toString());
+}
+
 
 function $testFluentChain(){
  name_list = ['bill_1','bill_202','bill_101','bill_999','bogus_bill','bill_506'] ;

@@ -56,8 +56,8 @@
 	//exp['$where'] = 'this.TS > 1256133363469';
 	//exp = { $gt=1256133363469  };
 	//exp = {};
-	exp['$gte']= javacast('long',1256148921000 );
-	exp['$lte']= javacast('long',1256148921000 );   
+	//exp['$gte']= javacast('long',1256148921000 );
+	exp['$gte']= javacast('long',1256148921000 );   
     debug( exp );
 	
 	//q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", javacast('long',1256148921000)  );
@@ -71,76 +71,7 @@
   }
   
   
-  
-  function $exploreStringSearchExpression2(){
-    coll = mongo.getCollection('blog');
- 
-    key_exp = {TITLE=1,TS=1,AUTHOR=1};
-	keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
-	 
-	debug( 'bill' > 'z' );
-	 
-    exp = createObject('java', 'com.mongodb.BasicDBObjectBuilder').start();
-	//exp.add( '$ne',  javacast('long',1256148920969)   ); //bill_792
-	exp.add( '$gt',  'bill_792' );
-	
-	debug( exp.get() );
-	
-	q = createObject('java', 'com.mongodb.BasicDBObject').init("AUTHOR", exp.get() );
-	items = coll.find( q, keys );
-	debug(items.count());
-    debug(items.toArray().toString());
-    
-  }
-  
-  
-   function $buildSearchExpressionWithBuilder2(){
-    coll = mongo.getCollection('blog');
-    
-	// BasicDBObjectBuilder.start().add( "name" , "eliot" ).add( "number" , 17 ).get()
-   
-    key_exp = {TITLE=1,TS=1};
-	keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
-	 
-    exp = createObject('java', 'com.mongodb.BasicDBObjectBuilder').start();
-	exp.add( '$gte', javacast('long',1256148921000 ) );
-	exp.add( '$lte', javacast('long',1256148921000 ) );
-	
-	debug( exp.get() );
-	
-	q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", exp.get() );
-	items = coll.find( q, keys );
-	debug(items.count());
-    debug(items.toArray().toString());
-    
-  }
-  
-  
-   function $findByExpression2(){
-    coll = mongo.getCollection('blog');
-   
-    key_exp = {TITLE=1,TS=1};
-    keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
-	
-	// { a : { $gt: 3 } } 
-	//exp['$where'] = 'this.TS > 1256133363469';
-	//exp = { $gt=1256133363469  };
-	//exp = {};
-	exp['$gte']= javacast('long',1256148921000 );
-	exp['$lte']= javacast('long',1256148921000 );   
-    debug( exp );
-	
-	//q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", javacast('long',1256148921000)  );
-	q = createObject('java', 'com.mongodb.BasicDBObject').init("TS", exp );
-    items = coll.find( q, keys );
-
-    debug(items.count());
-    debug(items.toArray().toString());
-	assert(items.count() > 0);
-    
-  }
-  
-  function $findByRegEx(){
+    function $findByRegEx(){
     coll = mongo.getCollection('blog');
     //raw = mongo.getMongo(); //raw jo
     debug(coll.getName());
