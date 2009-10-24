@@ -20,6 +20,8 @@
                     nin('field','value').     //array
                     mod('field','value').     //numeric
                     size('field','value').    //numeric
+                    after('field','value').    //date
+                    before('field','value').    //date
                     search('title,author,date', limit, start);
 
     search(keys=[keys_to_return],limit=num,start=num);
@@ -127,6 +129,31 @@ function $gte(element,val){
 }
 
 </cfscript>
+
+<cffunction name="before">
+  <cfargument name="element" type="string" />
+  <cfargument name="val" type="date" />
+   <cfscript>  
+  		var exp = {};
+  		var  date = parseDateTime(val);
+  		exp['$lte'] = date;
+  		builder.add( element, exp );
+  		return this;
+  	</cfscript>
+</cffunction>
+
+
+<cffunction name="after">
+  <cfargument name="element" type="string" />
+  <cfargument name="val" type="date" />
+   <cfscript>  
+  		var exp = {};
+  		var  date = parseDateTime(val);
+  		exp['$gte'] = date;
+  		builder.add( element, exp );
+  		return this;
+  	</cfscript>
+</cffunction>
 
 <!--- 
 Note to self: Using cffunction here because of the ability/need to cast

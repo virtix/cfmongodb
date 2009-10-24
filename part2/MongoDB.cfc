@@ -241,7 +241,15 @@ function $gte(element,val){
   return this;
 }
 
+function before(element,val){
+  expression_builder.before(element,val);
+  return this;
+}
 
+function after(element,val){
+  expression_builder.after(element,val);
+  return this;
+}
 
 
 </cfscript>

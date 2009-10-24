@@ -1,6 +1,20 @@
 <cfcomponent output="false" extends="mxunit.framework.TestCase">
 <cfscript>
   
+  
+  function $searchBeforeDateReturns0(){
+    results = mongo.collection('blog').before( 'PUB_DATE', '01/01/1971' ).search('TITLE,TS,AUTHOR,PUB_DATE');
+    debug(results.toArray().size());
+    assertEquals( 0,results.toArray().size() );
+  }
+  
+  function $searchAfterDateReturns1000(){
+    results = mongo.collection('blog').after( 'PUB_DATE', '01/01/1971' ).search('TITLE,TS,AUTHOR,PUB_DATE');
+    debug(results.toArray().size());
+    assertEquals( 1000,results.toArray().size() );
+  }
+  
+  
   function searchINCRWithNE(){
     results = mongo.collection('blog').$ne( 'INCR', javacast('int',1) ).search('TITLE,TS,AUTHOR,PUB_DATE');
     assertEquals( 999,results.toArray().size() );

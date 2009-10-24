@@ -6,6 +6,64 @@
  keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
 
 
+function $testBeforeDateComparison(){
+  var key_exp = {TITLE=1,PUB_DATE=1};
+  var keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
+  temp = builder.regex( 'PUB_DATE', '10/22/2009');
+ criteria = builder.start().
+             		before( 'PUB_DATE', now()).
+             		get();
+ debug(criteria);	            		
+ q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
+ items = coll.find( q, keys );
+ debug(items.count());
+ assert( items.count() == 1000 );
+}
+
+function $testBeforeDateComparisonShouldReturn0(){
+  var key_exp = {TITLE=1,PUB_DATE=1};
+  var keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
+  temp = builder.regex( 'PUB_DATE', '10/22/2009');
+  criteria = builder.start().
+             		before( 'PUB_DATE', "01/01/1971").
+             		get();
+ debug(criteria);	            		
+ q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
+ items = coll.find( q, keys );
+ debug(items.count());
+ assert( items.count() == 0 );
+}
+
+
+function $testAfterDateComparisonShouldReturn0(){
+  var key_exp = {TITLE=1,PUB_DATE=1};
+  var keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
+  temp = builder.regex( 'PUB_DATE', '10/22/2009');
+ criteria = builder.start().
+             		after( 'PUB_DATE', '01/01/2109').
+             		get();
+ debug(criteria);	            		
+ q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
+ items = coll.find( q, keys );
+ debug(items.count());
+ assert( items.count() == 0 );
+}
+
+function $testAfterDateComparison(){
+  var key_exp = {TITLE=1,PUB_DATE=1};
+  var keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
+  temp = builder.regex( 'PUB_DATE', '10/22/2009');
+ criteria = builder.start().
+             		after( 'PUB_DATE', '10/22/2009').
+             		get();
+ debug(criteria);	            		
+ q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
+ items = coll.find( q, keys );
+ debug(items.count());
+ assert( items.count() == 1000 );
+}
+
+
 function $testKeys(){
   var key_exp = {AUTHOR=1};
   var keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
