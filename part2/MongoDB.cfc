@@ -23,22 +23,21 @@ expression_builder = createObject('component', 'ExpressionBuilder') ;
   
     DSL for MongoDB searches:   
     
-    mongo.expressionBuilder().
-    
-    results = mongo.getCollection('blog').
-                    startsWith('name','foo'). //string
-                    endsWith('title','bar').  //string
-                    exists('field','value').  //string
-					regex('field','value').   //string
-                    eq('field','value').      //numeric
-                    lt('field','value').      //numeric 
-                    gt('field','value').      //numeric
-                    gte('field','value').     //numeric
-                    lte('field','value').     //numeric
-                    in('field','value').      //array
-                    nin('field','value').     //array
-                    mod('field','value').     //numeric
-                    size('field','value').    //numeric
+    results = mongo.collection('blog').
+                    startsWith('name','foo').  //string
+                    endsWith('title','bar').   //string
+                    exists('field','value').   //string
+					regex('field','value').    //string
+					before('field', 'value').  //date
+					after('field', 'value').   //date
+                    $eq('field','value').      //numeric
+                    $gt('field','value').      //numeric
+                    $gte('field','value').     //numeric
+                    $lte('field','value').     //numeric
+                    $in('field','value').      //array
+                    $nin('field','value').     //array
+                    $mod('field','value').     //numeric
+                    size('field','value').     //numeric
                     search('title,author,date', limit, start);
 
     search(keys=list_of_keys_to_return,sort={field=direction},limit=num,start=num);
@@ -256,14 +255,16 @@ function after(element,val){
 
 
 <cffunction name="search">
-  <cfargument name="keys_to_return" type="string" required="false" default="" hint="A list of keys to return" />
+  <cfargument name="keys" type="string" required="false" default="" hint="A list of keys to return" />
+  <cfargument name="limit" type="numeric" required="false" default="0" hint="Number of the maximum items to return" />
+  <cfargument name="sort" type="struct" required="false" default="#structNew()#" hint="A struct representing how the items are to be sorted" />
   <cfscript>
    var key_exp = listToStruct(keys_to_return);
    var keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
    var search_results = [];
    var criteria = expression_builder.get(); 
    var q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
-   search_results = collection.find(q,keys);
+   search_results = collection.find(q,keys).limit(limit);
    return search_results;
   </cfscript>
 </cffunction>

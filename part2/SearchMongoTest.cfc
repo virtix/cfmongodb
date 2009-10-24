@@ -1,6 +1,25 @@
 <cfcomponent output="false" extends="mxunit.framework.TestCase">
 <cfscript>
   
+  //this would be a good data driven test! pass in an arbitrary list of integers
+  function $TestTheLimits(){
+    results = mongo.collection('blog').after( 'PUB_DATE', '01/01/1971' ).search('TITLE,TS,AUTHOR,PUB_DATE',1000);
+    debug(results.toArray().size());
+    assertEquals( 1000,results.toArray().size() );
+    
+    results = mongo.collection('blog').after( 'PUB_DATE', '01/01/1971' ).search('TITLE,TS,AUTHOR,PUB_DATE');
+    debug(results.toArray().size());
+    assertEquals( 1000,results.toArray().size() );
+    
+    results = mongo.collection('blog').after( 'PUB_DATE', '01/01/1971' ).search('TITLE,TS,AUTHOR,PUB_DATE',512);
+    debug(results.toArray().size());
+    assertEquals( 512,results.toArray().size() );
+    
+    results = mongo.collection('blog').after( 'PUB_DATE', '01/01/1971' ).search('TITLE,TS,AUTHOR,PUB_DATE',1);
+    debug(results.toArray().size());
+    assertEquals( 1,results.toArray().size() );
+  }
+  
   
   function $searchBeforeDateReturns0(){
     results = mongo.collection('blog').before( 'PUB_DATE', '01/01/1971' ).search('TITLE,TS,AUTHOR,PUB_DATE');
@@ -9,7 +28,7 @@
   }
   
   function $searchAfterDateReturns1000(){
-    results = mongo.collection('blog').after( 'PUB_DATE', '01/01/1971' ).search('TITLE,TS,AUTHOR,PUB_DATE');
+    results = mongo.collection('blog').after( 'PUB_DATE', '01/01/1971' ).search('TITLE,TS,AUTHOR,PUB_DATE',1000);
     debug(results.toArray().size());
     assertEquals( 1000,results.toArray().size() );
   }
