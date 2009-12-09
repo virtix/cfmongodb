@@ -259,12 +259,12 @@ function after(element,val){
   <cfargument name="limit" type="numeric" required="false" default="0" hint="Number of the maximum items to return" />
   <cfargument name="sort" type="struct" required="false" default="#structNew()#" hint="A struct representing how the items are to be sorted" />
   <cfscript>
-   var key_exp = listToStruct(keys_to_return);
-   var keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
+   var key_exp = listToStruct(arguments.keys);
+   var _keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
    var search_results = [];
    var criteria = expression_builder.get(); 
    var q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
-   search_results = collection.find(q,keys).limit(limit);
+   search_results = collection.find(q,_keys).limit(limit);
    return search_results;
   </cfscript>
 </cffunction>
