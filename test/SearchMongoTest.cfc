@@ -1,4 +1,4 @@
-<cfcomponent output="false" extends="mxunit.framework.TestCase">
+<cfcomponent output="false" extends="BaseTest">
 <cfscript>
   
   //this would be a good data driven test! pass in an arbitrary list of integers
@@ -103,7 +103,7 @@
 
   
   function setUp(){
-    mongo = createObject('component','MongoDB');
+    //mongo = createObject('component','MongoDB');
   }
   
   function tearDown(){

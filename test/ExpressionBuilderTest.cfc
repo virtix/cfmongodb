@@ -1,6 +1,6 @@
-<cfcomponent extends="mxunit.framework.TestCase">
+<cfcomponent output="false" extends="BaseTest">
 <cfscript>
- mongo = createObject('component','MongoDB');
+ mongo = createObject('component','cfmongodb.Mongo');
  coll = mongo.getCollection('blog');
  key_exp = {AUTHOR=1,TITLE=1,TS=1};
  keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
@@ -321,7 +321,7 @@ function testEndsWith(){
 }
 
 function setUp(){
-  builder = createObject('component','ExpressionBuilder');
+  builder = createObject('component','cfmongodb.components.ExpressionBuilder');
 }
 
 

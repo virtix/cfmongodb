@@ -1,4 +1,4 @@
-<cfcomponent output="false" extends="mxunit.framework.TestCase">
+<cfcomponent output="false" extends="BaseTest">
 <cfscript>
   
  
@@ -87,7 +87,7 @@
   
    
   function setUp(){
-     mongo = createObject('component','MongoDB');
+    // mongo = createObject('component','MongoDB');
   }
   
   function tearDown(){
