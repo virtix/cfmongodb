@@ -1,4 +1,4 @@
-<cfcomponent output="false">
+<cfcomponent output="false" hint="Facade for Mongo DB. 90% of calls will go through this comonent.">
 
 <cfscript>
 //This maybe should be a config object
@@ -49,6 +49,10 @@ expression_builder = createObject('component', 'ExpressionBuilder') ;
 
 builder = createObject('component','ExpressionBuilder');
 
+function new_doc(collection){
+	  return createObject('component','Document');
+	}
+	
 
 function getMongo(){
  return mongo;
@@ -59,7 +63,9 @@ function add(key,value,o){
   //add key value pair to object ... todo
 }
 
-
+/**
+* @param o string
+*/
 function put(o){ 
  var doc =  createObject('java', 'com.mongodb.BasicDBObject').init();
  var id = chr(0);
