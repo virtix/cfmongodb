@@ -1,0 +1,20 @@
+7a8
+> 
+192c193
+< 			if(len(inputMapping))
+---
+> 			if(len(currentPath))
+194,195c195
+< 				packagePath = arguments.inputMapping;
+< 
+---
+> 				packagePath = ListAppend(arguments.inputMapping, currentPath, ".");
+199c199
+< 				packagePath = ListAppend(arguments.inputMapping, currentPath, ".");
+---
+> 				packagePath = arguments.inputMapping;
+333c333
+< </cfcomponent>
+---
+> </cfcomponent>
+\ No newline at end of file
