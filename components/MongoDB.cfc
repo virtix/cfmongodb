@@ -49,9 +49,9 @@ expression_builder = createObject('component', 'ExpressionBuilder') ;
 
 builder = createObject('component','ExpressionBuilder');
 
-function new_doc(collection){
-	  return createObject('component','Document');
-	}
+function new_doc(collection_name){
+   return createObject('component','Document').init( collection_name );
+}
 	
 
 function getMongo(){

@@ -28,6 +28,14 @@
  //make sure there's potential for dependency injection for testing
 
  doc = mongo.new_doc(collection='blog');
+ 
+ doc.set('title','asd');
+ doc.property('title','asd');
+ doc.__props__ = {};
+ 
+ props = {foo=bar,bar=123}
+ doc.properties(props);
+ 
  doc.title = 'asd';
  doc.body = 'asd';
  doc.tags = ['java','python'];
