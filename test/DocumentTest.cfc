@@ -3,6 +3,29 @@
 	
  mongo = createObject('component','cfmongodb.Mongo').init();
  
+ function insert_embedded_doc(){
+   doc = mongo.new_doc(collection_name='test');
+   doc.set('parent','dad');
+   
+   doc2 = mongo.new_doc(collection_name='test');
+   doc2.set('child','son');
+   doc2.save();
+   
+   child = {
+    name='Jackson',
+    age=7
+   }
+   
+   doc.set('child',child);   
+   id = doc.save();
+   
+   debug(id);
+   
+   mongo.collection('test');
+   debug( mongo.findOne());
+ 	
+ }
+ 
  function delete_doc_test(){
    doc = mongo.new_doc(collection_name='test');
    doc.set('foo','bar');
@@ -52,13 +75,7 @@
    assertIsTypeOf( doc, 'cfmongodb.components.Document' );
  }
  
- function mongo_doc_should_add_properties(){
-   doc = mongo.new_doc(collection_name='test');
-   doc.title = 'the title';
-   debug(doc);
-   assert( 'the title' == doc.title );
- }
-
+ 
 
  
 
