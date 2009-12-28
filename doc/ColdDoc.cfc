@@ -203,7 +203,7 @@
         <cfdirectory action="list" directory="#arguments.inputSource[i].inputDir#" recurse="true" name="qFiles" filter="*.cfc">
          
         <cfloop query="qFiles">
-			<cfif qFiles.type == 'File'>
+			<cfif qFiles.type is 'File'>
             <cfscript>
                 currentPath = replace(directory, arguments.inputSource[i].inputDir, "");
                 currentPath = reReplace(currentPath, "[/\\]", "");
@@ -431,6 +431,11 @@
 		<cfif arguments.abort>
 		<cfabort>
 		</cfif>
+</cffunction>
+
+
+<cffunction name="dump">
+  <cfdump var="#arguments[1]#">
 </cffunction>
 
 </cfcomponent>
