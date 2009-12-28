@@ -1,25 +1,26 @@
 <cfcomponent  output="false">
+
 <cfscript>
 /* -------------------------------------------------
-	Example of a condensed model.  Instead of separate
+	Example of a "condensed" model.  Instead of separate
 	files for each class, multiple "classes" can be 
 	defined here using the mongo document factory.
 ----------------------------------------------------*/
-config = {
-  server_name = 'localhost',
-  server_port = 27017,
-  db_name = 'dev',
-  collection_name = 'test_coll'	
- };
 
-mongo = createObject('component','cfmongodb.components.MongoDb').init(config);
+mongo = createObject('component','cfmongodb.components.MongoDb');
 
-
-function new_person(name,addr){
-   var person = mongo.new_doc('person',mongo);
-   person.set('name',name);
+function Person(name,addr){
+   var person = mongo.new_doc( 'people' ); 
+   person.set('name', name);
    person.set('address',addr);
    return person;
+}
+
+function Project(name,members){
+   var project = mongo.new_doc( 'projects' ); 
+   project.set('name', name);
+   project.set('members',members);
+   return project;
 }
 	
 	

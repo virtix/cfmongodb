@@ -1,19 +1,19 @@
 <cfcomponent extends="BaseTest">
 <cfscript>
-	
-model = createObject('component','fixture.MyMongoModel');
- 
 
-function new_project(){
-  project = model.new_project( 'my project', 'owner=123' );   
-  project.save();
-} 
- 
+model = createObject('component','fixture.MyMongoModel');
+
 function new_person(){
-  person = model.new_person( 'bill', '123 main st' );   
+  person = model.Person( 'bill', '123 main st' );   
   person.save();  
 }
- 
+
+function new_project(){
+	var members = [ 1,2,3,4,5,6,7 ];
+  var project = model.Project( 'Cool_101', members );   
+  project.save();  
+}
+
 
 </cfscript>
 </cfcomponent>

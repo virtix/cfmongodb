@@ -64,7 +64,7 @@ function config(){
 builder = createObject('component','ExpressionBuilder');
 
 function new_doc(collection_name){
-   var document = createObject('component','MongoDocument').init( collection_name, this );
+   var document = createObject('component','MongoDocument').factory_init( collection_name, this );
    return document;
 }
 	

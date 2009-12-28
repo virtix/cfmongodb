@@ -1,4 +1,4 @@
-<cfcomponent persisten="true" extends="cfmongodb.components.MongoDocument" output="false">
+<cfcomponent extends="cfmongodb.components.MongoDocument" output="false">
 <cfscript>
 /* -------------------------------------------------
 	** Syntax for defining a persistent model **

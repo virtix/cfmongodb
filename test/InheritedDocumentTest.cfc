@@ -7,8 +7,8 @@
  
  function newDoc(){
    doc = createObject('component','fixture.MyMongoDocument').init('my_mongo');
-   doc.set('title','my title');
-   doc.save();
+   //doc.set('title','my title');
+   //doc.save();
   
  }
  
