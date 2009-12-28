@@ -72,8 +72,11 @@
 
 
 <cffunction name="save" returntype="String">
+  <cfset var o_id = '' />
   <cfset validate() />
-  <cfreturn mongo.put(this.model) />
+  <cfset o_id = mongo.put(this.model) />
+  <cfset this.model['_id'] = o_id.toString() /> 
+  <cfreturn o_id />
 </cffunction>
 
 

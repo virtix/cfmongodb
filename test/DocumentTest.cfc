@@ -1,4 +1,4 @@
-<cfcomponent extends="mxunit.framework.TestCase">
+<cfcomponent extends="BaseTest">
 <cfscript>
 	
  mongo = createObject('component','cfmongodb.Mongo').init();
@@ -33,9 +33,9 @@
    child = {
     name='Jackson',
     age=7
-   }
+   };
    
-   doc.set('child',child);   
+   doc.set('child', child);   
    id = doc.save();
    
    debug(id);
@@ -50,7 +50,7 @@
    doc.set('foo','bar');
    id = doc.save();
    debug(id.toString());
-   doc.delete(id)
+   doc.delete(id);
    debug( doc.__props__ );
  //deleteById
  }	

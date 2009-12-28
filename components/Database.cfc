@@ -11,7 +11,7 @@ set server
 config = {
   server_name = 'localhost',
   server_port = 27017,
-  db_name = 'default_db',
+  db_name = 'default_db'
  };
  
  mongo = createObject('java', 'com.mongodb.Mongo').init( variables.config.server_name , variables.config.server_port );

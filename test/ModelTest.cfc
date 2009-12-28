@@ -4,10 +4,8 @@
  --->
 <cfscript>
 
-
 function testModel(){
-mongo = createObject('component','cfmongodb.components.MongoDB').init('goodcoders');
-mongo.getDb('goodcoders');
+mongo = createObject('component','cfmongodb.components.MongoDB');
 
 debug(mongo);
     developer = mongo.new_doc( 'developers' );
@@ -23,13 +21,11 @@ debug(mongo);
     developer1.save();
     
     proj_members = [ developer.get('_id'), developer1.get('_id') ];
-    
-    
+        
     project =   mongo.new_doc( 'projects' );
     project.set('title', 'tops4tots');
     project.set('members',proj_members);
     project.save();
-    
 }
 
 </cfscript>
