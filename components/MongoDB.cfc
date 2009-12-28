@@ -19,6 +19,20 @@ db = mongo.getDb(config.db_name);
 collection = db.getCollection(config.collection_name);
 expression_builder = createObject('component', 'ExpressionBuilder') ;
 
+
+function init(config){
+ variables.config = arguments.config;
+ mongo = createObject('java', 'com.mongodb.Mongo').init( variables.config.server_name , variables.config.server_port );
+ db = mongo.getDb(config.db_name);	
+ collection = db.getCollection(config.collection_name);
+ return this;
+}
+
+
+function config(){
+
+}
+
   /*---------------------------------------------------------------------
   
     DSL for MongoDB searches:   
@@ -50,7 +64,8 @@ expression_builder = createObject('component', 'ExpressionBuilder') ;
 builder = createObject('component','ExpressionBuilder');
 
 function new_doc(collection_name){
-   return createObject('component','Document').init( collection_name );
+   var document = createObject('component','MongoDocument').init( collection_name, this );
+   return document;
 }
 	
 
@@ -135,7 +150,10 @@ function update(o){
 
 //swtich to or create database
 function getDB(db_name){
-  return mongo.getDb(db_name);
+   variables.db = mongo.getDb(db_name);
+   this.db = mongo.getDb(db_name);
+   db = mongo.getDb(db_name);	
+   return db;
 }
 
 

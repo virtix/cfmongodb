@@ -5,10 +5,6 @@
 	function init(){
 		return createObject('component','components.MongoDB');
 	}
-	
-	
-	
-
 </cfscript>
 
 

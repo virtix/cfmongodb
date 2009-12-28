@@ -1,6 +1,6 @@
 <cfcomponent output="false" implements="IDocument" hint="Default implementation of IDocument and used by the Mongo class to generate a document.">
 
-<cfset this.__props__ =  structNew() />
+<cfset this.model =  structNew() />
 <cfset variables.mongo = createObject('component', 'MongoDB') />
 
 
@@ -20,7 +20,7 @@
 <cffunction name="set" hint="Sets a  property for the Document" returntype="void">
   <cfargument name="property" type="String" />
   <cfargument name="value" type="Any" />
-  <cfset structInsert(this.__props__, arguments.property, arguments.value) />
+  <cfset structInsert(this.model, arguments.property, arguments.value, true) />
 </cffunction>
 
 
@@ -28,7 +28,7 @@
   <cfargument name="property" />
   <cfset var ret_val = javacast('null', '') />
   <cftry>
-	<cfset ret_val = this.__props__[arguments.property] />
+	<cfset ret_val = this.model[arguments.property] />
 	<cfcatch type="Expression">
 	 <!--- want to return null --->
 	</cfcatch>
@@ -44,12 +44,12 @@
 
 
 <cffunction name="save" returntype="String">
-	<cfreturn mongo.put(this.__props__) />
+	<cfreturn mongo.put(this.model) />
 </cffunction>
 
 
 <cffunction name="delete" returntype="void" hint="Deletes this Document from the Collection">
-  <cfset mongo.deleteById(this.__props__['_id']) />
+  <cfset mongo.deleteById(this.model['_id']) />
 </cffunction>
 
 

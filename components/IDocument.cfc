@@ -18,8 +18,10 @@
 <cffunction name="save" hint="Commits this Document instance to the datastore and returns an ID" returntype="String"></cffunction>
 
 <cffunction name="update" hint="Performs in-place updating - Instead of retrieving and updating every item within a document, this method is more efficient, allowing for 'Cherry Picking' of specific data elements to update. ">
- <cfargument name="field">
+ <cfargument name="property">
 <cfargument name="value">
 </cffunction>
+
+<cffunction name="validate" hint="Should be called before save()" returntype="void"></cffunction>
 
 </cfinterface>

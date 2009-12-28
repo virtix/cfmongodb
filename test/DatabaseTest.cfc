@@ -2,7 +2,7 @@
 <cfscript>
  function testThis(){
    db = createObject('component','cfmongodb.components.Database');
-   debug(db.getDB('default_db'));
+   debug(db.getDB('some_db').toString());
  }
 
 </cfscript>

@@ -3,6 +3,25 @@
 	
  mongo = createObject('component','cfmongodb.Mongo').init();
  
+ 
+ 
+ function $setMongoInDocument(){
+  doc = mongo.new_doc(collection_name='tester');
+  doc.set('foo','bar');
+  doc.save();
+  
+ }
+ 
+ 
+ function $switchDb(){
+  mongo.getDb('foo');
+  doc = mongo.new_doc(collection_name='tester');
+  doc.set('foo','bar');
+  doc.save();
+  
+ }
+ 
+ 
  function insert_embedded_doc(){
    doc = mongo.new_doc(collection_name='test');
    doc.set('parent','dad');
