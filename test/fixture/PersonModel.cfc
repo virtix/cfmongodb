@@ -1,16 +1,17 @@
 <cfcomponent output="true" extends="cfmongodb.components.MongoDocument">
 
-	<cfproperty name="name" default="bill" />
-	<cfproperty name="address" />
+	<cfproperty name="name" />
+	<cfproperty name="email" />
+	<cfproperty name="street" />
   	<cfproperty name="city" />
+	<cfproperty name="state" />
+	<cfproperty name="zip" />
+	<cfproperty name="colors" type="array" />
   	<cfset super.init( collection_name='members' ) />
 
-
-<!--- Representation invariant --->
+<!--- Representation invariant. To Do --->
  <cffunction name="validate" returntype="void" hint="Called before save(). Should throw exception on failure.">
-   <cfif len( this.model.name) gt 100>
-     <cfthrow type="ModelFuckedUpException" message="hey, punk." />
-    </cfif> 
+  
  </cffunction>
  
  

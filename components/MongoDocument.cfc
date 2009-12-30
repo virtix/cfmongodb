@@ -75,21 +75,22 @@
   <cfset var o_id = '' />
   <cfset validate() />
   <cfset o_id = mongo.put(this.model) />
-  <cfset this.model['_id'] = o_id.toString() /> 
+  <cfset this.model['_id'] = o_id /> 
   <cfreturn o_id />
 </cffunction>
 
 
 <cffunction name="delete" returntype="void" hint="Deletes this Document from the Collection">
-  <cfset mongo.deleteById(this.model['_id']) />
+  <cfset mongo.delete(this.model) />
 </cffunction>
 
 
+<!--- To Do: Update in-place using obj.update(property,value) --->
 <cffunction name="update"  hint="Performs in-place update of the the value for 'property'. NOT IMPLEMENTED">
- <cfargument name="property">
- <cfargument name="value">
-  <cfset validate() />
- <cfthrow type="NotImplementedException" message="To Do.">
+ <cfargument name="property" required="false" />
+ <cfargument name="value"  required="false" />
+ <cfset validate() />
+ <cfset variables.mongo.update(this.model) />
 </cffunction>
 
 

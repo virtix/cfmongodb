@@ -1,28 +1,23 @@
 <cfcomponent output="false" hint="Facade for Mongo DB. 90% of calls will go through this comonent.">
 
 <cfscript>
-//This maybe should be a config object
-config = {
-  server_name = 'localhost',
-  server_port = 27017,
-  db_name = 'default_db',
-  collection_name = 'default_collection'	
- };
+config = createObject('component','MongoConfig');
 
 	
 //maybe this goes in super class? Or make factory for returning mongos
 /*--------------------------------------------------------------------
          mongo1 = factory.createMongo(config); 
 --------------------------------------------------------------------*/	
-mongo = createObject('java', 'com.mongodb.Mongo').init( variables.config.server_name , variables.config.server_port );
-db = mongo.getDb(config.db_name);	
-collection = db.getCollection(config.collection_name);
+mongo = createObject('java', 'com.mongodb.Mongo').init( config.defaults.server_name , config.defaults.server_port );
+db = mongo.getDb(config.defaults.db_name);	
+collection = db.getCollection(config.defaults.collection_name);
 expression_builder = createObject('component', 'ExpressionBuilder') ;
 
 
+//Starting to smell ...
 function init(config){
- variables.config = arguments.config;
- mongo = createObject('java', 'com.mongodb.Mongo').init( variables.config.server_name , variables.config.server_port );
+ config.defaults = arguments.config;
+ mongo = createObject('java', 'com.mongodb.Mongo').init( config.defaults.server_name , config.defaults.server_port );
  db = mongo.getDb(config.db_name);	
  collection = db.getCollection(config.collection_name);
  return this;
@@ -63,8 +58,10 @@ function config(){
 
 builder = createObject('component','ExpressionBuilder');
 
+// TO DO: loose the reference to duplicate(this)!!!
+//This has a bad smell ...
 function new_doc(collection_name){
-   var document = createObject('component','MongoDocument').factory_init( collection_name, this );
+   var document = createObject('component','MongoDocument').factory_init( collection_name, duplicate(this) );
    return document;
 }
 	
@@ -101,8 +98,11 @@ function get(field,value){
 
 //when only a string id is available
 function getById(id){
-  var objId = createObject('java','com.mongodb.ObjectId').init(id);
-  return get("_id", objId);
+  var str_id = id;
+  var objId = chr(0);
+  if(isObject(id)) str_id = id.toString();
+  obj_id = createObject('java','com.mongodb.ObjectId').init(str_id);
+  return get("_id", obj_id);
  } //en
 
 
@@ -131,7 +131,6 @@ function delete(o){
 
 //Note the ObjectId object. This creates an ObjectId from
 //the string representation of 
-
 function deleteById(id){
   var objId = createObject('java','com.mongodb.ObjectId').init(id);
   var  obj = get("_id", objId);
@@ -140,7 +139,7 @@ function deleteById(id){
 
 
 function update(o){
-  var obj = get("_id", o._id);
+  var obj = getById( o._id);
   var new_object = createObject('java', 'com.mongodb.BasicDBObject').init(o);
   return collection.update(obj, new_object, false, false);
     
@@ -151,7 +150,6 @@ function update(o){
 //swtich to or create database
 function getDB(db_name){
    variables.db = mongo.getDb(db_name);
-   this.db = mongo.getDb(db_name);
    db = mongo.getDb(db_name);	
    return db;
 }
@@ -179,6 +177,11 @@ function listToStruct(list){
   return s;
 }
 
+
+
+function dbRef(collection_name, id){
+  return createObject('java','com.mongodb.DBRef').init( db, collection_name, id);
+}
 
 /*---------------------------------------------------------
         Expression Builder Wrappers
