@@ -3,23 +3,19 @@
 	
 function dbRefTest(){
   mongo = createObject('component','cfmongodb.components.MongoDB');
-
   db = mongo.getDb('default_db');
-
-    
+   
   prog = mongo.new_doc('programmers');
- //  //should be in mongo wrapper!
   prog.set('name','bill');
   pid = prog.save();
   
   prog2 = mongo.new_doc('programmers');
- //  //should be in mongo wrapper!
   prog2.set('name','pete');
   pid2 = prog2.save();
   
-  //ref = createObject('java','com.mongodb.DBRef').init( db, 'programmers', pid);
   ref1 = mongo.dbRef('programmers', pid);
   ref2 = mongo.dbRef('programmers', pid2);
+  
   refs = [ ref1, ref2 ];
 
   proj = mongo.new_doc('projects');
@@ -27,11 +23,17 @@ function dbRefTest(){
   proj.set('programers', refs);
   
   id = proj.save();
-  debug(id); 
-  debug(proj); 
+  debug(prog); 
+ // debug(proj); 
   
-  progz = proj.get('programers');
-  debug(progz[1].fetch());
+  progz = proj.get('programers'); //getDbRef() ???
+  bill =  progz[1].fetch();
+  debug(bill);
+  
+  assertEquals( 'bill' , bill.get('name') );
+  
+  bill =  progz[1].fetch();
+  assertEquals( 'bill' , bill.get('name'));
   
   proj.delete();
   prog.delete();

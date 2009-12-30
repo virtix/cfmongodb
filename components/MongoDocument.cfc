@@ -94,8 +94,6 @@
 </cffunction>
 
 
-<cffunction name="validate" hint="Should be called before save() to perform any required validation. NOT IMPLEMENTED" returntype="void">
-  
-</cffunction>
+<cffunction name="validate" hint="Should be called before save() to perform any required validation. NOT IMPLEMENTED" returntype="void"></cffunction>
 
 </cfcomponent>

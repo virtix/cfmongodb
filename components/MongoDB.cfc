@@ -58,13 +58,20 @@ function config(){
 
 builder = createObject('component','ExpressionBuilder');
 
-// TO DO: loose the reference to duplicate(this)!!!
-//This has a bad smell ...
+ // TO DO: loose the reference to duplicate(this)!!!
+ // This has a bad smell ...
 function new_doc(collection_name){
    var document = createObject('component','MongoDocument').factory_init( collection_name, duplicate(this) );
    return document;
 }
-	
+
+//Returns a document object based on the model
+function build_doc(model){
+   var document = createObject('component','MongoDocument');
+   document.model = model;
+   return document;
+}
+
 
 function getMongo(){
  return mongo;
