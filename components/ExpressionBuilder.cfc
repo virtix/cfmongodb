@@ -1,4 +1,4 @@
-<cfcomponent>
+<cfcomponent hint="Creates a Domain Specific Language (DSL) for querying MongoDB collections.">
 <cfscript>
   
   /*---------------------------------------------------------------------

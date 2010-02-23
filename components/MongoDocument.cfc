@@ -30,7 +30,7 @@
 </cffunction>
 
 
-<cffunction name="factory_init" hint="Constructor. Creates an instance of a MongoDocument using the specified mongo.">
+<cffunction name="factory_init" access="package" hint="Constructor. Creates an instance of a MongoDocument using the specified mongo.">
   <cfargument name="collection_name" type="string" required="true" hint="The name of the collection to which this document is bound." />
   <cfargument name="_mongo" type="any" required="false" default="#variables.mongo#" hint="The instance of the Mongo wrapper to which the document is bound." />
   <cfset variables.mongo = _mongo />

@@ -19,7 +19,7 @@ Callable
 <SCRIPT type="text/javascript">
 function windowTitle()
 {
-    parent.document.title="MongoDBTest";
+    parent.document.title="ExpressionBuilderTest";
 }
 </SCRIPT>
 <NOSCRIPT>
@@ -74,7 +74,7 @@ CFMongoDB API</EM>
 
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
 	
-	  <A HREF="../../index.html?cfmongodb/test/MongoDBTest.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+	  <A HREF="../../index.html?cfmongodb/test/ExpressionBuilderTest.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 	
 </FONT></TD>
 
@@ -89,7 +89,7 @@ CFMongoDB API</EM>
 <FONT SIZE="-1">
 cfmongodb.test</FONT>
 <BR>
-Class MongoDBTest</H2>
+Class ExpressionBuilderTest</H2>
 
 
 
@@ -139,7 +139,7 @@ Class MongoDBTest</H2>
         <IMG SRC="../../resources/inherit.gif" ALT="extended by ">mxunit.framework.Assert
             <IMG SRC="../../resources/inherit.gif" ALT="extended by ">mxunit.framework.TestCase
                 <IMG SRC="../../resources/inherit.gif" ALT="extended by "><a href="../..//cfmongodb/test/BaseTest.html" title="class in cfmongodb.test">cfmongodb.test.BaseTest</a>
-                    <IMG SRC="../../resources/inherit.gif" ALT="extended by ">cfmongodb.test.MongoDBTest
+                    <IMG SRC="../../resources/inherit.gif" ALT="extended by ">cfmongodb.test.ExpressionBuilderTest
 </PRE>
 
 
@@ -150,7 +150,7 @@ Class MongoDBTest</H2>
 
 
 
-<PRE>public class <B>MongoDBTest</B>
+<PRE>public class <B>ExpressionBuilderTest</B>
 <DT>extends <a href="../..//cfmongodb/test/BaseTest.html" title="class in cfmongodb.test">BaseTest</a></DT></PRE>
 </DT>
 </DL>
@@ -183,7 +183,7 @@ Class MongoDBTest</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;any</CODE></FONT></TD>
-<TD><CODE><B><A HREF="MongoDBTest.html#$buildSearchExpressionWithBuilder()">$buildSearchExpressionWithBuilder</A></B>()</CODE>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#$testAfterDateComparison()">$testAfterDateComparison</A></B>()</CODE>
 <BR>
 
 </TD>
@@ -194,7 +194,7 @@ Class MongoDBTest</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;any</CODE></FONT></TD>
-<TD><CODE><B><A HREF="MongoDBTest.html#$exploreStringSearchExpression()">$exploreStringSearchExpression</A></B>()</CODE>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#$testAfterDateComparisonShouldReturn0()">$testAfterDateComparisonShouldReturn0</A></B>()</CODE>
 <BR>
 
 </TD>
@@ -205,7 +205,7 @@ Class MongoDBTest</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;any</CODE></FONT></TD>
-<TD><CODE><B><A HREF="MongoDBTest.html#$findByExpression()">$findByExpression</A></B>()</CODE>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#$testBeforeDateComparison()">$testBeforeDateComparison</A></B>()</CODE>
 <BR>
 
 </TD>
@@ -216,18 +216,7 @@ Class MongoDBTest</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;any</CODE></FONT></TD>
-<TD><CODE><B><A HREF="MongoDBTest.html#$findByRegEx()">$findByRegEx</A></B>()</CODE>
-<BR>
-
-</TD>
-</TR>
-
-
-
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>package&nbsp;any</CODE></FONT></TD>
-<TD><CODE><B><A HREF="MongoDBTest.html#genBlogData()">genBlogData</A></B>()</CODE>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#$testBeforeDateComparisonShouldReturn0()">$testBeforeDateComparisonShouldReturn0</A></B>()</CODE>
 <BR>
 
 </TD>
@@ -238,7 +227,7 @@ Class MongoDBTest</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;any</CODE></FONT></TD>
-<TD><CODE><B><A HREF="MongoDBTest.html#genDataTest()">genDataTest</A></B>()</CODE>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#$testFluentChain()">$testFluentChain</A></B>()</CODE>
 <BR>
 
 </TD>
@@ -249,7 +238,7 @@ Class MongoDBTest</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;any</CODE></FONT></TD>
-<TD><CODE><B><A HREF="MongoDBTest.html#setUp()">setUp</A></B>()</CODE>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#$testInArray()">$testInArray</A></B>()</CODE>
 <BR>
 
 </TD>
@@ -260,7 +249,194 @@ Class MongoDBTest</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;any</CODE></FONT></TD>
-<TD><CODE><B><A HREF="MongoDBTest.html#tearDown()">tearDown</A></B>()</CODE>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#$testInRange()">$testInRange</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#$testKeys()">$testKeys</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#$testWhereJSExpression()">$testWhereJSExpression</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#setUp()">setUp</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testEndsWith()">testEndsWith</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testEQ()">testEQ</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testExists()">testExists</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testGT()">testGT</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testGTE()">testGTE</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testIn()">testIn</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testInWithStringList()">testInWithStringList</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testLT()">testLT</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testLTE()">testLTE</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testNEQ()">testNEQ</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testNIN()">testNIN</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testNINWithStringList()">testNINWithStringList</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testRegEx()">testRegEx</A></B>()</CODE>
+<BR>
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="ExpressionBuilderTest.html#testStartsWith()">testStartsWith</A></B>()</CODE>
 <BR>
 
 </TD>
@@ -520,6 +696,12 @@ Class MongoDBTest</H2>
 		
 			
 			
+			
+				
+			
+			
+			
+			
 		
 			
 			
@@ -549,7 +731,7 @@ Class MongoDBTest</H2>
 			
 		
 
-		<code>, <a href="../..//mxunit/framework/TestCase.html#addTrace()">addTrace</a><a href="../..//mxunit/framework/TestCase.html#clearDebug()">clearDebug</a>, <a href="../..//mxunit/framework/TestCase.html#createRequestScopeDebug()">createRequestScopeDebug</a>, <a href="../..//mxunit/framework/TestCase.html#createResult()">createResult</a>, <a href="../..//mxunit/framework/TestCase.html#debug()">debug</a>, <a href="../..//mxunit/framework/TestCase.html#dump()">dump</a>, <a href="../..//mxunit/framework/TestCase.html#getDebug()">getDebug</a>, <a href="../..//mxunit/framework/TestCase.html#getDebugWrapper()">getDebugWrapper</a>, <a href="../..//mxunit/framework/TestCase.html#getRunnableMethods()">getRunnableMethods</a>, <a href="../..//mxunit/framework/TestCase.html#getTrace()">getTrace</a>, <a href="../..//mxunit/framework/TestCase.html#initDebug()">initDebug</a>, <a href="../..//mxunit/framework/TestCase.html#initProperties()">initProperties</a>, <a href="../..//mxunit/framework/TestCase.html#injectMethod()">injectMethod</a>, <a href="../..//mxunit/framework/TestCase.html#injectProperty()">injectProperty</a>, <a href="../..//mxunit/framework/TestCase.html#makePublic()">makePublic</a>, <a href="../..//mxunit/framework/TestCase.html#print()">print</a>, <a href="../..//mxunit/framework/TestCase.html#println()">println</a>, <a href="../..//mxunit/framework/TestCase.html#run()">run</a>, <a href="../..//mxunit/framework/TestCase.html#runBare()">runBare</a>, <a href="../..//mxunit/framework/TestCase.html#runTest()">runTest</a>, <a href="../..//mxunit/framework/TestCase.html#runTestRemote()">runTestRemote</a>, <a href="../..//mxunit/framework/TestCase.html#setDebugWrapper()">setDebugWrapper</a>, <a href="../..//mxunit/framework/TestCase.html#stopRequestScopeDebug()">stopRequestScopeDebug</a>, <a href="../..//mxunit/framework/TestCase.html#TestCase()">TestCase</a>, <a href="../..//mxunit/framework/TestCase.html#testIsAcceptable()">testIsAcceptable</a>, <a href="../..//mxunit/framework/TestCase.html#toStringValue()">toStringValue</a></code>
+		<code>, <a href="../..//mxunit/framework/TestCase.html#addTrace()">addTrace</a><a href="../..//mxunit/framework/TestCase.html#clearDebug()">clearDebug</a>, <a href="../..//mxunit/framework/TestCase.html#createRequestScopeDebug()">createRequestScopeDebug</a>, <a href="../..//mxunit/framework/TestCase.html#createResult()">createResult</a>, <a href="../..//mxunit/framework/TestCase.html#debug()">debug</a>, <a href="../..//mxunit/framework/TestCase.html#dump()">dump</a>, <a href="../..//mxunit/framework/TestCase.html#getDebug()">getDebug</a>, <a href="../..//mxunit/framework/TestCase.html#getDebugWrapper()">getDebugWrapper</a>, <a href="../..//mxunit/framework/TestCase.html#getRunnableMethods()">getRunnableMethods</a>, <a href="../..//mxunit/framework/TestCase.html#getTrace()">getTrace</a>, <a href="../..//mxunit/framework/TestCase.html#initDebug()">initDebug</a>, <a href="../..//mxunit/framework/TestCase.html#initProperties()">initProperties</a>, <a href="../..//mxunit/framework/TestCase.html#injectMethod()">injectMethod</a>, <a href="../..//mxunit/framework/TestCase.html#injectProperty()">injectProperty</a>, <a href="../..//mxunit/framework/TestCase.html#makePublic()">makePublic</a>, <a href="../..//mxunit/framework/TestCase.html#print()">print</a>, <a href="../..//mxunit/framework/TestCase.html#println()">println</a>, <a href="../..//mxunit/framework/TestCase.html#run()">run</a>, <a href="../..//mxunit/framework/TestCase.html#runBare()">runBare</a>, <a href="../..//mxunit/framework/TestCase.html#runTest()">runTest</a>, <a href="../..//mxunit/framework/TestCase.html#runTestRemote()">runTestRemote</a>, <a href="../..//mxunit/framework/TestCase.html#setDebugWrapper()">setDebugWrapper</a>, <a href="../..//mxunit/framework/TestCase.html#stopRequestScopeDebug()">stopRequestScopeDebug</a>, <a href="../..//mxunit/framework/TestCase.html#tearDown()">tearDown</a>, <a href="../..//mxunit/framework/TestCase.html#TestCase()">TestCase</a>, <a href="../..//mxunit/framework/TestCase.html#testIsAcceptable()">testIsAcceptable</a>, <a href="../..//mxunit/framework/TestCase.html#toStringValue()">toStringValue</a></code>
 	</td>
 	</tr>
 	</tbody></table>
@@ -805,9 +987,9 @@ Class MongoDBTest</H2>
 </tbody></table>
 
 	
-	<a name="$buildSearchExpressionWithBuilder()"><!-- --></a><h3>
-	$buildSearchExpressionWithBuilder</h3>
-	<code>public any <B>$buildSearchExpressionWithBuilder</B>()</code>
+	<a name="$testAfterDateComparison()"><!-- --></a><h3>
+	$testAfterDateComparison</h3>
+	<code>public any <B>$testAfterDateComparison</B>()</code>
 
 	<dl>
 	<dd>
@@ -825,9 +1007,9 @@ Class MongoDBTest</H2>
 	<hr>
 
 	
-	<a name="$exploreStringSearchExpression()"><!-- --></a><h3>
-	$exploreStringSearchExpression</h3>
-	<code>public any <B>$exploreStringSearchExpression</B>()</code>
+	<a name="$testAfterDateComparisonShouldReturn0()"><!-- --></a><h3>
+	$testAfterDateComparisonShouldReturn0</h3>
+	<code>public any <B>$testAfterDateComparisonShouldReturn0</B>()</code>
 
 	<dl>
 	<dd>
@@ -845,9 +1027,9 @@ Class MongoDBTest</H2>
 	<hr>
 
 	
-	<a name="$findByExpression()"><!-- --></a><h3>
-	$findByExpression</h3>
-	<code>public any <B>$findByExpression</B>()</code>
+	<a name="$testBeforeDateComparison()"><!-- --></a><h3>
+	$testBeforeDateComparison</h3>
+	<code>public any <B>$testBeforeDateComparison</B>()</code>
 
 	<dl>
 	<dd>
@@ -865,9 +1047,9 @@ Class MongoDBTest</H2>
 	<hr>
 
 	
-	<a name="$findByRegEx()"><!-- --></a><h3>
-	$findByRegEx</h3>
-	<code>public any <B>$findByRegEx</B>()</code>
+	<a name="$testBeforeDateComparisonShouldReturn0()"><!-- --></a><h3>
+	$testBeforeDateComparisonShouldReturn0</h3>
+	<code>public any <B>$testBeforeDateComparisonShouldReturn0</B>()</code>
 
 	<dl>
 	<dd>
@@ -885,9 +1067,9 @@ Class MongoDBTest</H2>
 	<hr>
 
 	
-	<a name="genBlogData()"><!-- --></a><h3>
-	genBlogData</h3>
-	<code>package any <B>genBlogData</B>()</code>
+	<a name="$testFluentChain()"><!-- --></a><h3>
+	$testFluentChain</h3>
+	<code>public any <B>$testFluentChain</B>()</code>
 
 	<dl>
 	<dd>
@@ -905,9 +1087,69 @@ Class MongoDBTest</H2>
 	<hr>
 
 	
-	<a name="genDataTest()"><!-- --></a><h3>
-	genDataTest</h3>
-	<code>public any <B>genDataTest</B>()</code>
+	<a name="$testInArray()"><!-- --></a><h3>
+	$testInArray</h3>
+	<code>public any <B>$testInArray</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="$testInRange()"><!-- --></a><h3>
+	$testInRange</h3>
+	<code>public any <B>$testInRange</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="$testKeys()"><!-- --></a><h3>
+	$testKeys</h3>
+	<code>public any <B>$testKeys</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="$testWhereJSExpression()"><!-- --></a><h3>
+	$testWhereJSExpression</h3>
+	<code>public any <B>$testWhereJSExpression</B>()</code>
 
 	<dl>
 	<dd>
@@ -957,9 +1199,9 @@ Class MongoDBTest</H2>
 	<hr>
 
 	
-	<a name="tearDown()"><!-- --></a><h3>
-	tearDown</h3>
-	<code>public any <B>tearDown</B>()</code>
+	<a name="testEndsWith()"><!-- --></a><h3>
+	testEndsWith</h3>
+	<code>public any <B>testEndsWith</B>()</code>
 
 	<dl>
 	<dd>
@@ -969,17 +1211,265 @@ Class MongoDBTest</H2>
 
 	
 	
-	<dl>
-		<dt><b>Overrides:</b></dt>
-		<dd>
-		<code>
-		<a href="../..//mxunit/framework/TestCase.html#tearDown()">tearDown</a></code>
-		in class
-		<code>
-			mxunit.framework.TestCase
-		</code>
-		</dd>
+
+	
+
+	</dd>
 	</dl>
+	<hr>
+
+	
+	<a name="testEQ()"><!-- --></a><h3>
+	testEQ</h3>
+	<code>public any <B>testEQ</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testExists()"><!-- --></a><h3>
+	testExists</h3>
+	<code>public any <B>testExists</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testGT()"><!-- --></a><h3>
+	testGT</h3>
+	<code>public any <B>testGT</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testGTE()"><!-- --></a><h3>
+	testGTE</h3>
+	<code>public any <B>testGTE</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testIn()"><!-- --></a><h3>
+	testIn</h3>
+	<code>public any <B>testIn</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testInWithStringList()"><!-- --></a><h3>
+	testInWithStringList</h3>
+	<code>public any <B>testInWithStringList</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testLT()"><!-- --></a><h3>
+	testLT</h3>
+	<code>public any <B>testLT</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testLTE()"><!-- --></a><h3>
+	testLTE</h3>
+	<code>public any <B>testLTE</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testNEQ()"><!-- --></a><h3>
+	testNEQ</h3>
+	<code>public any <B>testNEQ</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testNIN()"><!-- --></a><h3>
+	testNIN</h3>
+	<code>public any <B>testNIN</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testNINWithStringList()"><!-- --></a><h3>
+	testNINWithStringList</h3>
+	<code>public any <B>testNINWithStringList</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testRegEx()"><!-- --></a><h3>
+	testRegEx</h3>
+	<code>public any <B>testRegEx</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="testStartsWith()"><!-- --></a><h3>
+	testStartsWith</h3>
+	<code>public any <B>testStartsWith</B>()</code>
+
+	<dl>
+	<dd>
+	
+	<p>
+	</p></dd>
+
+	
 	
 
 	
@@ -1034,7 +1524,7 @@ CFMongoDB API</EM>
 
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
 	
-	  <A HREF="../../index.html?cfmongodb/test/MongoDBTest.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+	  <A HREF="../../index.html?cfmongodb/test/ExpressionBuilderTest.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 	
 </FONT></TD>
 
