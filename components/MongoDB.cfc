@@ -1,4 +1,4 @@
-<cfcomponent output="false" hint="Facade for Mongo DB. 90% of calls will go through this comonent.">
+ <cfcomponent output="false" hint="Facade for Mongo DB. 90% of calls will go through this comonent.">
 
 <cfscript>
 //This maybe should be a config object
@@ -6,16 +6,16 @@ config = {
   server_name = 'localhost',
   server_port = 27017,
   db_name = 'default_db',
-  collection_name = 'default_collection'	
+  collection_name = 'default_collection'
  };
 
-	
+
 //maybe this goes in super class? Or make factory for returning mongos
 /*--------------------------------------------------------------------
-         mongo1 = factory.createMongo(config); 
---------------------------------------------------------------------*/	
+         mongo1 = factory.createMongo(config);
+--------------------------------------------------------------------*/
 mongo = createObject('java', 'com.mongodb.Mongo').init( variables.config.server_name , variables.config.server_port );
-db = mongo.getDb(config.db_name);	
+db = mongo.getDb(config.db_name);
 collection = db.getCollection(config.collection_name);
 expression_builder = createObject('component', 'ExpressionBuilder') ;
 
@@ -23,7 +23,7 @@ expression_builder = createObject('component', 'ExpressionBuilder') ;
 function init(config){
  variables.config = arguments.config;
  mongo = createObject('java', 'com.mongodb.Mongo').init( variables.config.server_name , variables.config.server_port );
- db = mongo.getDb(config.db_name);	
+ db = mongo.getDb(config.db_name);
  collection = db.getCollection(config.collection_name);
  return this;
 }
@@ -34,9 +34,9 @@ function config(){
 }
 
   /*---------------------------------------------------------------------
-  
-    DSL for MongoDB searches:   
-    
+
+    DSL for MongoDB searches:
+
     results = mongo.collection('blog').
                     startsWith('name','foo').  //string
                     endsWith('title','bar').   //string
@@ -55,10 +55,10 @@ function config(){
                     search('title,author,date', limit, start);
 
     search(keys=list_of_keys_to_return,sort={field=direction},limit=num,start=num);
-    
 
-  
-  
+
+
+
 -------------------------------------------------------------------------------------*/
 
 builder = createObject('component','ExpressionBuilder');
@@ -67,7 +67,7 @@ function new_doc(collection_name){
    var document = createObject('component','MongoDocument').factory_init( collection_name, this );
    return document;
 }
-	
+
 
 function getMongo(){
  return mongo;
@@ -81,7 +81,7 @@ function add(key,value,o){
 /**
 * @param o string
 */
-function put(o){ 
+function put(o){
  var doc =  createObject('java', 'com.mongodb.BasicDBObject').init();
  var id = chr(0);
   doc.putAll(o);
@@ -118,8 +118,8 @@ function findOne(){
 
 function findAll(){
    var sort = {pub_date = -1};
-   var sort_spec =  createObject('java', 'com.mongodb.BasicDBObject').init(sort);	
-   return collection.find().sort( sort_spec ).toArray(); 
+   var sort_spec =  createObject('java', 'com.mongodb.BasicDBObject').init(sort);
+   return collection.find().sort( sort_spec ).toArray();
 } //end function
 
 
@@ -130,7 +130,7 @@ function delete(o){
 
 
 //Note the ObjectId object. This creates an ObjectId from
-//the string representation of 
+//the string representation of
 
 function deleteById(id){
   var objId = createObject('java','com.mongodb.ObjectId').init(id);
@@ -143,7 +143,7 @@ function update(o){
   var obj = get("_id", o._id);
   var new_object = createObject('java', 'com.mongodb.BasicDBObject').init(o);
   return collection.update(obj, new_object, false, false);
-    
+
 } //end function
 
 
@@ -152,7 +152,7 @@ function update(o){
 function getDB(db_name){
    variables.db = mongo.getDb(db_name);
    this.db = mongo.getDb(db_name);
-   db = mongo.getDb(db_name);	
+   db = mongo.getDb(db_name);
    return db;
 }
 
@@ -286,7 +286,7 @@ function after(element,val){
    var key_exp = listToStruct(arguments.keys);
    var _keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
    var search_results = [];
-   var criteria = expression_builder.get(); 
+   var criteria = expression_builder.get();
    var q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
    search_results = collection.find(q,_keys).limit(limit);
    return search_results;
