@@ -30,7 +30,7 @@
 </cffunction>
 
 
-<cffunction name="factory_init" hint="Constructor. Creates an instance of a MongoDocument using the specified mongo.">
+<cffunction name="factory_init" access="package" hint="Constructor. Creates an instance of a MongoDocument using the specified mongo.">
   <cfargument name="collection_name" type="string" required="true" hint="The name of the collection to which this document is bound." />
   <cfargument name="_mongo" type="any" required="false" default="#variables.mongo#" hint="The instance of the Mongo wrapper to which the document is bound." />
   <cfset variables.mongo = _mongo />
@@ -75,26 +75,25 @@
   <cfset var o_id = '' />
   <cfset validate() />
   <cfset o_id = mongo.put(this.model) />
-  <cfset this.model['_id'] = o_id.toString() /> 
+  <cfset this.model['_id'] = o_id /> 
   <cfreturn o_id />
 </cffunction>
 
 
 <cffunction name="delete" returntype="void" hint="Deletes this Document from the Collection">
-  <cfset mongo.deleteById(this.model['_id']) />
+  <cfset mongo.delete(this.model) />
 </cffunction>
 
 
+<!--- To Do: Update in-place using obj.update(property,value) --->
 <cffunction name="update"  hint="Performs in-place update of the the value for 'property'. NOT IMPLEMENTED">
- <cfargument name="property">
- <cfargument name="value">
-  <cfset validate() />
- <cfthrow type="NotImplementedException" message="To Do.">
+ <cfargument name="property" required="false" />
+ <cfargument name="value"  required="false" />
+ <cfset validate() />
+ <cfset variables.mongo.update(this.model) />
 </cffunction>
 
 
-<cffunction name="validate" hint="Should be called before save() to perform any required validation. NOT IMPLEMENTED" returntype="void">
-  
-</cffunction>
+<cffunction name="validate" hint="Should be called before save() to perform any required validation. NOT IMPLEMENTED" returntype="void"></cffunction>
 
 </cfcomponent>

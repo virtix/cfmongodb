@@ -1,6 +1,7 @@
 <cfcomponent output="false" hint="Main configuration information for MongoDb connections. Defaults are provided, but should be changed as needed. ">
 <cfscript>
-	
+ //To Do: Add various deployment environments: dev,test,stagging, production...
+ 
  //Default values
  this.defaults = {
   server_name = 'localhost',

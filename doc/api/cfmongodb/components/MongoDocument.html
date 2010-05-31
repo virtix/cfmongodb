@@ -19,7 +19,7 @@ Callable
 <SCRIPT type="text/javascript">
 function windowTitle()
 {
-    parent.document.title="-";
+    parent.document.title="MongoDocument";
 }
 </SCRIPT>
 <NOSCRIPT>
@@ -74,7 +74,7 @@ CFMongoDB API</EM>
 
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
 	
-	  <A HREF="../../index.html?cfmongodb/components/-.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+	  <A HREF="../../index.html?cfmongodb/components/MongoDocument.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 	
 </FONT></TD>
 
@@ -89,7 +89,7 @@ CFMongoDB API</EM>
 <FONT SIZE="-1">
 cfmongodb.components</FONT>
 <BR>
-Class -</H2>
+Class MongoDocument</H2>
 
 
 
@@ -102,10 +102,35 @@ Class -</H2>
 	
 	
 
+	
+		
+		
+			
+		
+	
+	
 
-<PRE>cfmongodb.components.IDocument
+
+<PRE>railo-context.Component
+        <IMG SRC="../../resources/inherit.gif" ALT="extended by ">cfmongodb.components.MongoDocument
 </PRE>
 
+
+<DL>
+<DT><B>Direct Known Subclasses:</B>
+<DD>
+	
+		
+		<A HREF="../..//cfmongodb/test/fixture/MyMongoDocument.html" title="class in cfmongodb.components">MyMongoDocument</A>
+	
+		,
+		<A HREF="../..//cfmongodb/test/fixture/PersonModel.html" title="class in cfmongodb.components">PersonModel</A>
+	
+		,
+		<A HREF="../..//cfmongodb/test/fixture/SomeCFCWithProperties.html" title="class in cfmongodb.components">SomeCFCWithProperties</A>
+	
+</DD>
+</DL>
 
 
 <HR>
@@ -114,14 +139,14 @@ Class -</H2>
 
 
 
-<PRE>public class <B>-</B>
-</PRE>
+<PRE>public class <B>MongoDocument</B>
+<DT>extends railo-context.Component</DT></PRE>
 </DT>
 </DL>
 
 
 <P>
-	All MongoDB Documents should implement this interface. Basic ColdFusion structures can also be saved to the datastore. But from an OO design perspective, it's a good practice to implement this interface
+	Default implementation of IDocument and used by the Mongo class to generate a document.
 <P>
 
 
@@ -131,6 +156,29 @@ Class -</H2>
 
 
 
+
+	
+	
+	<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+	<A NAME="constructor_summary"><!-- --></A>
+	<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+	<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+	<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+	<B>Constructor Summary</B></FONT></TH>
+	</TR>
+	<TR BGCOLOR="white" CLASS="TableRowColor">
+	
+	<TD>
+		<CODE><B><A HREF="MongoDocument.html#init()">init</A></B>(string collection_name)</CODE>
+	<BR>
+	
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constructor2 - pushes CFPROPERTIES to internal MODEL, which is staged for persitence in datastore.
+	
+	</TD>
+	</TR>
+	</TABLE>
+	&nbsp;
 
 
 
@@ -150,8 +198,34 @@ Class -</H2>
 
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="MongoDocument.html#delete()">delete</A></B>()</CODE>
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Deletes this Document from the Collection
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>package&nbsp;any</CODE></FONT></TD>
+<TD><CODE><B><A HREF="MongoDocument.html#factory_init()">factory_init</A></B>(string collection_name, [any _mongo='[runtime expression]'])</CODE>
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constructor. Creates an instance of a MongoDocument using the specified mongo.
+
+</TD>
+</TR>
+
+
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;any</CODE></FONT></TD>
-<TD><CODE><B><A HREF="-.html#get()">get</A></B>([any property])</CODE>
+<TD><CODE><B><A HREF="MongoDocument.html#get()">get</A></B>([any property])</CODE>
 <BR>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetches the value of the given property. Returns null if not found.
@@ -164,8 +238,10 @@ Class -</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="-.html#remove()">remove</A></B>([any property])</CODE>
+<TD><CODE><B><A HREF="MongoDocument.html#remove()">remove</A></B>([any property])</CODE>
 <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Removes a property form a Document. **NOT IMPLEMENTED**
 
 </TD>
 </TR>
@@ -175,10 +251,8 @@ Class -</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;string</CODE></FONT></TD>
-<TD><CODE><B><A HREF="-.html#save()">save</A></B>()</CODE>
+<TD><CODE><B><A HREF="MongoDocument.html#save()">save</A></B>()</CODE>
 <BR>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Commits this Document instance to the datastore and returns an ID
 
 </TD>
 </TR>
@@ -188,7 +262,7 @@ Class -</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="-.html#set()">set</A></B>([String property], [Any value])</CODE>
+<TD><CODE><B><A HREF="MongoDocument.html#set()">set</A></B>([String property], [Any value])</CODE>
 <BR>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets a  property for the Document
@@ -201,10 +275,8 @@ Class -</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;any</CODE></FONT></TD>
-<TD><CODE><B><A HREF="-.html#setCollection()">setCollection</A></B>()</CODE>
+<TD><CODE><B><A HREF="MongoDocument.html#setCollection()">setCollection</A></B>()</CODE>
 <BR>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the collection to which this Document instance belongs. This should be called prior to any other operations. If not, the default Collection, if any, will be the container for this Document.
 
 </TD>
 </TR>
@@ -214,10 +286,10 @@ Class -</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;any</CODE></FONT></TD>
-<TD><CODE><B><A HREF="-.html#update()">update</A></B>([any property], [any value])</CODE>
+<TD><CODE><B><A HREF="MongoDocument.html#update()">update</A></B>([any property], [any value])</CODE>
 <BR>
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Performs in-place updating - Instead of retrieving and updating every item within a document, this method is more efficient, allowing for 'Cherry Picking' of specific data elements to update. 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Performs in-place update of the the value for 'property'. NOT IMPLEMENTED
 
 </TD>
 </TR>
@@ -227,10 +299,10 @@ Class -</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="-.html#validate()">validate</A></B>()</CODE>
+<TD><CODE><B><A HREF="MongoDocument.html#validate()">validate</A></B>()</CODE>
 <BR>
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Should be called before save()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Should be called before save() to perform any required validation. NOT IMPLEMENTED
 
 </TD>
 </TR>
@@ -243,9 +315,64 @@ Class -</H2>
 
 
 
+	
+
+	
+
+	&nbsp;
+	<a name="methods_inherited_from_class_railo-context.Component"><!-- --></a>
+	<table summary="" border="1" cellpadding="3" cellspacing="0" width="100%">
+	<tbody><tr class="TableSubHeadingColor" bgcolor="#eeeeff">
+	<th align="left"><b>Methods inherited from class railo-context.Component</b></th>
+	</tr>
+	<tr class="TableRowColor" bgcolor="white">
+	<td>
+		
+		
+		
+
+		<code></code>
+	</td>
+	</tr>
+	</tbody></table>
+
 
 &nbsp;
 <P>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+<a name="constructor_detail"><!-- --></a>
+</p><table summary="" border="1" cellpadding="3" cellspacing="0" width="100%">
+<tbody><tr class="TableHeadingColor" bgcolor="#ccccff">
+<th colspan="1" align="left"><font size="+2">
+<b>Constructor Detail</b></font></th>
+</tr>
+</tbody></table>
+
+<a name="init()"><!-- --></a><h3>
+
+init</h3>
+<CODE>public <B>init</B>(string collection_name)</CODE>
+<dl>
+<dd>
+
+Constructor2 - pushes CFPROPERTIES to internal MODEL, which is staged for persitence in datastore.
+
+<p>
+</p>
+
+<dl>
+<dt><b>Parameters:</b></dt>
+
+<dd><code>collection_name</code> - The name of the collection to which this document is bound.</dd>
+
+</dl>
+
+
+</dd></dl>
 
 
 
@@ -263,6 +390,59 @@ Class -</H2>
 <b>Method Detail</b></font></th>
 </tr>
 </tbody></table>
+
+	
+	<a name="delete()"><!-- --></a><h3>
+	delete</h3>
+	<code>public void <B>delete</B>()</code>
+
+	<dl>
+	<dd>
+	
+	Deletes this Document from the Collection
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+
+	</dd>
+	</dl>
+	<hr>
+
+	
+	<a name="factory_init()"><!-- --></a><h3>
+	factory_init</h3>
+	<code>package any <B>factory_init</B>(string collection_name, [any _mongo='[runtime expression]'])</code>
+
+	<dl>
+	<dd>
+	
+	Constructor. Creates an instance of a MongoDocument using the specified mongo.
+	
+	<p>
+	</p></dd>
+
+	
+	
+
+	
+	<dl>
+	<dt><b>Parameters:</b></dt>
+	
+	<dd><code>collection_name</code> - The name of the collection to which this document is bound.</dd>
+	
+	<dd><code>_mongo</code> - The instance of the Mongo wrapper to which the document is bound.</dd>
+	
+	</dl>
+	
+
+	</dd>
+	</dl>
+	<hr>
 
 	
 	<a name="get()"><!-- --></a><h3>
@@ -301,6 +481,8 @@ Class -</H2>
 	<dl>
 	<dd>
 	
+	Removes a property form a Document. **NOT IMPLEMENTED**
+	
 	<p>
 	</p></dd>
 
@@ -327,8 +509,6 @@ Class -</H2>
 
 	<dl>
 	<dd>
-	
-	Commits this Document instance to the datastore and returns an ID
 	
 	<p>
 	</p></dd>
@@ -381,8 +561,6 @@ Class -</H2>
 	<dl>
 	<dd>
 	
-	Sets the collection to which this Document instance belongs. This should be called prior to any other operations. If not, the default Collection, if any, will be the container for this Document.
-	
 	<p>
 	</p></dd>
 
@@ -403,7 +581,7 @@ Class -</H2>
 	<dl>
 	<dd>
 	
-	Performs in-place updating - Instead of retrieving and updating every item within a document, this method is more efficient, allowing for 'Cherry Picking' of specific data elements to update. 
+	Performs in-place update of the the value for 'property'. NOT IMPLEMENTED
 	
 	<p>
 	</p></dd>
@@ -434,7 +612,7 @@ Class -</H2>
 	<dl>
 	<dd>
 	
-	Should be called before save()
+	Should be called before save() to perform any required validation. NOT IMPLEMENTED
 	
 	<p>
 	</p></dd>
@@ -494,7 +672,7 @@ CFMongoDB API</EM>
 
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
 	
-	  <A HREF="../../index.html?cfmongodb/components/-.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+	  <A HREF="../../index.html?cfmongodb/components/MongoDocument.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 	
 </FONT></TD>
 

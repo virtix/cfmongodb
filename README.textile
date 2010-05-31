@@ -22,5 +22,9 @@ Collaboration is welcome.
 
 
 
+h2. CFMongoDB - An Object Mapper for MongoDB and ColdFusion
 
+This is the current development branch (0.9) and should be rolled into master at some point.
+
+Please contact me with any questions or if you're want to collaborate. virtix at gmail 
 
