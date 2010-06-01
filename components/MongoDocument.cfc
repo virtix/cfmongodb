@@ -1,4 +1,4 @@
-<cfcomponent implements="IDocument" output="false" hint="Default implementation of IDocument and used by the Mongo class to generate a document.">
+<cfcomponent extends="MongoBase" implements="IDocument" output="false" hint="Default implementation of IDocument and used by the Mongo class to generate a document.">
 
 <cfproperty name="name" default="__DEFAULT_BLANK__"  />
 
@@ -26,7 +26,7 @@
     }
     variables.mongo.collection(collection_name);
   </cfscript>
-  <cfreturn this /> 
+  <cfreturn this />
 </cffunction>
 
 
@@ -35,7 +35,7 @@
   <cfargument name="_mongo" type="any" required="false" default="#variables.mongo#" hint="The instance of the Mongo wrapper to which the document is bound." />
   <cfset variables.mongo = _mongo />
   <cfset variables.mongo.collection(collection_name) />
-  <cfreturn this /> 
+  <cfreturn this />
 </cffunction>
 
 
@@ -75,7 +75,7 @@
   <cfset var o_id = '' />
   <cfset validate() />
   <cfset o_id = mongo.put(this.model) />
-  <cfset this.model['_id'] = o_id.toString() /> 
+  <cfset this.model['_id'] = o_id.toString() />
   <cfreturn o_id />
 </cffunction>
 
@@ -94,7 +94,7 @@
 
 
 <cffunction name="validate" hint="Should be called before save() to perform any required validation. NOT IMPLEMENTED" returntype="void">
-  
+
 </cffunction>
 
 </cfcomponent>

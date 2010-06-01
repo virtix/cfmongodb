@@ -1,4 +1,4 @@
-<cfcomponent output="false" implements="IDocument" hint="Default implementation of IDocument and used by the Mongo class to generate a document.">
+<cfcomponent extends="MongoBase" output="false" implements="IDocument" hint="Default implementation of IDocument and used by the Mongo class to generate a document.">
 
 <cfset this.__props__ =  structNew() />
 <cfset variables.mongo = createObject('component', 'MongoDB') />
@@ -9,7 +9,7 @@
     <cfargument name="_mongo" type="any" required="false" default="#variables.mongo#" hint="The instance of the Mongo wrapper to which the document is bound." />
     <cfset variables.mongo.collection(collection_name) />
 	<cfset variables.mongo = _mongo />
-	<cfreturn this /> 
+	<cfreturn this />
 </cffunction>
 
 
