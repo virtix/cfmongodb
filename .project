@@ -1,3 +1,4 @@
+<<<<<<< HEAD:.project
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>cfmongodb</name>
@@ -9,3 +10,18 @@
 	<natures>
 	</natures>
 </projectDescription>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>cfmongodb</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+		<nature>com.adobe.ide.coldfusion.projectNature</nature>
+		<nature>org.cfeclipse.cfml.CFENature</nature>
+	</natures>
+</projectDescription>
+>>>>>>> 55e861e72919aa660874119e751de4e0fd3730b3:.project

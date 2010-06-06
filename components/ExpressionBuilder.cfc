@@ -1,18 +1,18 @@
-<cfcomponent hint="Creates a Domain Specific Language (DSL) for querying MongoDB collections.">
+<cfcomponent extends="MongoBase">
 <cfscript>
-  
+
   /*---------------------------------------------------------------------
-  
-    DSL for MongoDB searches:   
-    
+
+    DSL for MongoDB searches:
+
     mongo.expressionBuilder().
-    
+
     results = mongo.startsWith('name','foo'). //string
                     endsWith('title','bar').  //string
                     exists('field','value').  //string
 					regex('field','value').   //string
                     eq('field','value').      //numeric
-                    lt('field','value').      //numeric 
+                    lt('field','value').      //numeric
                     gt('field','value').      //numeric
                     gte('field','value').     //numeric
                     lte('field','value').     //numeric
@@ -25,14 +25,30 @@
                     search('title,author,date', limit, start);
 
     search(keys=[keys_to_return],limit=num,start=num);
-    
 
-  
-  
+
+
+
 -------------------------------------------------------------------------------------*/
 
 builder = createObject('java', 'com.mongodb.BasicDBObjectBuilder').start();
 pattern = createObject('java', 'java.util.regex.Pattern');
+
+function builder(){
+  return builder;
+}
+
+function start(){
+  builder.start();
+  return this;
+}
+
+function get(){
+  var g = builder.get();
+  start();//ensure we clear out any previous additions; otherwise, future queries with this same object would be screwy
+  return g;
+}
+
 
 function startsWith(element, val){
   var regex = val & '.*';
@@ -58,20 +74,6 @@ function regex(element, val){
   var regex = val;
   builder.add( element, pattern.compile(regex) );
   return this;
-}
-
-
-function builder(){
-  return builder;
-}
-
-function start(){
-  builder.start();
-  return this;
-}
-
-function get(){
-  return builder.get();
 }
 
 
@@ -133,7 +135,7 @@ function $gte(element,val){
 <cffunction name="before">
   <cfargument name="element" type="string" />
   <cfargument name="val" type="date" />
-   <cfscript>  
+   <cfscript>
   		var exp = {};
   		var  date = parseDateTime(val);
   		exp['$lte'] = date;
@@ -146,7 +148,7 @@ function $gte(element,val){
 <cffunction name="after">
   <cfargument name="element" type="string" />
   <cfargument name="val" type="date" />
-   <cfscript>  
+   <cfscript>
   		var exp = {};
   		var  date = parseDateTime(val);
   		exp['$gte'] = date;
@@ -155,7 +157,7 @@ function $gte(element,val){
   	</cfscript>
 </cffunction>
 
-<!--- 
+<!---
 Note to self: Using cffunction here because of the ability/need to cast
 arbitrary numeric data to java without using JavaCast. CFARGUMENT takes care
 of that. CF9 might too, but most folks are still < CF9.
@@ -167,7 +169,7 @@ But, this also proved to be a very good refactor.
 	<cfargument name="element" type="string" hint="The element in the document we're searching"/>
     <cfargument name="val" type="numeric" hint="The comparative value of the element" />
 	<cfargument name="type" type="string" hint="$gt,$lt,etc. The operators - <><=>= ..." />
-	<cfscript>  
+	<cfscript>
   		var exp = {};
   		exp[type] = val;
   		builder.add( element, exp );
@@ -179,7 +181,7 @@ But, this also proved to be a very good refactor.
 	<cfargument name="element" type="string" hint="The array element in the document we're searching"/>
     <cfargument name="val" type="array" hint="The value(s) of an element in the array" />
 	<cfargument name="type" type="string" hint="$in,$nin,etc." />
-	<cfscript>  
+	<cfscript>
   		var exp = {};
   		exp[type] = val;
   		builder.add( element, exp );

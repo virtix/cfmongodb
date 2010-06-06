@@ -1,4 +1,4 @@
-<cfcomponent implements="IDocument" output="false" hint="Default implementation of IDocument and used by the Mongo class to generate a document.">
+<cfcomponent extends="MongoBase" implements="IDocument" output="false" hint="Default implementation of IDocument and used by the Mongo class to generate a document.">
 
 <cfproperty name="name" default="__DEFAULT_BLANK__"  />
 
@@ -26,16 +26,16 @@
     }
     variables.mongo.collection(collection_name);
   </cfscript>
-  <cfreturn this /> 
+  <cfreturn this />
 </cffunction>
 
 
-<cffunction name="factory_init" access="package" hint="Constructor. Creates an instance of a MongoDocument using the specified mongo.">
+<cffunction name="factory_init" hint="Constructor. Creates an instance of a MongoDocument using the specified mongo.">
   <cfargument name="collection_name" type="string" required="true" hint="The name of the collection to which this document is bound." />
   <cfargument name="_mongo" type="any" required="false" default="#variables.mongo#" hint="The instance of the Mongo wrapper to which the document is bound." />
   <cfset variables.mongo = _mongo />
   <cfset variables.mongo.collection(collection_name) />
-  <cfreturn this /> 
+  <cfreturn this />
 </cffunction>
 
 
@@ -75,25 +75,26 @@
   <cfset var o_id = '' />
   <cfset validate() />
   <cfset o_id = mongo.put(this.model) />
-  <cfset this.model['_id'] = o_id /> 
+  <cfset this.model['_id'] = o_id.toString() />
   <cfreturn o_id />
 </cffunction>
 
 
 <cffunction name="delete" returntype="void" hint="Deletes this Document from the Collection">
-  <cfset mongo.delete(this.model) />
+  <cfset mongo.deleteById(this.model['_id']) />
 </cffunction>
 
 
-<!--- To Do: Update in-place using obj.update(property,value) --->
 <cffunction name="update"  hint="Performs in-place update of the the value for 'property'. NOT IMPLEMENTED">
- <cfargument name="property" required="false" />
- <cfargument name="value"  required="false" />
- <cfset validate() />
- <cfset variables.mongo.update(this.model) />
+ <cfargument name="property">
+ <cfargument name="value">
+  <cfset validate() />
+ <cfthrow type="NotImplementedException" message="To Do.">
 </cffunction>
 
 
-<cffunction name="validate" hint="Should be called before save() to perform any required validation. NOT IMPLEMENTED" returntype="void"></cffunction>
+<cffunction name="validate" hint="Should be called before save() to perform any required validation. NOT IMPLEMENTED" returntype="void">
+
+</cffunction>
 
 </cfcomponent>
