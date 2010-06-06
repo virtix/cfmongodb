@@ -86,8 +86,8 @@ function add(key,value,o){
 * @param o string
 */
 function put(o){ 
- var doc =  createObject('java', 'com.mongodb.BasicDBObject').init();
- var id = chr(0);
+ var doc =  createObject('java', 'com.mongodb.BasicDBObject');
+ var id = '';
   doc.putAll(o);
   id = collection.insert(doc).get("_id");
   o._id = id; //add the _id object to the struct

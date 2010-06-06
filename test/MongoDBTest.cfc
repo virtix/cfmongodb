@@ -82,7 +82,7 @@
  
   function genDataTest(){
     // uncomment next line to generate data :
-	// genBlogData() ;
+	genBlogData() ;
   }
   
    
