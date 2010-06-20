@@ -7,5 +7,6 @@
 	<buildSpec>
 	</buildSpec>
 	<natures>
+		<nature>org.cfeclipse.cfml.CFENature</nature>
 	</natures>
 </projectDescription>
