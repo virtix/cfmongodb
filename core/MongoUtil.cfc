@@ -1,0 +1,5 @@
+<cfcomponent>
+<cfscript>
+
+</cfscript>
+</cfcomponent>
