@@ -3,6 +3,9 @@
 <cfscript>
 import cfmongodb.core.*;
 mongo = createObject('component','cfmongodb.core.Mongo');
+mongoConfig = createObject('component','cfmongodb.core.MongoConfig');
+
+
 col = 'my_collection';
 doc = {
     'name'='joe-joe',
@@ -80,6 +83,20 @@ function testGetMongo(){
   assertIsTypeOf( mongo, "cfmongodb.core.Mongo" );
 }
 
+function getMongo_should_return_underlying_java_Mongo(){
+	var jMongo = mongo.getMongo();
+	assertEquals("com.mongodb.Mongo",jMongo.getClass().getCanonicalName());
+}
+
+function getMongoDB_should_return_underlying_java_MongoDB(){
+	var jMongoDB = mongo.getMongoDB(mongoConfig);
+	assertEquals("com.mongodb.DBApiLayer",jMongoDB.getClass().getCanonicalName());
+}
+
+function getMongoDBCollection_should_return_underlying_java_DBCollection(){
+	var jColl = mongo.getMongoDBCollection(mongoConfig,'my_collection');
+	assertEquals("com.mongodb.DBApiLayer.mycollection",jColl.getClass().getCanonicalName());
+}
 
  </cfscript>
 </cfcomponent>
