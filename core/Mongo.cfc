@@ -1,8 +1,14 @@
 <cfcomponent>
 <cfscript>
+
 util = new MongoUtil();
 
-public any function save(struct doc, string coll, mongoConfig=""){
+function init(MongoConfig="#createObject('MongoConfig')#"){	
+	variables.config = arguments.MongoConfig;	
+	return this;
+}
+
+function save(struct doc, string coll, mongoConfig=""){
    var collection = getMongoDBCollection(mongoConfig,coll);
    var bdbo =  util.newDBObjectFromStruct(doc);
    collection.insert(bdbo);
@@ -10,7 +16,7 @@ public any function save(struct doc, string coll, mongoConfig=""){
 }
 
 
-public any function query(string coll, mongoConfig=""){
+function query(string coll, mongoConfig=""){
    var db = getMongoDB(mongoConfig);
    return new SearchBuilder(coll,db);
 }
@@ -18,10 +24,8 @@ public any function query(string coll, mongoConfig=""){
 
 function update(doc,coll,mongoConfig=""){
    var collection = getMongoDBCollection(mongoConfig,coll);
-   var id = doc['_id'].toString();
-   var oid = createObject("java","com.mongodb.ObjectId").init(id);
-   var crit = createObject("java","com.mongodb.BasicDBObject").init('_id',oid);
-   var dbo = createObject("java","com.mongodb.BasicDBObject").init(doc);
+   var crit = util.newIDCriteriaObject(doc['_id'].toString());
+   var dbo = util.newDBObjectFromStruct(doc);
    collection.update( crit, dbo );
 } //end function
 
@@ -29,13 +33,15 @@ function update(doc,coll,mongoConfig=""){
 
 function remove(doc,coll,mongoConfig=""){
    var collection = getMongoDBCollection(mongoConfig,coll);
-   var dbo = createObject("java","com.mongodb.BasicDBObject").init(doc);
+   var dbo = util.newDBObjectFromStruct(doc);
    collection.remove( dbo );
 } //end function
 
+
+//decide whether to use the one in the variables scope, the one being passed around as arguments, or create a new one
 function getMongoConfig(MongoConfig=""){
 	if(isSimpleValue(arguments.MongoConfig)){
-		MongoConfig = new MongoConfig();	
+		MongoConfig = variables.config;
 	}
 	return MongoConfig;
 }
