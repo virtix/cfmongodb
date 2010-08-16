@@ -30,7 +30,7 @@
 	function toJavaType(value){
 		if(not isNumeric(value) AND isBoolean(value)) return javacast("boolean",value);
 		if(isNumeric(value) and find(".",value)) return javacast("double",value);
-		if(isNumeric(value)) return javacast("int",value);
+		if(isNumeric(value)) return javacast("long",value);
 		return value;
 	}
 

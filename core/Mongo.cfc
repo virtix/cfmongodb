@@ -12,7 +12,10 @@ function save(struct doc, string coll, mongoConfig=""){
    var collection = getMongoDBCollection(mongoConfig,coll);
    var bdbo =  util.newDBObjectFromStruct(doc);
    collection.insert(bdbo);
-   return collection.findOne(bdbo).get("_id");
+   
+   var _id = bdbo.get("_id").toString();
+   doc["_id"] = _id;
+   return _id;
 }
 
 
