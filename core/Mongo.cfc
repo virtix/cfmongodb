@@ -5,6 +5,9 @@ util = new MongoUtil();
 
 function init(MongoConfig="#createObject('MongoConfig')#"){	
 	variables.config = arguments.MongoConfig;	
+	variables.mongo = createObject('java', 'com.mongodb.Mongo');
+	var cfg = variables.config.getDefaults();
+	variables.mongo.init(cfg.server_name,cfg.server_port);
 	return this;
 }
 
@@ -13,7 +16,7 @@ function save(struct doc, string coll, mongoConfig=""){
    var bdbo =  util.newDBObjectFromStruct(doc);
    collection.insert(bdbo);
    
-   var _id = bdbo.get("_id").toString();
+   var _id = bdbo.get("_id");
    doc["_id"] = _id;
    return _id;
 }
@@ -51,10 +54,7 @@ function getMongoConfig(MongoConfig=""){
 
 /* Provide access to the most common java objects */
 function getMongo(MongoConfig=""){
-	var jMongo = createObject('java', 'com.mongodb.Mongo');
-	var config = getMongoConfig(MongoConfig).getDefaults();
-	jMongo.init(config.server_name,config.server_port);
-	return jMongo;
+	return variables.mongo;
 }
 
 function getMongoDB(MongoConfig=""){
