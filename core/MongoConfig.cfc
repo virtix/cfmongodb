@@ -1,5 +1,11 @@
 <cfcomponent output="false" hint="Main configuration information for MongoDb connections. Defaults are provided, but should be changed as needed. ">
 <cfscript>
+ variables.conf = {};
+ 
+ public struct function init(server_name='localhost',server_port='27017',db_name='default_db'){
+ 	setDefaults( argumentcollection = arguments );
+ 	return this;
+ }
  
  public struct function setDefaults(server_name='localhost',server_port='27017',db_name='default_db'){
  	structAppend(conf.defaults,arguments);
@@ -14,7 +20,6 @@
  public struct function getProductionDefaults(){ return conf.prod_defaults; }
  
 
- variables.conf = {};
  
  //Default values for server, port, database, and collection
  conf.defaults = {
