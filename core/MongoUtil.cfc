@@ -3,7 +3,7 @@
 	function newDBObject(){
 		return createObject('java', 'com.mongodb.BasicDBObject');
 	}
-	
+
 	function newDBObjectFromStruct(Struct data){
 		var key = "";
 		var dbo = newDBObject();
@@ -14,9 +14,9 @@
 	}
 
 	function newObjectIDFromID(String id){
-		return createObject("java","com.mongodb.ObjectId").init(id);
+		return createObject("java","org.bson.types.ObjectId").init(id);
 	}
-	
+
 	function newIDCriteriaObject(String id){
 		return newDBObject().init("_id",newObjectIDFromID(id));
 	}

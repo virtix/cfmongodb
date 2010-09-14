@@ -3,8 +3,8 @@
 
 util = new MongoUtil();
 
-function init(MongoConfig="#createObject('MongoConfig')#"){	
-	variables.config = arguments.MongoConfig;	
+function init(MongoConfig="#createObject('MongoConfig')#"){
+	variables.config = arguments.MongoConfig;
 	variables.mongo = createObject('java', 'com.mongodb.Mongo');
 	var cfg = variables.config.getDefaults();
 	variables.mongo.init(cfg.server_name,cfg.server_port);
@@ -14,9 +14,10 @@ function init(MongoConfig="#createObject('MongoConfig')#"){
 function save(struct doc, string coll, mongoConfig=""){
    var collection = getMongoDBCollection(mongoConfig,coll);
    var bdbo =  util.newDBObjectFromStruct(doc);
-   collection.insert(bdbo);
-   
+   collection.insert([bdbo]);
+
    var _id = bdbo.get("_id");
+   request.debug(_id);
    doc["_id"] = _id;
    return _id;
 }
