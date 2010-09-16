@@ -96,6 +96,11 @@ function testGetIndexes(){
 	assertTrue( arrayLen(result) GT 1, "Should be at least 2: 1 for the _id, and one for the index we just added");
 }
 
+function testListCommandsViaMongoDriver(){
+	var result = mongo.getMongoDB().command("listCommands");
+	debug(result);
+}
+
 
 function testGetMongo(){
   mongo = new Mongo();
