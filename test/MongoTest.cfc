@@ -98,7 +98,10 @@ function testGetIndexes(){
 
 function testListCommandsViaMongoDriver(){
 	var result = mongo.getMongoDB().command("listCommands");
-	debug(result);
+	//debug(result);
+	assertTrue( structKeyExists(result, "commands") );
+	//NOTE: this is not a true CF struct, but a regular java hashmap; consequently, it is case sensitive!
+	assertTrue( structCount(result["commands"]) GT 1);
 }
 
 
