@@ -7,9 +7,9 @@ function setUp(){
 	mongoConfig = createObject('component','cfmongodb.core.MongoConfig');
 	mongoConfig.setDefaults(db_name="cfmongodb_tests");
 	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
-	
+
 	col = 'people';
-	
+
 	doc = {
 	    'name'='joe-joe',
 	    'address' =  {
@@ -37,7 +37,7 @@ function deleteTest(){
 
   doc['_id'] = mongo.save( doc, col );
   debug(doc);
-  
+
   mongo.remove( doc, col );
   results = mongo.query(col).$eq('name','delete me').search();
   debug(results);
@@ -87,12 +87,12 @@ function testGetIndexes(){
 	var result = mongo.dropIndexes(coll=col);
 	//guard
 	assertEquals( 1, arrayLen(result), "always an index on _id" );
-	
+
 	mongo.ensureIndex( coll=col, fields=["name"]);
-	mongo.ensureIndex( coll=col, fields=["name","address.state"], directions=[1,-1]);
+	mongo.ensureIndex( coll=col, fields=[{"name"=1},{"address.state"=-1}]);
 	result = mongo.getIndexes( col );
 	debug(result);
-	
+
 	assertTrue( arrayLen(result) GT 1, "Should be at least 2: 1 for the _id, and one for the index we just added");
 }
 
@@ -108,7 +108,7 @@ function getMongo_should_return_underlying_java_Mongo(){
 }
 
 function getMongoDB_should_return_underlying_java_MongoDB(){
-	
+
 	var jMongoDB = mongo.getMongoDB(mongoConfig);
 	assertEquals("com.mongodb.DBApiLayer",jMongoDB.getClass().getCanonicalName());
 }

@@ -41,16 +41,38 @@ function remove(doc,coll,mongoConfig=""){
    collection.remove( dbo );
 } //end function
 
-public array function ensureIndex(coll, mongoConfig="", array fields, array directions=[1], unique=false){
+/**
+* the array of fields can either be
+a) an array of field names. The sort direction will be "1"
+b) an array of structs in the form of fieldname=direction. Eg:
+
+[
+	{lastname=1},
+	{dob=-1}
+]
+
+*/
+public array function ensureIndex(coll, mongoConfig="", array fields, unique=false){
  	var collection = getMongoDBCollection(mongoConfig, coll);
  	var pos = 1;
  	var doc = {};
+	var indexName = "";
+	var fieldName = "";
+
  	for( pos = 1; pos LTE arrayLen(fields); pos++ ){
- 		doc[ fields[pos] ] = directions[pos];
+		if( isSimpleValue(fields[pos]) ){
+			fieldName = fields[pos];
+			doc[ fieldName ] = 1;
+		} else {
+			fieldName = structKeyList(fields[pos]);
+			doc[ fieldName ] = fields[pos][fieldName];
+		}
+		indexName = listAppend( indexName, fieldName, "_");
  	}
+
  	var dbo = util.newDBObjectFromStruct( doc );
- 	collection.ensureIndex( dbo, "_#arrayToList(fields,'_')#_", unique );
- 	
+ 	collection.ensureIndex( dbo, "_#indexName#_", unique );
+
  	return getIndexes(coll, mongoConfig);
 }
 
