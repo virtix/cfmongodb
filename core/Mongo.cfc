@@ -15,11 +15,8 @@ function save(struct doc, string coll, mongoConfig=""){
    var collection = getMongoDBCollection(mongoConfig,coll);
    var bdbo =  util.newDBObjectFromStruct(doc);
    collection.insert([bdbo]);
-
-   var _id = bdbo.get("_id");
-   request.debug(_id);
-   doc["_id"] = _id;
-   return _id;
+   doc["_id"] =  bdbo.get("_id");
+   return doc["_id"];
 }
 
 
@@ -44,6 +41,29 @@ function remove(doc,coll,mongoConfig=""){
    collection.remove( dbo );
 } //end function
 
+public array function ensureIndex(coll, mongoConfig="", array fields, array directions=[1], unique=false){
+ 	var collection = getMongoDBCollection(mongoConfig, coll);
+ 	var pos = 1;
+ 	var doc = {};
+ 	for( pos = 1; pos LTE arrayLen(fields); pos++ ){
+ 		doc[ fields[pos] ] = directions[pos];
+ 	}
+ 	var dbo = util.newDBObjectFromStruct( doc );
+ 	collection.ensureIndex( dbo, "_#arrayToList(fields,'_')#_", unique );
+ 	
+ 	return getIndexes(coll, mongoConfig);
+}
+
+public array function getIndexes(coll, mongoConfig=""){
+	var collection = getMongoDBCollection(mongoConfig, coll);
+	var indexes = collection.getIndexInfo().toArray();
+	return indexes;
+}
+
+public array function dropIndexes(coll, mongoConfig=""){
+	getMongoDBCollection( mongoConfig, coll ).dropIndexes();
+	return getIndexes( coll, mongoConfig );
+}
 
 //decide whether to use the one in the variables scope, the one being passed around as arguments, or create a new one
 function getMongoConfig(MongoConfig=""){
@@ -69,9 +89,6 @@ function getMongoDBCollection(MongoConfig="",CollectionName=""){
 }
 
 
-public void function ensureIndex(array names){
-  throw ("to do");
-}
 
 
 </cfscript>

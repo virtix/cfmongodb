@@ -157,7 +157,10 @@ function listToStruct(list){
    var search_results = [];
    var criteria = get(); 
    var q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
+   //writeLog("MongoDB Search on Collection #collection.toString()#: " & q.toString() & "; criteria was : " & criteria.toString());
+   
    search_results = collection.find(q,_keys).limit(limit);
+   
    return search_results.toArray();
   </cfscript>
 </cffunction>

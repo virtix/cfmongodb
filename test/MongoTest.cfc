@@ -83,6 +83,19 @@ function testStoreDoc(){
   mongo.remove( doc, col );
 }
 
+function testGetIndexes(){
+	var result = mongo.dropIndexes(coll=col);
+	//guard
+	assertEquals( 1, arrayLen(result), "always an index on _id" );
+	
+	mongo.ensureIndex( coll=col, fields=["name"]);
+	mongo.ensureIndex( coll=col, fields=["name","address.state"], directions=[1,-1]);
+	result = mongo.getIndexes( col );
+	debug(result);
+	
+	assertTrue( arrayLen(result) GT 1, "Should be at least 2: 1 for the _id, and one for the index we just added");
+}
+
 
 function testGetMongo(){
   mongo = new Mongo();
