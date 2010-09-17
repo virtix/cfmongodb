@@ -1,7 +1,18 @@
-<cfcomponent>
+<cfcomponent accessors="true">
+
+	<cfproperty name="mongoFactory">
+
 <cfscript>
+
+	function init(mongoFactory=""){
+		if(isSimpleValue(mongoFactory)){
+			arguments.mongoFactory = createObject("component", "DefaultFactory");
+		}
+		variables.mongoFactory = arguments.mongoFactory;
+	}
+
 	function newDBObject(){
-		return createObject('java', 'com.mongodb.BasicDBObject');
+		return mongoFactory.getObject('com.mongodb.BasicDBObject');
 	}
 
 	function newDBObjectFromStruct(Struct data){
@@ -14,7 +25,7 @@
 	}
 
 	function newObjectIDFromID(String id){
-		return createObject("java","org.bson.types.ObjectId").init(id);
+		return mongoFactory.getObject("org.bson.types.ObjectId").init(id);
 	}
 
 	function newIDCriteriaObject(String id){

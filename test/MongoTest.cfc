@@ -6,7 +6,9 @@ import cfmongodb.core.*;
 function setUp(){
 	mongoConfig = createObject('component','cfmongodb.core.MongoConfig');
 	mongoConfig.setDefaults(db_name="cfmongodb_tests");
-	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
+	javaloader = createObject('component','javaloader.javaloader').init([ expandPath("/cfmongodb/lib/mongo-2.1.jar") ]);
+	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init(javaloader);
+	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig, javaloaderFactory);
 
 	col = 'people';
 
@@ -40,13 +42,16 @@ function deleteTest(){
 
   mongo.remove( doc, col );
   results = mongo.query(col).$eq('name','delete me').search();
-  debug(results);
-  assertEquals( 0, arrayLen(results) );
+  //debug(results);
+  assertEquals( 0, results.size() );
 }
 
 
 
 function updateTest(){
+
+	var created = getTickCount();
+
   var doc = {
     'name'='jabber-walkie',
     'address' =  {
@@ -59,7 +64,11 @@ function updateTest(){
   };
   mongo.save(doc,col);
   results = mongo.query(col).startsWith('name','jabber').search();
-  replace_this = results[1];
+
+  debug(results.getQuery());
+
+
+  replace_this = results.asArray()[1];
   replace_this['name'] = 'bill';
   mongo.update(replace_this,col);
   results = mongo.query(col).$eq('name', 'bill' ).search().size();
@@ -71,7 +80,7 @@ function updateTest(){
 
 function testSearch(){
   results = mongo.query(col).startsWith('name','joe').search();
-  debug(results);
+  debug(results.asArray());
 }
 
 
@@ -106,7 +115,6 @@ function testListCommandsViaMongoDriver(){
 
 
 function testGetMongo(){
-  mongo = new Mongo();
   assertIsTypeOf( mongo, "cfmongodb.core.Mongo" );
 }
 
@@ -124,6 +132,58 @@ function getMongoDB_should_return_underlying_java_MongoDB(){
 function getMongoDBCollection_should_return_underlying_java_DBCollection(){
 	var jColl = mongo.getMongoDBCollection(mongoConfig,col);
 	assertEquals("com.mongodb.DBApiLayer.mycollection",jColl.getClass().getCanonicalName());
+}
+
+
+function cheapJavaloaderBenchmark(){
+	var i = 1;
+	var startTS = getTickCount();
+	var jdbo = "";
+	var dbo = "";
+
+	for(i=1; i LTE 100; i++){
+		jdbo = javaloaderFactory.getObject("com.mongodb.BasicDBObject");
+	}
+	var total = getTickCount() - startTS;
+	debug("javaloader total: #total#");
+
+	var defaultFactory = createObject("cfmongodb.core.DefaultFactory");
+
+	startTS = getTickCount();
+	for(i=1; i LTE 100; i++){
+		dbo = defaultFactory.getObject("com.mongodb.BasicDBObject");
+	}
+	var total = getTickCount() - startTS;
+	debug("default total: #total#");
+
+	//clone the last javaloader dbo
+	startTS = getTickCount();
+	for(i=1; i LTE 100; i++){
+		jdboc = jdbo.clone();
+	}
+	var total = getTickCount() - startTS;
+	debug("jdbo clone total: #total#");
+
+	//clone the last cf dbo
+	startTS = getTickCount();
+	for(i=1; i LTE 100; i++){
+		jdboc = dbo.clone();
+	}
+	var total = getTickCount() - startTS;
+	debug("dbo clone total: #total#");
+
+	debug(getMetadata(jdbo));
+	debug(getMetadata(dbo));
+
+	var dmethods = jdbo.getClass().getMethods();
+	//debug(dmethods);
+	var allMethods = {};
+	for(i = 1; i LTE arrayLen(dmethods); i++){
+		allMethods[dMethods[i].getName()] = true;
+	}
+
+	debug(allMethods);
+
 }
 
  </cfscript>
