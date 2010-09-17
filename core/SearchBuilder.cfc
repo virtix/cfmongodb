@@ -151,6 +151,7 @@ function listToStruct(list){
   <cfargument name="keys" type="string" required="false" default="" hint="A list of keys to return" />
   <cfargument name="limit" type="numeric" required="false" default="0" hint="Number of the maximum items to return" />
   <cfargument name="sort" type="struct" required="false" default="#structNew()#" hint="A struct representing how the items are to be sorted" />
+  <cfargument name="returnType" type="string" required="false" default="array" hint="options are: 'array', 'cursor', 'structs'. Array is MongoDB's native cursor.toArray(), which will return a CASE-SENSITIVE array of maps. Structs will return an array of native, case-insensitive ColdFusion structures. Cursor returns the MongoDB cursor. Full returns a structure containing keys named 'TotalCount', 'PageSize', and 'Data', where 'Data' is an array of ColdFusion Structures "/>
   <cfscript>
    var key_exp = listToStruct(arguments.keys);
    var _keys = createObject('java', 'com.mongodb.BasicDBObject').init(key_exp);
@@ -158,11 +159,38 @@ function listToStruct(list){
    var criteria = get(); 
    var q = createObject('java', 'com.mongodb.BasicDBObject').init(criteria);
    //writeLog("MongoDB Search on Collection #collection.toString()#: " & q.toString() & "; criteria was : " & criteria.toString());
-   
    search_results = collection.find(q,_keys).limit(limit);
-   
-   return search_results.toArray();
+   //totalCount = collection.getCount(q);
+   //writelog(totalcount);
+   return makeResult(search_results, returnType);
   </cfscript>
+</cffunction>
+
+<cffunction name="makeResult" output="false" access="public" returntype="any" hint="">
+	<cfargument name="results" type="any" required="true"/>
+	<cfargument name="returnType" type="string" required="true"/>
+	<cfscript>
+		var res = "";
+		var tmp = "";
+		if(returnType eq "array") return results.toArray();
+		if(returnType eq "cursor") return results;
+		
+		if(returnType eq "structs"){
+			res = [];
+			while(results.hasNext()){
+				tmp = {};
+				tmp.putAll( results.next() );
+				arrayAppend( res, tmp );
+			}
+			return res;
+		}
+		
+		res = {totalcount=results.size()};
+		
+		
+		
+	</cfscript>
+	
 </cffunction>
 
 
