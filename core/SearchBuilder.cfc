@@ -91,7 +91,7 @@ function where( js_expression ){
 }
 
 function inArray(element, val){
-  builder.add( element, val );
+  builder.add( element, mongoUtil.toJavaType(val) );
   return this;
 }
 
@@ -108,7 +108,7 @@ function $nin(element,vals){
 
 
 function $eq(element,val){
-  builder.add( element, val );
+  builder.add( element, mongoUtil.toJavaType(val) );
   return this;
 }
 
@@ -165,7 +165,7 @@ function listToStruct(list){
    search_results = collection.find(q,_keys).limit(limit);
    //totalCount = collection.getCount(q);
    //writelog(totalcount);
-   return createObject("component", "SearchResult").init( search_results, q, mongoUtil );
+   return createObject("component", "SearchResult").init( search_results, mongoUtil );
   </cfscript>
 </cffunction>
 

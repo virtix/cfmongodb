@@ -34,15 +34,21 @@ function deleteTest(){
        'city'='where-ever',
        'state'='??',
        'country'='USA'
-    }
+    },
+	'somenumber' = 1
   };
 
   doc['_id'] = mongo.save( doc, col );
   debug(doc);
 
+  results = mongo.query(col).$eq('somenumber',1).search();
+  debug(results.getQuery().toString());
+  debug(results.asArray());
+
+
   mongo.remove( doc, col );
   results = mongo.query(col).$eq('name','delete me').search();
-  //debug(results);
+  debug(results.getQuery().toString());
   assertEquals( 0, results.size() );
 }
 

@@ -5,8 +5,9 @@
 	query = "";
 	mongoUtil = "";
 
-	function init ( mongoCursor, query, mongoUtil ){
+	function init ( mongoCursor, mongoUtil ){
 		structAppend( variables, arguments );
+		query = mongoCursor.getQuery();
 		return this;
 	}
 
