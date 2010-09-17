@@ -32,7 +32,7 @@ while( cursor.hasNext() ){
 //use a ColdFusion array of structs. this is not case sensitive
 orcs = result.asArray();
 for(orc in orcs){
-	writeOutput(" name = #orc.name# <br>");
+  writeOutput(" name = #orc.name# <br>");
 }
 
 </cfscript>
