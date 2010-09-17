@@ -6,10 +6,12 @@ import cfmongodb.core.*;
 function setUp(){
 	mongoConfig = createObject('component','cfmongodb.core.MongoConfig');
 	mongoConfig.setDefaults(db_name="cfmongodb_tests");
-	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
-	
+	javaloader = createObject('component','javaloader.javaloader').init([ expandPath("/cfmongodb/lib/mongo-2.1.jar") ]);
+	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init(javaloader);
+	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig, javaloaderFactory);
+
 	col = 'people';
-	
+
 	doc = {
 	    'name'='joe-joe',
 	    'address' =  {
@@ -37,16 +39,17 @@ function deleteTest(){
 
   doc['_id'] = mongo.save( doc, col );
   debug(doc);
-  
+
   mongo.remove( doc, col );
   results = mongo.query(col).$eq('name','delete me').search();
-  debug(results);
-  assertEquals( 0, arrayLen(results) );
+  //debug(results);
+  assertEquals( 0, results.size() );
 }
 
 
 
 function updateTest(){
+
   var doc = {
     'name'='jabber-walkie',
     'address' =  {
@@ -59,11 +62,15 @@ function updateTest(){
   };
   mongo.save(doc,col);
   results = mongo.query(col).startsWith('name','jabber').search();
-  replace_this = results[1];
+
+  //debug(results.getQuery());
+
+
+  replace_this = results.asArray()[1];
   replace_this['name'] = 'bill';
-  mongo.update(replace_this,col);
+  mongo.update( replace_this, col );
   results = mongo.query(col).$eq('name', 'bill' ).search().size();
-  mongo.remove( replace_this,col );
+  mongo.remove( replace_this, col );
   assert( results == 1, "results should have been 1 but was #results#" );
 }
 
@@ -71,7 +78,7 @@ function updateTest(){
 
 function testSearch(){
   results = mongo.query(col).startsWith('name','joe').search();
-  debug(results);
+  debug(results.asArray());
 }
 
 
@@ -83,9 +90,29 @@ function testStoreDoc(){
   mongo.remove( doc, col );
 }
 
+function testGetIndexes(){
+	var result = mongo.dropIndexes(coll=col);
+	//guard
+	assertEquals( 1, arrayLen(result), "always an index on _id" );
+
+	mongo.ensureIndex( coll=col, fields=["name"]);
+	mongo.ensureIndex( coll=col, fields=[{"name"=1},{"address.state"=-1}]);
+	result = mongo.getIndexes( col );
+	debug(result);
+
+	assertTrue( arrayLen(result) GT 1, "Should be at least 2: 1 for the _id, and one for the index we just added");
+}
+
+function testListCommandsViaMongoDriver(){
+	var result = mongo.getMongoDB().command("listCommands");
+	//debug(result);
+	assertTrue( structKeyExists(result, "commands") );
+	//NOTE: this is not a true CF struct, but a regular java hashmap; consequently, it is case sensitive!
+	assertTrue( structCount(result["commands"]) GT 1);
+}
+
 
 function testGetMongo(){
-  mongo = new Mongo();
   assertIsTypeOf( mongo, "cfmongodb.core.Mongo" );
 }
 
@@ -95,7 +122,7 @@ function getMongo_should_return_underlying_java_Mongo(){
 }
 
 function getMongoDB_should_return_underlying_java_MongoDB(){
-	
+
 	var jMongoDB = mongo.getMongoDB(mongoConfig);
 	assertEquals("com.mongodb.DBApiLayer",jMongoDB.getClass().getCanonicalName());
 }
@@ -103,6 +130,58 @@ function getMongoDB_should_return_underlying_java_MongoDB(){
 function getMongoDBCollection_should_return_underlying_java_DBCollection(){
 	var jColl = mongo.getMongoDBCollection(mongoConfig,col);
 	assertEquals("com.mongodb.DBApiLayer.mycollection",jColl.getClass().getCanonicalName());
+}
+
+
+function cheapJavaloaderBenchmark(){
+	var i = 1;
+	var startTS = getTickCount();
+	var jdbo = "";
+	var dbo = "";
+
+	for(i=1; i LTE 100; i++){
+		jdbo = javaloaderFactory.getObject("com.mongodb.BasicDBObject");
+	}
+	var total = getTickCount() - startTS;
+	debug("javaloader total: #total#");
+
+	var defaultFactory = createObject("cfmongodb.core.DefaultFactory");
+
+	startTS = getTickCount();
+	for(i=1; i LTE 100; i++){
+		dbo = defaultFactory.getObject("com.mongodb.BasicDBObject");
+	}
+	var total = getTickCount() - startTS;
+	debug("default total: #total#");
+
+	//clone the last javaloader dbo
+	startTS = getTickCount();
+	for(i=1; i LTE 100; i++){
+		jdboc = jdbo.clone();
+	}
+	var total = getTickCount() - startTS;
+	debug("jdbo clone total: #total#");
+
+	//clone the last cf dbo
+	startTS = getTickCount();
+	for(i=1; i LTE 100; i++){
+		jdboc = dbo.clone();
+	}
+	var total = getTickCount() - startTS;
+	debug("dbo clone total: #total#");
+
+	debug(getMetadata(jdbo));
+	debug(getMetadata(dbo));
+
+	var dmethods = jdbo.getClass().getMethods();
+	//debug(dmethods);
+	var allMethods = {};
+	for(i = 1; i LTE arrayLen(dmethods); i++){
+		allMethods[dMethods[i].getName()] = true;
+	}
+
+	debug(allMethods);
+
 }
 
  </cfscript>

@@ -1,9 +1,20 @@
-<cfcomponent>
+<cfcomponent accessors="true">
+
+	<cfproperty name="mongoFactory">
+
 <cfscript>
-	function newDBObject(){
-		return createObject('java', 'com.mongodb.BasicDBObject');
+
+	function init(mongoFactory=""){
+		if(isSimpleValue(mongoFactory)){
+			arguments.mongoFactory = createObject("component", "DefaultFactory");
+		}
+		variables.mongoFactory = arguments.mongoFactory;
 	}
-	
+
+	function newDBObject(){
+		return mongoFactory.getObject('com.mongodb.BasicDBObject');
+	}
+
 	function newDBObjectFromStruct(Struct data){
 		var key = "";
 		var dbo = newDBObject();
@@ -14,9 +25,9 @@
 	}
 
 	function newObjectIDFromID(String id){
-		return createObject("java","com.mongodb.ObjectId").init(id);
+		return mongoFactory.getObject("org.bson.types.ObjectId").init(id);
 	}
-	
+
 	function newIDCriteriaObject(String id){
 		return newDBObject().init("_id",newObjectIDFromID(id));
 	}
@@ -30,7 +41,7 @@
 	function toJavaType(value){
 		if(not isNumeric(value) AND isBoolean(value)) return javacast("boolean",value);
 		if(isNumeric(value) and find(".",value)) return javacast("double",value);
-		if(isNumeric(value)) return javacast("int",value);
+		if(isNumeric(value)) return javacast("long",value);
 		return value;
 	}
 
