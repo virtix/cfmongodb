@@ -6,14 +6,35 @@ One of the most appealing aspects is that data can be created as a ColdFusion st
 
 <pre>
 <cfscript>
+
+//save
 col = 'my_collection':
 my_struct = {
+  name = 'Orc #getTickCount()#'
   foo = 'bar'
   bar = 123
   'tags'=[ 'cool', 'distributed', 'fast' ]
 };
 
 mongo.save(my_struct, col);
+
+//query
+result = mongo.query(col).startsWith('name','Orc').search().limit(20);
+writeOutput("Found #results.size()# of #results.totalCount()# Frodos");
+
+//use the native mongo cursor. it is case sensitive!
+cursor = result.asCursor();
+while( cursor.hasNext() ){
+  thisOrc = cursor.next();
+  writeOutput(" name = #thisOrc['name'] <br>");
+}
+
+//use a ColdFusion array of structs. this is not case sensitive
+orcs = result.asArray();
+for(orc in orcs){
+	writeOutput(" name = #orc.name# <br>");
+}
+
 </cfscript>
 </pre>
 

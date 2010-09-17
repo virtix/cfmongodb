@@ -50,8 +50,6 @@ function deleteTest(){
 
 function updateTest(){
 
-	var created = getTickCount();
-
   var doc = {
     'name'='jabber-walkie',
     'address' =  {
@@ -65,14 +63,14 @@ function updateTest(){
   mongo.save(doc,col);
   results = mongo.query(col).startsWith('name','jabber').search();
 
-  debug(results.getQuery());
+  //debug(results.getQuery());
 
 
   replace_this = results.asArray()[1];
   replace_this['name'] = 'bill';
-  mongo.update(replace_this,col);
+  mongo.update( replace_this, col );
   results = mongo.query(col).$eq('name', 'bill' ).search().size();
-  mongo.remove( replace_this,col );
+  mongo.remove( replace_this, col );
   assert( results == 1, "results should have been 1 but was #results#" );
 }
 
