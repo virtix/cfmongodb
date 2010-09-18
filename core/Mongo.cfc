@@ -24,6 +24,15 @@
 	   return doc["_id"];
 	}
 
+	function saveAll(array docs, string coll, mongoConfig=""){
+		var i = 1;
+		var total = arrayLen(docs);
+		for(i=1; i LTE total; i++){
+			save(docs[i], coll, mongoConfig);
+		}
+		return docs;
+	}
+
 
 	function query(string coll, mongoConfig=""){
 	   var db = getMongoDB(mongoConfig);

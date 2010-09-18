@@ -153,6 +153,7 @@ function listToStruct(list){
 
 <cffunction name="search">
   <cfargument name="keys" type="string" required="false" default="" hint="A list of keys to return" />
+  <cfargument name="skip" type="numeric" required="false" default="0" hint="the number of items to skip"/>
   <cfargument name="limit" type="numeric" required="false" default="0" hint="Number of the maximum items to return" />
   <cfargument name="sort" type="struct" required="false" default="#structNew()#" hint="A struct representing how the items are to be sorted" />
   <cfscript>
@@ -162,7 +163,8 @@ function listToStruct(list){
    var criteria = get();
    var q = mongoFactory.getObject('com.mongodb.BasicDBObject').init(criteria);
    //writeLog("MongoDB Search on Collection #collection.toString()#: " & q.toString() & "; criteria was : " & criteria.toString());
-   search_results = collection.find(q,_keys).limit(limit);
+   search_results = collection.find(q,_keys).limit(limit).skip(skip).sort(mongoUtil.newDBObjectFromStruct(sort));
+
    //totalCount = collection.getCount(q);
    //writelog(totalcount);
    return createObject("component", "SearchResult").init( search_results, mongoUtil );
