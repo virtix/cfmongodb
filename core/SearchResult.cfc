@@ -12,14 +12,18 @@
 	}
 
 	/**
-	* The fastest return type... returns the case-sensitive cursor which you'd iterate over with while(cursor.hasNext()) {cursor.next();}
+	* The fastest return type... returns the case-sensitive cursor which you'd iterate over with
+	while(cursor.hasNext()) {cursor.next();}
+
+	Note: you can use the cursor object to get full access to the full API
+	@see http://api.mongodb.org/java
 	*/
 	function asCursor(){
 		return mongoCursor;
 	}
 
 	/**
-	* Converts all cursor elements into a ColdFusion structure and returns them as an array
+	* Converts all cursor elements into a ColdFusion structure and returns them as an array of structs.
 	*/
 	function asArray(){
 		res = [];
@@ -29,18 +33,30 @@
 		return res;
 	}
 
+	/**
+	* The number of elements in the result, after limit and skip are applied
+	*/
 	function size(){
 		return mongoCursor.size();
 	}
 
+	/**
+	* The total number of elements for the query, before limit and skip are applied
+	*/
 	function totalCount(){
 		return mongoCursor.count();
 	}
 
+	/**
+	* Mongo's native explain command. Useful for debugging and performance analysis
+	*/
 	function explain(){
 		return mongoCursor.explain();
 	}
 
+	/**
+	* The criteria used for the query. Use query.toString() to get a copy/paste string for the Mongo shell
+	*/
 	function getQuery(){
 		return query;
 	}
