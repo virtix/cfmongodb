@@ -24,6 +24,12 @@ function setUp(){
 	  };
 }
 
+function tearDown(){
+	var delete = {"name"="unittest"};
+	mongo.remove( delete, col );
+
+}
+
 
 
 function deleteTest(){
@@ -34,15 +40,21 @@ function deleteTest(){
        'city'='where-ever',
        'state'='??',
        'country'='USA'
-    }
+    },
+	'somenumber' = 1
   };
 
   doc['_id'] = mongo.save( doc, col );
   debug(doc);
 
+  results = mongo.query(col).$eq('somenumber',1).search();
+  debug(results.getQuery().toString());
+  debug(results.asArray());
+
+
   mongo.remove( doc, col );
   results = mongo.query(col).$eq('name','delete me').search();
-  //debug(results);
+  debug(results.getQuery().toString());
   assertEquals( 0, results.size() );
 }
 
@@ -77,10 +89,15 @@ function updateTest(){
 
 
 function testSearch(){
-  results = mongo.query(col).startsWith('name','joe').search();
-  debug(results.asArray());
-}
+  var initial = mongo.query(col).startsWith('name','unittest').search().asArray();
+  debug(initial);
 
+  var addNew = 5;
+  var people = createPeople( addNew, true );
+  var afterSave = mongo.query(col).startsWith('name','unittest').search().asArray();
+
+  assertEquals( arrayLen(afterSave), arrayLen(initial) + addNew );
+}
 
 
 function testStoreDoc(){
@@ -89,6 +106,61 @@ function testStoreDoc(){
   assert( id is not '' );
   mongo.remove( doc, col );
 }
+
+function search_sort_should_be_applied(){
+	var people = createPeople(5, true);
+	var asc = mongo.query(col).$eq("name","unittest").search();
+	var desc = mongo.query(col).$eq("name","unittest").search(sort={"name"=-1});
+
+	var ascResults = asc.asArray();
+	var descResults = desc.asArray();
+	debug( desc.getQuery().toString() );
+
+	debug(ascResults);
+	debug(descResults);
+
+	assertEquals( ascResults[1].age, descResults[ desc.size() ].age  );
+}
+
+function search_limit_should_be_applied(){
+	var people = createPeople(5, true);
+	var limit = 2;
+
+	var full = mongo.query(col).$eq("name","unittest").search();
+	var limited = mongo.query(col).$eq("name","unittest").search(limit=limit);
+	assertEquals(limit, limited.size());
+	assertTrue( full.size() GT limited.size() );
+}
+
+function search_skip_should_be_applied(){
+	var people = createPeople(5, true);
+	var skip = 1;
+	var full = mongo.query(col).$eq("name","unittest").search();
+	var skipped = mongo.query(col).$eq("name","unittest").search(skip=skip);
+
+	assertEquals(full.asArray()[2] , skipped.asArray()[1], "lemme splain, Lucy: since we're skipping 1, then the first element of skipped should be the second element of full" );
+}
+
+private function createPeople( count=5, save="true" ){
+	var i = 1;
+	var people = [];
+	for(i = 1; i LTE count; i++){
+		var person = {
+			"name"="unittest",
+			"age"=randRange(10,100),
+			"now"=getTickCount(),
+			"counter"=i
+		};
+		arrayAppend(people, person);
+	}
+	if(save){
+		mongo.saveAll(people, col);
+	}
+	return people;
+}
+
+
+
 
 function testGetIndexes(){
 	var result = mongo.dropIndexes(coll=col);
