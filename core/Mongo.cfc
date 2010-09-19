@@ -12,13 +12,13 @@
 		variables.mongo = mongofactory.getObject("com.mongodb.Mongo");
 		var cfg = variables.mongoConfig.getDefaults();
 		variables.mongo.init(cfg.server_name,cfg.server_port);
-		util = new MongoUtil(mongoFactory);
+		mongoUtil = new MongoUtil(mongoFactory);
 		return this;
 	}
 
 	function save(struct doc, string coll, mongoConfig=""){
 	   var collection = getMongoDBCollection(mongoConfig,coll);
-	   var bdbo =  util.newDBObjectFromStruct(doc);
+	   var bdbo =  mongoUtil.newDBObjectFromStruct(doc);
 	   collection.insert([bdbo]);
 	   doc["_id"] =  bdbo.get("_id");
 	   return doc["_id"];
@@ -36,14 +36,14 @@
 
 	function query(string coll, mongoConfig=""){
 	   var db = getMongoDB(mongoConfig);
-	   return new SearchBuilder(coll,db,util);
+	   return new SearchBuilder(coll,db,mongoUtil);
 	}
 
 
 	function update(doc,coll,mongoConfig=""){
 	   var collection = getMongoDBCollection(mongoConfig,coll);
-	   var crit = util.newIDCriteriaObject(doc['_id'].toString());
-	   var dbo = util.newDBObjectFromStruct(doc);
+	   var crit = mongoUtil.newIDCriteriaObject(doc['_id'].toString());
+	   var dbo = mongoUtil.newDBObjectFromStruct(doc);
 	   collection.update( crit, dbo );
 	} //end function
 
@@ -51,7 +51,7 @@
 
 	function remove(doc,coll,mongoConfig=""){
 	   var collection = getMongoDBCollection(mongoConfig,coll);
-	   var dbo = util.newDBObjectFromStruct(doc);
+	   var dbo = mongoUtil.newDBObjectFromStruct(doc);
 	   collection.remove( dbo );
 	} //end function
 
@@ -84,7 +84,7 @@
 			indexName = listAppend( indexName, fieldName, "_");
 	 	}
 
-	 	var dbo = util.newDBObjectFromStruct( doc );
+	 	var dbo = mongoUtil.newDBObjectFromStruct( doc );
 	 	collection.ensureIndex( dbo, "_#indexName#_", unique );
 
 	 	return getIndexes(coll, mongoConfig);

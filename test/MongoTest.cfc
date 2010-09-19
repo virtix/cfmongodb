@@ -177,7 +177,7 @@ function testGetIndexes(){
 
 function testListCommandsViaMongoDriver(){
 	var result = mongo.getMongoDB().command("listCommands");
-	//debug(result);
+	debug(result);
 	assertTrue( structKeyExists(result, "commands") );
 	//NOTE: this is not a true CF struct, but a regular java hashmap; consequently, it is case sensitive!
 	assertTrue( structCount(result["commands"]) GT 1);
@@ -202,6 +202,20 @@ function getMongoDB_should_return_underlying_java_MongoDB(){
 function getMongoDBCollection_should_return_underlying_java_DBCollection(){
 	var jColl = mongo.getMongoDBCollection(mongoConfig,col);
 	assertEquals("com.mongodb.DBApiLayer.mycollection",jColl.getClass().getCanonicalName());
+}
+
+function poc_profiling(){
+	u = mongo.getMongoUtil();
+	var command = u.newDBObjectFromStruct({"profile"=2});
+	var result = mongo.getMongoDB().command( command );
+	debug(result);
+
+	var result = mongo.query("system.profile").search(limit=50,sort={"ts"=-1}).asArray();
+	debug(result);
+
+	command = u.newDBObjectFromStruct({"profile"=0});
+	result = mongo.getMongoDB().command( command );
+	debug(result);
 }
 
 

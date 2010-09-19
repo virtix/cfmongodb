@@ -137,6 +137,11 @@ function $gte(element,val){
   return addNumericCriteria(element,val,'$gte');
 }
 
+function $between(element, lower, upper){
+	$gte(element, lower);
+	return $lte(element, upper);
+}
+
 function listToStruct(list){
   var item = '';
   var s = {};
