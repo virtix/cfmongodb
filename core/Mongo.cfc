@@ -56,6 +56,36 @@
 	} //end function
 
 	/**
+	* So important we need to provide top level access to it and make it as easy to use as possible.
+
+	FindAndModify is critical for queue-like operations. Its atomicity removes the traditional need to synchronize higher-level methods to ensure queue elements only get processed once.
+
+	http://www.mongodb.org/display/DOCS/findandmodify+Command
+
+		This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
+
+	*/
+	function findAndModify(struct query, struct fields={}, struct sort={}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=true, boolean overwriteExisting=false, string coll){
+		var collection = getMongoDBCollection (MongoConfig,coll);
+		//must apply $set, otherwise old struct is overwritten
+		if(not structKeyExists( update, "$set" ) and NOT overwriteExisting){
+			update = { "$set" = mongoUtil.newDBObjectFromStruct(update)  };
+		}
+		var updated = collection.findAndModify(
+			mongoUtil.newDBObjectFromStruct(query),
+			mongoUtil.newDBObjectFromStruct(fields),
+			mongoUtil.newDBObjectFromStruct(sort),
+			remove,
+			mongoUtil.newDBObjectFromStruct(update),
+			returnNew,
+			upsert
+		);
+		return mongoUtil.dbObjectToStruct(updated);
+	}
+
+
+
+	/**
 	* the array of fields can either be
 	a) an array of field names. The sort direction will be "1"
 	b) an array of structs in the form of fieldname=direction. Eg:

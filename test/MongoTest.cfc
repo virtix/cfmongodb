@@ -11,6 +11,7 @@ function setUp(){
 	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig, javaloaderFactory);
 
 	col = 'people';
+	atomicCol = 'atomictests';
 
 	doc = {
 	    'name'='joe-joe',
@@ -26,8 +27,9 @@ function setUp(){
 
 function tearDown(){
 	var delete = {"name"="unittest"};
+	var atomicDelete = {};
 	mongo.remove( delete, col );
-
+	//mongo.remove(atomicDelete, atomicCol);
 }
 
 
@@ -85,7 +87,6 @@ function updateTest(){
   mongo.remove( replace_this, col );
   assert( results == 1, "results should have been 1 but was #results#" );
 }
-
 
 
 function testSearch(){
@@ -149,7 +150,8 @@ private function createPeople( count=5, save="true" ){
 			"name"="unittest",
 			"age"=randRange(10,100),
 			"now"=getTickCount(),
-			"counter"=i
+			"counter"=i,
+			inprocess=false
 		};
 		arrayAppend(people, person);
 	}
@@ -159,7 +161,40 @@ private function createPeople( count=5, save="true" ){
 	return people;
 }
 
+function findAndModify_should_atomically_update_and_return_new(){
+	var collection = "atomictests";
+	var count = 5;
+	var people = createPeople(count=count, save="false");
+	mongo.saveAll(people, atomicCol);
 
+	flush();
+
+
+	//get total inprocess count
+	var inprocess = mongo.query(atomicCol).$eq("INPROCESS",false).search().size();
+
+
+	//guard
+	assertEquals(count, arrayLen(people));
+	var query = {inprocess=false};
+	var update = {inprocess=true, started=now(),owner=cgi.SERVER_NAME};
+	var new = mongo.findAndModify(query=query, update=update, coll=atomicCol);
+	flush();
+	debug(new);
+
+	assertTrue( structKeyExists(new, "age") );
+	assertTrue( structKeyExists(new, "name") );
+	assertTrue( structKeyExists(new, "now") );
+	assertTrue( structKeyExists(new, "started") );
+	assertEquals( true, new.inprocess );
+	assertEquals( cgi.SERVER_NAME, new.owner );
+
+
+	var newinprocess = mongo.query(atomicCol).$eq("INPROCESS",false).search().size();
+
+
+	assertEquals(inprocess-1, newinprocess);
+}
 
 
 function testGetIndexes(){
@@ -184,6 +219,7 @@ function testListCommandsViaMongoDriver(){
 }
 
 
+/** test java getters */
 function testGetMongo(){
   assertIsTypeOf( mongo, "cfmongodb.core.Mongo" );
 }
@@ -204,6 +240,9 @@ function getMongoDBCollection_should_return_underlying_java_DBCollection(){
 	assertEquals("com.mongodb.DBApiLayer.mycollection",jColl.getClass().getCanonicalName());
 }
 
+
+/** dumping grounnd for proof of concept tests */
+
 function poc_profiling(){
 	u = mongo.getMongoUtil();
 	var command = u.newDBObjectFromStruct({"profile"=2});
@@ -216,6 +255,11 @@ function poc_profiling(){
 	command = u.newDBObjectFromStruct({"profile"=0});
 	result = mongo.getMongoDB().command( command );
 	debug(result);
+}
+
+private function flush(){
+	//forces mongo to flush
+	mongo.getMongoDB().getLastError();
 }
 
 
