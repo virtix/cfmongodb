@@ -22,8 +22,6 @@
 		return newDBObjectFromStruct( data );
 	}
 
-	function toCF
-
 	function newDBObjectFromStruct(Struct data){
 		var key = "";
 		var dbo = newDBObject();
