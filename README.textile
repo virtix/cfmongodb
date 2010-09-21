@@ -20,7 +20,7 @@ mongo.save(my_struct, col);
 
 //query
 result = mongo.query(col).startsWith('name','Orc').search().limit(20);
-writeOutput("Found #results.size()# of #results.totalCount()# Frodos");
+writeOutput("Found #results.size()# of #results.totalCount()# Orcs");
 
 //use the native mongo cursor. it is case sensitive!
 cursor = result.asCursor();
