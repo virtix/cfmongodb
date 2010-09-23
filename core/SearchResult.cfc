@@ -15,8 +15,7 @@
 	* The fastest return type... returns the case-sensitive cursor which you'd iterate over with
 	while(cursor.hasNext()) {cursor.next();}
 
-	Note: you can use the cursor object to get full access to the full API
-	@see http://api.mongodb.org/java
+	Note: you can use the cursor object to get full access to the full API at http://api.mongodb.org/java
 	*/
 	function asCursor(){
 		return mongoCursor;
@@ -55,7 +54,7 @@
 	}
 
 	/**
-	* The criteria used for the query. Use query.toString() to get a copy/paste string for the Mongo shell
+	* The criteria used for the query. Use getQuery().toString() to get a copy/paste string for the Mongo shell
 	*/
 	function getQuery(){
 		return query;

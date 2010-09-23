@@ -42,15 +42,14 @@ function init(string coll, any db, any mongoUtil){
  collection = db.getCollection(coll);
 }
 
-
 function startsWith(element, val){
-  var regex = val & '.*';
+  var regex = '^' & val;
   builder.add( element, pattern.compile(regex) );
   return this;
 }
 
 function endsWith(element, val){
-  var regex = '.*' & val;
+  var regex = val & '$';
   builder.add( element, pattern.compile(regex) );
   return this;
 }
@@ -135,6 +134,11 @@ function $gt(element,val){
 
 function $gte(element,val){
   return addNumericCriteria(element,val,'$gte');
+}
+
+function between(element, lower, upper){
+	$gte(element, lower);
+	return $lte(element, upper);
 }
 
 function listToStruct(list){

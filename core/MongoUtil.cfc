@@ -12,7 +12,14 @@
 	}
 
 	function newDBObject(){
-		return mongoFactory.getObject('com.mongodb.BasicDBObject');
+		var dbo = mongoFactory.getObject('com.mongodb.BasicDBObject');
+		dbo.init();
+		return dbo;
+	}
+
+	function toMongo(any data){
+		//for now, assume it's a struct to DBO conversion
+		return newDBObjectFromStruct( data );
 	}
 
 	function newDBObjectFromStruct(Struct data){
@@ -39,6 +46,7 @@
 	}
 
 	function toJavaType(value){
+		if(isNull(value)) return "";
 		if(not isNumeric(value) AND isBoolean(value)) return javacast("boolean",value);
 		if(isNumeric(value) and find(".",value)) return javacast("double",value);
 		if(isNumeric(value)) return javacast("long",value);

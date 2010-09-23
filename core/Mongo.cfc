@@ -12,13 +12,13 @@
 		variables.mongo = mongofactory.getObject("com.mongodb.Mongo");
 		var cfg = variables.mongoConfig.getDefaults();
 		variables.mongo.init(cfg.server_name,cfg.server_port);
-		util = new MongoUtil(mongoFactory);
+		mongoUtil = new MongoUtil(mongoFactory);
 		return this;
 	}
 
 	function save(struct doc, string coll, mongoConfig=""){
 	   var collection = getMongoDBCollection(mongoConfig,coll);
-	   var bdbo =  util.newDBObjectFromStruct(doc);
+	   var bdbo =  mongoUtil.newDBObjectFromStruct(doc);
 	   collection.insert([bdbo]);
 	   doc["_id"] =  bdbo.get("_id");
 	   return doc["_id"];
@@ -36,14 +36,14 @@
 
 	function query(string coll, mongoConfig=""){
 	   var db = getMongoDB(mongoConfig);
-	   return new SearchBuilder(coll,db,util);
+	   return new SearchBuilder(coll,db,mongoUtil);
 	}
 
 
 	function update(doc,coll,mongoConfig=""){
 	   var collection = getMongoDBCollection(mongoConfig,coll);
-	   var crit = util.newIDCriteriaObject(doc['_id'].toString());
-	   var dbo = util.newDBObjectFromStruct(doc);
+	   var crit = mongoUtil.newIDCriteriaObject(doc['_id'].toString());
+	   var dbo = mongoUtil.newDBObjectFromStruct(doc);
 	   collection.update( crit, dbo );
 	} //end function
 
@@ -51,9 +51,39 @@
 
 	function remove(doc,coll,mongoConfig=""){
 	   var collection = getMongoDBCollection(mongoConfig,coll);
-	   var dbo = util.newDBObjectFromStruct(doc);
+	   var dbo = mongoUtil.newDBObjectFromStruct(doc);
 	   collection.remove( dbo );
 	} //end function
+
+	/**
+	* So important we need to provide top level access to it and make it as easy to use as possible.
+
+	FindAndModify is critical for queue-like operations. Its atomicity removes the traditional need to synchronize higher-level methods to ensure queue elements only get processed once.
+
+	http://www.mongodb.org/display/DOCS/findandmodify+Command
+
+		This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
+
+	*/
+	function findAndModify(struct query, struct fields={}, struct sort={}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=true, boolean overwriteExisting=false, string coll){
+		var collection = getMongoDBCollection (MongoConfig,coll);
+		//must apply $set, otherwise old struct is overwritten
+		if(not structKeyExists( update, "$set" ) and NOT overwriteExisting){
+			update = { "$set" = mongoUtil.newDBObjectFromStruct(update)  };
+		}
+		var updated = collection.findAndModify(
+			mongoUtil.newDBObjectFromStruct(query),
+			mongoUtil.newDBObjectFromStruct(fields),
+			mongoUtil.newDBObjectFromStruct(sort),
+			remove,
+			mongoUtil.newDBObjectFromStruct(update),
+			returnNew,
+			upsert
+		);
+		return mongoUtil.dbObjectToStruct(updated);
+	}
+
+
 
 	/**
 	* the array of fields can either be
@@ -84,7 +114,7 @@
 			indexName = listAppend( indexName, fieldName, "_");
 	 	}
 
-	 	var dbo = util.newDBObjectFromStruct( doc );
+	 	var dbo = mongoUtil.newDBObjectFromStruct( doc );
 	 	collection.ensureIndex( dbo, "_#indexName#_", unique );
 
 	 	return getIndexes(coll, mongoConfig);
