@@ -40,13 +40,13 @@ function init(string coll, any db){
 
 
 function startsWith(element, val){
-  var regex = val & '.*';
+  var regex = '^' & val;
   builder.add( element, pattern.compile(regex) );
   return this;
 }
 
 function endsWith(element, val){
-  var regex = '.*' & val;
+  var regex = val & '$';
   builder.add( element, pattern.compile(regex) );
   return this;
 }
