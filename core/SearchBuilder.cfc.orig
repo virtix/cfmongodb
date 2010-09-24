@@ -5,7 +5,7 @@
   
     DSL for MongoDB searches:   
     
-    mongo.expressionBuilder().
+    mongo.query('collection_name').
     
     results = mongo.startsWith('name','foo').  //string
                     endsWith('title','bar').   //string
@@ -40,13 +40,13 @@ function init(string coll, any db){
 
 
 function startsWith(element, val){
-  var regex = '^' & val;
+  var regex = val & '.*';
   builder.add( element, pattern.compile(regex) );
   return this;
 }
 
 function endsWith(element, val){
-  var regex = val & '$';
+  var regex = '.*' & val;
   builder.add( element, pattern.compile(regex) );
   return this;
 }
