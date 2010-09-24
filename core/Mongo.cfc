@@ -25,11 +25,14 @@
 	}
 
 	function saveAll(array docs, string coll, mongoConfig=""){
+		var collection = getMongoDBCollection(mongoConfig,coll);
 		var i = 1;
 		var total = arrayLen(docs);
+		var allDocs = [];
 		for(i=1; i LTE total; i++){
-			save(docs[i], coll, mongoConfig);
+			arrayAppend( allDocs, mongoUtil.newDBObjectFromStruct(docs[i]) );
 		}
+		collection.insert(allDocs);
 		return docs;
 	}
 
@@ -40,11 +43,18 @@
 	}
 
 
-	function update(doc,coll,mongoConfig=""){
+	function update(doc, coll, query={}, upsert=false, multi=false, mongoConfig=""){
 	   var collection = getMongoDBCollection(mongoConfig,coll);
-	   var crit = mongoUtil.newIDCriteriaObject(doc['_id'].toString());
+
+	   if(structIsEmpty(query)){
+		  query = mongoUtil.newIDCriteriaObject(doc['_id'].toString());
+	   } else{
+	   	  query = mongoUtil.newDBObjectFromStruct (query);
+	   }
+
 	   var dbo = mongoUtil.newDBObjectFromStruct(doc);
-	   collection.update( crit, dbo );
+
+	  collection.update( query, dbo, upsert, multi );
 	} //end function
 
 
@@ -65,7 +75,7 @@
 		This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
 
 	*/
-	function findAndModify(struct query, struct fields={}, struct sort={}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=true, boolean overwriteExisting=false, string coll){
+	function findAndModify(struct query, struct fields={}, struct sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean overwriteExisting=false, string coll){
 		var collection = getMongoDBCollection (MongoConfig,coll);
 		//must apply $set, otherwise old struct is overwritten
 		if(not structKeyExists( update, "$set" ) and NOT overwriteExisting){
@@ -80,6 +90,8 @@
 			returnNew,
 			upsert
 		);
+		if( isNull(updated) ) return {};
+
 		return mongoUtil.dbObjectToStruct(updated);
 	}
 
@@ -96,7 +108,7 @@
 	]
 
 	*/
-	public array function ensureIndex(coll, mongoConfig="", array fields, unique=false){
+	public array function ensureIndex(array fields, coll, unique=false, mongoConfig=""){
 	 	var collection = getMongoDBCollection(mongoConfig, coll);
 	 	var pos = 1;
 	 	var doc = {};

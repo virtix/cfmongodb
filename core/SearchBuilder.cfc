@@ -9,7 +9,7 @@
 
     results = mongo.startsWith('name','foo').  //string
                     endsWith('title','bar').   //string
-                    exists('field','value').   //string
+                    like('field','value').   //string
 					          regex('field','value').    //string
                     eq('field','value').       //numeric
                     lt('field','value').       //numeric
@@ -55,7 +55,7 @@ function endsWith(element, val){
 }
 
 
-function exists(element, val){
+function like(element, val){
   var regex = '.*' & val & '.*';
   builder.add( element, pattern.compile(regex) );
   return this;
@@ -81,7 +81,6 @@ function start(){
 function get(){
   return builder.get();
 }
-
 
 //May need at least some exception handling
 function where( js_expression ){
@@ -136,6 +135,12 @@ function $gte(element,val){
   return addNumericCriteria(element,val,'$gte');
 }
 
+function $exists(element, exists=true){
+	var criteria = {"$exists" = javacast("boolean",exists)};
+	builder.add( element, criteria );
+	return this;
+}
+
 function between(element, lower, upper){
 	$gte(element, lower);
 	return $lte(element, upper);
@@ -166,11 +171,8 @@ function listToStruct(list){
    var search_results = [];
    var criteria = get();
    var q = mongoFactory.getObject('com.mongodb.BasicDBObject').init(criteria);
-   //writeLog("MongoDB Search on Collection #collection.toString()#: " & q.toString() & "; criteria was : " & criteria.toString());
    search_results = collection.find(q,_keys).limit(limit).skip(skip).sort(mongoUtil.newDBObjectFromStruct(sort));
 
-   //totalCount = collection.getCount(q);
-   //writelog(totalcount);
    return createObject("component", "SearchResult").init( search_results, mongoUtil );
   </cfscript>
 </cffunction>
@@ -212,26 +214,26 @@ But, this also proved to be a very good refactor.
 
 <cffunction name="addNumericCriteria" hint="refactored $expressions for numerics">
 	<cfargument name="element" type="string" hint="The element in the document we're searching"/>
-  <cfargument name="val" type="numeric" hint="The comparative value of the element" />
+	<cfargument name="val" type="numeric" hint="The comparative value of the element" />
 	<cfargument name="type" type="string" hint="$gt,$lt,etc. The operators - <><=>= ..." />
 	<cfscript>
-  		var exp = {};
-  		exp[type] = val;
-  		builder.add( element, exp );
-  		return this;
-  	</cfscript>
+		var exp = {};
+		exp[type] = val;
+		builder.add( element, exp );
+		return this;
+	</cfscript>
 </cffunction>
 
 <cffunction name="addArrayCriteria" hint="refactored $expressions for numerics">
 	<cfargument name="element" type="string" hint="The array element in the document we're searching"/>
-  <cfargument name="val" type="array" hint="The value(s) of an element in the array" />
+	<cfargument name="val" type="array" hint="The value(s) of an element in the array" />
 	<cfargument name="type" type="string" hint="$in,$nin,etc." />
 	<cfscript>
-  		var exp = {};
-  		exp[type] = val;
-  		builder.add( element, exp );
-  		return this;
-  	</cfscript>
+		var exp = {};
+		exp[type] = val;
+		builder.add( element, exp );
+		return this;
+	</cfscript>
 </cffunction>
 
 

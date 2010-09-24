@@ -165,6 +165,7 @@ function findAndModify_should_atomically_update_and_return_new(){
 	var collection = "atomictests";
 	var count = 5;
 	var people = createPeople(count=count, save="false");
+	mongo.ensureIndex(["INPROCESS"], atomicCol);
 	mongo.saveAll(people, atomicCol);
 
 	flush();
