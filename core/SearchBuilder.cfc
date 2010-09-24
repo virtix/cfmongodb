@@ -177,6 +177,12 @@ function listToStruct(list){
   </cfscript>
 </cffunction>
 
+<cffunction name="count" output="false" access="public" returntype="numeric" hint="">
+	<cfset var criteria = get()>
+	<cfset var query = mongoFactory.getObject('com.mongodb.BasicDBObject').init(criteria)>
+	<cfreturn collection.count(query)>
+</cffunction>
+
 
 
 <cffunction name="before">

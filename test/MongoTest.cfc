@@ -144,6 +144,19 @@ function search_skip_should_be_applied(){
 	assertEquals(full.asArray()[2] , skipped.asArray()[1], "lemme splain, Lucy: since we're skipping 1, then the first element of skipped should be the second element of full" );
 }
 
+function count_should_consider_query(){
+	var all = mongo.query(col).count();
+	assertTrue( all GT 0 );
+
+	var none = mongo.query(col).$eq("nowaythiscolumnexists", "I'm no tree... I am an Ent!").count();
+	assertEquals( 0, none );
+
+	var people = createPeople(2, true);
+	var some = mongo.query(col).$eq("name", "unittest").count();
+	assertTrue( some GTE 2 );
+	assertTrue( some LT all );
+}
+
 private function createPeople( count=5, save="true" ){
 	var i = 1;
 	var people = [];
