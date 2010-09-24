@@ -16,16 +16,21 @@
 		return this;
 	}
 
-	function save(struct doc, string coll, mongoConfig=""){
-	   var collection = getMongoDBCollection(mongoConfig,coll);
+	function query(string coll, mongoConfig=""){
+	   var db = getMongoDB(mongoConfig);
+	   return new SearchBuilder(coll,db,mongoUtil);
+	}
+
+	function save(struct doc, string collectionName, mongoConfig=""){
+	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 	   var bdbo =  mongoUtil.newDBObjectFromStruct(doc);
 	   collection.insert([bdbo]);
 	   doc["_id"] =  bdbo.get("_id");
 	   return doc["_id"];
 	}
 
-	function saveAll(array docs, string coll, mongoConfig=""){
-		var collection = getMongoDBCollection(mongoConfig,coll);
+	function saveAll(array docs, string collectionName, mongoConfig=""){
+		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		var i = 1;
 		var total = arrayLen(docs);
 		var allDocs = [];
@@ -36,34 +41,25 @@
 		return docs;
 	}
 
-
-	function query(string coll, mongoConfig=""){
-	   var db = getMongoDB(mongoConfig);
-	   return new SearchBuilder(coll,db,mongoUtil);
-	}
-
-
-	function update(doc, coll, query={}, upsert=false, multi=false, mongoConfig=""){
-	   var collection = getMongoDBCollection(mongoConfig,coll);
+	function update(doc, collectionName, query={}, upsert=false, multi=false, mongoConfig=""){
+	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 
 	   if(structIsEmpty(query)){
 		  query = mongoUtil.newIDCriteriaObject(doc['_id'].toString());
 	   } else{
-	   	  query = mongoUtil.newDBObjectFromStruct (query);
+	   	  query = mongoUtil.newDBObjectFromStruct(query);
 	   }
 
 	   var dbo = mongoUtil.newDBObjectFromStruct(doc);
 
-	  collection.update( query, dbo, upsert, multi );
-	} //end function
+	   collection.update( query, dbo, upsert, multi );
+	}
 
-
-
-	function remove(doc,coll,mongoConfig=""){
-	   var collection = getMongoDBCollection(mongoConfig,coll);
+	function remove(doc, collectionName, mongoConfig=""){
+	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 	   var dbo = mongoUtil.newDBObjectFromStruct(doc);
 	   collection.remove( dbo );
-	} //end function
+	}
 
 	/**
 	* So important we need to provide top level access to it and make it as easy to use as possible.
@@ -72,11 +68,11 @@
 
 	http://www.mongodb.org/display/DOCS/findandmodify+Command
 
-		This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
+	This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
 
 	*/
-	function findAndModify(struct query, struct fields={}, struct sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean overwriteExisting=false, string coll){
-		var collection = getMongoDBCollection (MongoConfig,coll);
+	function findAndModify(struct query, struct fields={}, struct sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean overwriteExisting=false, string collectionName, mongoConfig=""){
+		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		//must apply $set, otherwise old struct is overwritten
 		if(not structKeyExists( update, "$set" ) and NOT overwriteExisting){
 			update = { "$set" = mongoUtil.newDBObjectFromStruct(update)  };
@@ -108,8 +104,8 @@
 	]
 
 	*/
-	public array function ensureIndex(array fields, coll, unique=false, mongoConfig=""){
-	 	var collection = getMongoDBCollection(mongoConfig, coll);
+	public array function ensureIndex(array fields, collectionName, unique=false, mongoConfig=""){
+	 	var collection = getMongoDBCollection(collectionName, mongoConfig);
 	 	var pos = 1;
 	 	var doc = {};
 		var indexName = "";
@@ -129,40 +125,40 @@
 	 	var dbo = mongoUtil.newDBObjectFromStruct( doc );
 	 	collection.ensureIndex( dbo, "_#indexName#_", unique );
 
-	 	return getIndexes(coll, mongoConfig);
+	 	return getIndexes(collectionName, mongoConfig);
 	}
 
-	public array function getIndexes(coll, mongoConfig=""){
-		var collection = getMongoDBCollection(mongoConfig, coll);
+	public array function getIndexes(collectionName, mongoConfig=""){
+		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		var indexes = collection.getIndexInfo().toArray();
 		return indexes;
 	}
 
-	public array function dropIndexes(coll, mongoConfig=""){
-		getMongoDBCollection( mongoConfig, coll ).dropIndexes();
-		return getIndexes( coll, mongoConfig );
+	public array function dropIndexes(collectionName, mongoConfig=""){
+		getMongoDBCollection( collectionName, mongoConfig ).dropIndexes();
+		return getIndexes( collectionName, mongoConfig );
 	}
 
 	//decide whether to use the one in the variables scope, the one being passed around as arguments, or create a new one
-	function getMongoConfig(MongoConfig=""){
-		if(isSimpleValue(arguments.MongoConfig)){
-			MongoConfig = variables.mongoConfig;
+	function getMongoConfig(mongoConfig=""){
+		if(isSimpleValue(arguments.mongoConfig)){
+			mongoConfig = variables.mongoConfig;
 		}
-		return MongoConfig;
+		return mongoConfig;
 	}
 
 	/* Provide access to the most common java objects */
-	function getMongo(MongoConfig=""){
+	function getMongo(mongoConfig=""){
 		return variables.mongo;
 	}
 
-	function getMongoDB(MongoConfig=""){
-		var jMongo = getMongo(MongoConfig);
-		return jMongo.getDb(getMongoConfig(MongoConfig).getDefaults().db_name);
+	function getMongoDB(mongoConfig=""){
+		var jMongo = getMongo(mongoConfig);
+		return jMongo.getDb(getMongoConfig(mongoConfig).getDefaults().db_name);
 	}
 
-	function getMongoDBCollection(MongoConfig="",CollectionName=""){
-		var jMongoDB = getMongoDB(MongoConfig);
+	function getMongoDBCollection(collectionName="", mongoConfig=""){
+		var jMongoDB = getMongoDB(mongoConfig);
 		return jMongoDB.getCollection(collectionName);
 	}
 

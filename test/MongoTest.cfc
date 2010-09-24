@@ -35,6 +35,8 @@ function tearDown(){
 
 
 function deleteTest(){
+  mongo.ensureIndex(["somenumber"], col);
+  mongo.ensureIndex(["name"], col);
   var doc = {
     'name'='delete me',
     'address' =  {
@@ -179,7 +181,7 @@ function findAndModify_should_atomically_update_and_return_new(){
 	assertEquals(count, arrayLen(people));
 	var query = {inprocess=false};
 	var update = {inprocess=true, started=now(),owner=cgi.SERVER_NAME};
-	var new = mongo.findAndModify(query=query, update=update, coll=atomicCol);
+	var new = mongo.findAndModify(query=query, update=update, collectionName=atomicCol);
 	flush();
 	debug(new);
 
@@ -199,12 +201,12 @@ function findAndModify_should_atomically_update_and_return_new(){
 
 
 function testGetIndexes(){
-	var result = mongo.dropIndexes(coll=col);
+	var result = mongo.dropIndexes(collectionName=col);
 	//guard
 	assertEquals( 1, arrayLen(result), "always an index on _id" );
 
-	mongo.ensureIndex( coll=col, fields=["name"]);
-	mongo.ensureIndex( coll=col, fields=[{"name"=1},{"address.state"=-1}]);
+	mongo.ensureIndex( collectionName=col, fields=["name"]);
+	mongo.ensureIndex( collectionName=col, fields=[{"name"=1},{"address.state"=-1}]);
 	result = mongo.getIndexes( col );
 	debug(result);
 
@@ -237,7 +239,7 @@ function getMongoDB_should_return_underlying_java_MongoDB(){
 }
 
 function getMongoDBCollection_should_return_underlying_java_DBCollection(){
-	var jColl = mongo.getMongoDBCollection(mongoConfig,col);
+	var jColl = mongo.getMongoDBCollection(col, mongoConfig);
 	assertEquals("com.mongodb.DBApiLayer.mycollection",jColl.getClass().getCanonicalName());
 }
 
