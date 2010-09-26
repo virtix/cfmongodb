@@ -1,26 +1,46 @@
 h1. CFMongoDB
 
-CFMongoDB is both partial wrapper for the MongoDB Java driver and a document-object mapper for ColdFusion. Additionally, there's a simple DSL which provides ColdFusion developers the ability to easily Mongo documents.
+CFMongoDB is both partial wrapper for the MongoDB Java driver and a document-object mapper for ColdFusion. Additionally, there's a simple DSL which provides ColdFusion developers the ability to easily search MongoDB document collections.
 
-One of the most appealing aspects is that data can be created as a ColdFusion structure and persisted almost verbatir. Example:
+One of the most appealing aspects is that data can be created as a ColdFusion structure and persisted almost verbatim. Example:
 
 <pre>
 <cfscript>
+
+//save
+col = 'my_collection':
 my_struct = {
+  name = 'Orc #getTickCount()#'
   foo = 'bar'
   bar = 123
+  'tags'=[ 'cool', 'distributed', 'fast' ]
 };
 
-mongo.save(my_struct);
+mongo.save(my_struct, col);
+
+//query
+result = mongo.query(col).startsWith('name','Orc').search().limit(20);
+writeOutput("Found #results.size()# of #results.totalCount()# Orcs");
+
+//use the native mongo cursor. it is case sensitive!
+cursor = result.asCursor();
+while( cursor.hasNext() ){
+  thisOrc = cursor.next();
+  writeOutput(" name = #thisOrc['name'] <br>");
+}
+
+//use a ColdFusion array of structs. this is not case sensitive
+orcs = result.asArray();
+for(orc in orcs){
+  writeOutput(" name = #orc.name# <br>");
+}
+
 </cfscript>
 </pre>
 
 Check out the wiki for additional info : "http://wiki.github.com/virtix/cfmongodb/":http://wiki.github.com/virtix/cfmongodb/
 
 
-Collaboration is welcome.
-
-
-
+Collaboration is welcome. 
 
 
