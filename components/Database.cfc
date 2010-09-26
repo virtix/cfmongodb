@@ -1,5 +1,5 @@
-<cfcomponent output="false">
-<!--- 
+<cfcomponent extends="MongoBase" output="false">
+<!---
 Operations on Databases:
 
 set port
@@ -13,15 +13,20 @@ config = {
   server_port = 27017,
   db_name = 'default_db'
  };
- 
+
  mongo = createObject('java', 'com.mongodb.Mongo').init( variables.config.server_name , variables.config.server_port );
- 
- function getDB(name){
-   return mongo.getDB(name);
+
+ function init(dbName){
+ 	variables.db = mongo.getDb(dbName);
+	return this;
+ }
+
+ function getCollection(collectionName){
+ 	return createObject("component","Collection").init(mongo,variables.db.getName(),collectionName);
  }
 </cfscript>
 
-<!--- 
+<!---
 
 getAddress	public com.mongodb.DBAddress com.mongodb.DBTCP.getAddress()
 debugString	public java.lang.String com.mongodb.DBTCP.debugString()
