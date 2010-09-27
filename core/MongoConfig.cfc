@@ -1,55 +1,49 @@
-<cfcomponent output="false" hint="Main configuration information for MongoDb connections. Defaults are provided, but should be changed as needed. ">
+<cfcomponent accessors="true" output="false" hint="Main configuration information for MongoDb connections. Defaults are provided, but should be changed as needed. ">
+
+ <cfproperty name="environment" default="local">
 <cfscript>
- variables.conf = {};
+ 
+ variables.environment = "local";
+ variables.conf = {"local" = {server_name = 'localhost', server_port = 27017}, db_name = 'default_db' };
+ variables.conf.dev = variables.conf["local"];
+ variables.conf.uat = variables.conf["local"];
+ variables.conf.staging = variables.conf["local"];
+ variables.conf.prod = variables.conf["local"];
+ 
+
  
  public struct function init(server_name='localhost',server_port='27017',db_name='default_db'){
- 	setDefaults( argumentcollection = arguments );
+ 	establishHostInfo();
+ 	//initialize the defaults with incoming args
+	structAppend( variables.conf["local"], arguments );
+	
+	//main entry point for environment-aware configuration
+	environment = setUpEnvironment();
+	
  	return this;
  }
  
- public struct function setDefaults(server_name='localhost',server_port='27017',db_name='default_db'){
- 	structAppend(conf.defaults,arguments);
- 	return conf.defaults;
+  public void function establishHostInfo(){
+	// environment decisions can often be made from this 
+	var inetAddress = createObject( "java", "java.net.InetAddress");
+	variables.hostAddress = inetAddress.getLocalHost().getHostAddress();
+	variables.hostName = inetAddress.getLocalHost().getHostName();
+  }
+ 
+ /**
+ * Main extension point: do whatever it takes to decide environment; set environment-specific defaults by overriding the environment-specific structure keyed on the environment name you decide
+ */
+ public string function setUpEnvironment(){
+ 	//overriding classes could do all manner of interesting things here... read config from properties file, etc.
+ 	return "local";
  }
  
- public struct function getDefaults(){ return conf.defaults; }
+ public string function getServerName(){ return getDefaults().server_name; }
+ public string function getServerPort(){ return getDefaults().server_port; }
+ public string function getDBName(){ return getDefaults().db_name; }
  
+ public struct function getDefaults(){ return conf[environment]; }
  
- public struct function getDevDefaults(){ return conf.dev_defaults; }
- public struct function getUATDefaults(){ return conf.uat_defaults; }
- public struct function getProductionDefaults(){ return conf.prod_defaults; }
- 
-
- 
- //Default values for server, port, database, and collection
- conf.defaults = {
-  server_name = 'localhost',
-  server_port = 27017,
-  db_name = 'default_db'
- };
-
-//Default props for dev
-conf.dev_defaults = {
-  server_name = 'localhost',
-  server_port = 27017,
-  db_name = 'default_db'
- };
-
-
-//Default props for production
-conf.prod_defaults = {
-  server_name = 'localhost',
-  server_port = 27017,
-  db_name = 'default_db'
- };
- 
- 
- //Default props for staging
-conf.uat_defaults = {
-  server_name = 'localhost',
-  server_port = 27017,
-  db_name = 'default_db'
- };
  
 </cfscript>
 </cfcomponent>
