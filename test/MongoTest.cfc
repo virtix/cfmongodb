@@ -6,7 +6,7 @@ import cfmongodb.core.*;
 function setUp(){
 	mongoConfig = createObject('component','cfmongodb.core.MongoConfig');
 	mongoConfig.init(db_name="cfmongodb_tests");
-	javaloader = createObject('component','javaloader.javaloader').init([ expandPath("/cfmongodb/lib/mongo-2.1.jar") ]);
+	javaloader = createObject('component','cfmongodb.lib.javaloader.javaloader').init([ expandPath("/cfmongodb/lib/mongo-2.1.jar") ]);
 	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init(javaloader);
 	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig, javaloaderFactory);
 
