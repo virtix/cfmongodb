@@ -93,6 +93,7 @@ function inArray(element, val){
   return this;
 }
 
+
  //vals should be list or array
 function $in(element,vals){
   if(isArray(vals)) return addArrayCriteria(element,vals,'$in');
@@ -164,14 +165,19 @@ function listToStruct(list){
   <cfargument name="keys" type="string" required="false" default="" hint="A list of keys to return" />
   <cfargument name="skip" type="numeric" required="false" default="0" hint="the number of items to skip"/>
   <cfargument name="limit" type="numeric" required="false" default="0" hint="Number of the maximum items to return" />
-  <cfargument name="sort" type="struct" required="false" default="#structNew()#" hint="A struct representing how the items are to be sorted" />
+  <cfargument name="sort" type="any" required="false" default="#structNew()#" hint="A struct or string representing how the items are to be sorted" />
   <cfscript>
    var key_exp = listToStruct(arguments.keys);
    var _keys = mongoFactory.getObject('com.mongodb.BasicDBObject').init(key_exp);
    var search_results = [];
    var criteria = get();
    var q = mongoFactory.getObject('com.mongodb.BasicDBObject').init(criteria);
-   search_results = collection.find(q,_keys).limit(limit).skip(skip).sort(mongoUtil.newDBObjectFromStruct(sort));
+   if( isSimpleValue(sort) ) {
+   	sort = createOrderedDBObject( sort );
+   } else {
+   	sort = mongoUtil.newDBObjectFromStruct(sort);
+   }
+   search_results = collection.find(q,_keys).limit(limit).skip(skip).sort(sort);
 
    return createObject("component", "SearchResult").init( search_results, mongoUtil );
   </cfscript>
@@ -241,6 +247,19 @@ But, this also proved to be a very good refactor.
 		return this;
 	</cfscript>
 </cffunction>
+
+<cffunction name="createOrderedDBObject" output="false" access="public" returntype="any" hint="">
+	<cfargument name="keyValues" type="string" required="true"/>
+	<cfset var dbo = mongoFactory.getObject('com.mongodb.BasicDBObject')>
+	<cfset var kv = "">
+	<cfloop list="#keyValues#" index="kv">
+		<cfset var key = listFirst(kv,"=")>
+		<cfset var value = listLast(kv,"=")>
+		<cfset dbo.append( key, mongoUtil.toJavaType(value) )>
+	</cfloop>
+	<cfreturn dbo>
+</cffunction>
+
 
 
 </cfcomponent>

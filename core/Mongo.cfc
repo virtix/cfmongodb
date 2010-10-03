@@ -16,9 +16,16 @@
 		return this;
 	}
 
-	function query(string coll, mongoConfig=""){
+	//for simple mongo _id searches.
+	function findById( id, string collectionName, mongoConfig="" ){
+		var collection = getMongoDBCollection(collectionName, mongoConfig);
+		var result = collection.findOne( mongoUtil.newIDCriteriaObject(id) );
+		return mongoUtil.dbObjectToStruct( result );
+	}
+
+	function query(string collectionName, mongoConfig=""){
 	   var db = getMongoDB(mongoConfig);
-	   return new SearchBuilder(coll,db,mongoUtil);
+	   return new SearchBuilder(collectionName,db,mongoUtil);
 	}
 
 	function save(struct doc, string collectionName, mongoConfig=""){

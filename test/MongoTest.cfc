@@ -62,7 +62,6 @@ function deleteTest(){
 }
 
 
-
 function updateTest(){
 
   var doc = {
@@ -107,6 +106,13 @@ function testStoreDoc(){
   id = mongo.save( doc, col );
   assert( id is not '' );
   mongo.remove( doc, col );
+}
+
+function findById_should_return_doc_for_id(){
+	var id = mongo.save( doc, col );
+
+	var fetched = mongo.findById(id.toString(), col);
+	assertEquals(id, fetched._id.toString());
 }
 
 function search_sort_should_be_applied(){
