@@ -143,8 +143,9 @@ function $exists(element, exists=true){
 }
 
 function between(element, lower, upper){
-	$gte(element, lower);
-	return $lte(element, upper);
+	var criteria = {"$gt" = mongoUtil.toJavaType(lower), "$lt" = mongoUtil.toJavaType(upper)};
+	builder.add( element, criteria );
+	return this;
 }
 
 function listToStruct(list){
@@ -231,7 +232,7 @@ But, this also proved to be a very good refactor.
 	<cfscript>
 		var exp = {};
 		exp[type] = val;
-		builder.add( element, exp );
+		builder.append( element, exp );
 		return this;
 	</cfscript>
 </cffunction>
