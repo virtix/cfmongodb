@@ -12,6 +12,7 @@ function setUp(){
 
 	col = 'people';
 	atomicCol = 'atomictests';
+	deleteCol = 'deletetests';
 
 	doc = {
 	    'name'='joe-joe',
@@ -29,14 +30,16 @@ function tearDown(){
 	var delete = {"name"="unittest"};
 	var atomicDelete = {};
 	mongo.remove( delete, col );
+
+
 	//mongo.remove(atomicDelete, atomicCol);
 }
 
 
-
 function deleteTest(){
-  mongo.ensureIndex(["somenumber"], col);
-  mongo.ensureIndex(["name"], col);
+  mongo.getMongoDbCollection(deleteCol).drop();
+  mongo.ensureIndex(["somenumber"], deleteCol);
+  mongo.ensureIndex(["name"], deleteCol);
   var doc = {
     'name'='delete me',
     'address' =  {
@@ -48,17 +51,17 @@ function deleteTest(){
 	'somenumber' = 1
   };
 
-  doc['_id'] = mongo.save( doc, col );
+  doc['_id'] = mongo.save( doc, deleteCol );
   debug(doc);
 
-  results = mongo.query(col).$eq('somenumber',1).search();
-  debug(results.getQuery().toString());
-  debug(results.asArray());
+  results = mongo.query(deleteCol).$eq('somenumber',1).search();
+  //debug(results.getQuery().toString());
+  //debug(results.asArray());
 
 
-  mongo.remove( doc, col );
-  results = mongo.query(col).$eq('name','delete me').search();
-  debug(results.getQuery().toString());
+  mongo.remove( doc, deleteCol );
+  results = mongo.query(deleteCol).$eq('name','delete me').search();
+  //debug(results.getQuery().toString());
   assertEquals( 0, results.size() );
 }
 
@@ -92,7 +95,7 @@ function updateTest(){
 
 function testSearch(){
   var initial = mongo.query(col).startsWith('name','unittest').search().asArray();
-  debug(initial);
+  //debug(initial);
 
   var addNew = 5;
   var people = createPeople( addNew, true );
@@ -103,7 +106,7 @@ function testSearch(){
 
 
 function testStoreDoc(){
-  debug(doc);
+  //debug(doc);
   id = mongo.save( doc, col );
   assert( id is not '' );
   mongo.remove( doc, col );
@@ -123,10 +126,10 @@ function search_sort_should_be_applied(){
 
 	var ascResults = asc.asArray();
 	var descResults = desc.asArray();
-	debug( desc.getQuery().toString() );
+	//debug( desc.getQuery().toString() );
 
-	debug(ascResults);
-	debug(descResults);
+	//debug(ascResults);
+	//debug(descResults);
 
 	assertEquals( ascResults[1].age, descResults[ desc.size() ].age  );
 }
@@ -202,7 +205,7 @@ function findAndModify_should_atomically_update_and_return_new(){
 	var update = {inprocess=true, started=now(),owner=cgi.SERVER_NAME};
 	var new = mongo.findAndModify(query=query, update=update, collectionName=atomicCol);
 	flush();
-	debug(new);
+	//debug(new);
 
 	assertTrue( structKeyExists(new, "age") );
 	assertTrue( structKeyExists(new, "name") );
@@ -227,14 +230,14 @@ function testGetIndexes(){
 	mongo.ensureIndex( collectionName=col, fields=["name"]);
 	mongo.ensureIndex( collectionName=col, fields=[{"name"=1},{"address.state"=-1}]);
 	result = mongo.getIndexes( col );
-	debug(result);
+	//debug(result);
 
 	assertTrue( arrayLen(result) GT 1, "Should be at least 2: 1 for the _id, and one for the index we just added");
 }
 
 function testListCommandsViaMongoDriver(){
 	var result = mongo.getMongoDB().command("listCommands");
-	debug(result);
+	//debug(result);
 	assertTrue( structKeyExists(result, "commands") );
 	//NOTE: this is not a true CF struct, but a regular java hashmap; consequently, it is case sensitive!
 	assertTrue( structCount(result["commands"]) GT 1);
@@ -269,14 +272,14 @@ function poc_profiling(){
 	u = mongo.getMongoUtil();
 	var command = u.newDBObjectFromStruct({"profile"=2});
 	var result = mongo.getMongoDB().command( command );
-	debug(result);
+	//debug(result);
 
 	var result = mongo.query("system.profile").search(limit=50,sort={"ts"=-1}).asArray();
-	debug(result);
+	//debug(result);
 
 	command = u.newDBObjectFromStruct({"profile"=0});
 	result = mongo.getMongoDB().command( command );
-	debug(result);
+	//debug(result);
 }
 
 private function flush(){
@@ -322,8 +325,8 @@ function cheapJavaloaderBenchmark(){
 	var total = getTickCount() - startTS;
 	debug("dbo clone total: #total#");
 
-	debug(getMetadata(jdbo));
-	debug(getMetadata(dbo));
+	//debug(getMetadata(jdbo));
+	//debug(getMetadata(dbo));
 
 	var dmethods = jdbo.getClass().getMethods();
 	//debug(dmethods);
@@ -332,7 +335,7 @@ function cheapJavaloaderBenchmark(){
 		allMethods[dMethods[i].getName()] = true;
 	}
 
-	debug(allMethods);
+	//debug(allMethods);
 
 }
 
