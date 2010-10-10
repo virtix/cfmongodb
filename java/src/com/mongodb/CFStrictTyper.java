@@ -7,6 +7,14 @@ import java.util.Vector;
 
 public class CFStrictTyper {
 	
+	private final static CFStrictTyper instance = new CFStrictTyper();
+	
+	public static CFStrictTyper getInstance(){
+		return instance;
+	}
+	
+	private CFStrictTyper(){}
+	
 	public Object toJavaType(Object val){
 		if( val == null ) return "";
 		

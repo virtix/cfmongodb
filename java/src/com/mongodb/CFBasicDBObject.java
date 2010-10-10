@@ -5,13 +5,16 @@ import java.util.Map;
 public class CFBasicDBObject extends com.mongodb.BasicDBObject{
 
 	private static final long serialVersionUID = 1L;
-	private CFStrictTyper typer = new CFStrictTyper();
+	private CFStrictTyper typer = CFStrictTyper.getInstance();
 
 	public static CFBasicDBObject newInstance(){
 		return new CFBasicDBObject();
 	}
+	public static CFBasicDBObject newInstance(CFStrictTyper typer){
+		return new CFBasicDBObject(typer);
+	}
 	
-	public CFBasicDBObject(){		
+	public CFBasicDBObject(){	
 	}
 	
 	//in the event that someone wishes to write and inject their own typer object

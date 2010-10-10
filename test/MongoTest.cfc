@@ -299,15 +299,8 @@ function newDBObject_should_be_acceptably_fast(){
 		var dbo = u.toMongo( st );
 	}
 	var total = getTickCount() - startTS;
-	assertTrue( total lt 100, "total should be acceptably fast but was #total#" );
+	assertTrue( total lt 200, "total should be acceptably fast but was #total#" );
 }
-
-
-
-
-
-
-
 
 function cheapJavaloaderBenchmark(){
 	var i = 1;
