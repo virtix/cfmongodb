@@ -1,5 +1,6 @@
-<cfcomponent>
+<cfcomponent accessors="true" output="false">
 
+	<cfproperty name="javaloader">
 
 	<cffunction name="init" output="false" access="public" returntype="any" hint="">
 		<cfargument name="javaloader" type="any" required="true"/>
@@ -8,7 +9,7 @@
 		<cfreturn this>
     </cffunction>
 
-	<cffunction name="getObject" output="false" access="public" returntype="any" hint="">
+	<cffunction name="getObject" output="false" access="public" returntype="any">
     	<cfargument name="path" type="string" required="true"/>
 		<cfreturn javaloader.create(path)>
     </cffunction>

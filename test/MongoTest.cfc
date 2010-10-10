@@ -269,7 +269,7 @@ function getMongoDBCollection_should_return_underlying_java_DBCollection(){
 /** dumping grounnd for proof of concept tests */
 
 function poc_profiling(){
-	u = mongo.getMongoUtil();
+	var u = mongo.getMongoUtil();
 	var command = u.newDBObjectFromStruct({"profile"=2});
 	var result = mongo.getMongoDB().command( command );
 	//debug(result);
@@ -286,6 +286,25 @@ private function flush(){
 	//forces mongo to flush
 	mongo.getMongoDB().getLastError();
 }
+
+function newDBObject_should_be_acceptably_fast(){
+	var i = 1;
+	var count = 1000;
+	var u = mongo.getMongoUtil();
+	var st = {string="string",number=1,float=1.5,date=now(),boolean=true};
+	var startTS = getTickCount();
+	for(i=1; i LTE count; i++){
+		var dbo = u.newDBObjectFromStruct( st );
+	}
+	var total = getTickCount() - startTS;
+	assertTrue( total lt 100, "total should be acceptably fast but was #total#" );
+}
+
+
+
+
+
+
 
 
 function cheapJavaloaderBenchmark(){
