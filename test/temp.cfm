@@ -12,14 +12,30 @@
 
 
 	i = 1;
-	count = 100;
+	count = 200;
 	u = mongo.getMongoUtil();
-	st = {string="string",number=1,float=1.5,date=now(),boolean=true};
+	st = {
+		string="string",number=1,float=1.5,date=now(),boolean=true,
+		array = ["one",1,5], struct = {one="one",two=2,bool=false},
+		arrayOfStruct = [ {one=1, two="two"}, {three=3, four="four"} ]
+	};
 	startTS = getTickCount();
 	for(i=1; i LTE count; i++){
-		dbo = u.newDBObjectFromStruct( st );
+		dbo = u.toMongo( st );
 	}
 	total = getTickCount() - startTS;
+
+	writeDump(dbo.toString());
+
+	mongo.save(st,"people");
+
+
+	result = mongo.query("people").between("age",5,45).search();
+
+
+	writeDump(result.getQuery().toString());
+
+
 
 
 </cfscript>

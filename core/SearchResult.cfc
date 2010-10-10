@@ -27,7 +27,7 @@
 	function asArray(){
 		res = [];
 		while(mongoCursor.hasNext()){
-			arrayAppend( res, mongoUtil.dbObjectToStruct( mongoCursor.next() ) );
+			arrayAppend( res, mongoUtil.toCF( mongoCursor.next() ) );
 		}
 		return res;
 	}

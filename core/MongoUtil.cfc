@@ -9,26 +9,24 @@
 			arguments.mongoFactory = createObject("component", "DefaultFactory");
 		}
 		variables.mongoFactory = arguments.mongoFactory;
+		variables.dboFactory = mongoFactory.getObject('com.mongodb.CFBasicDBObject');
 	}
 
 	function newDBObject(){
-		var dbo = mongoFactory.getObject('com.mongodb.BasicDBObject');
-		dbo.init();
-		return dbo;
+		return dboFactory.newInstance();
 	}
 
 	function toMongo(any data){
 		//for now, assume it's a struct to DBO conversion
-		return newDBObjectFromStruct( data );
+		var dbo = newDBObject();
+		dbo.putAll( data );
+		return dbo;
 	}
 
-	function newDBObjectFromStruct(Struct data){
-		var key = "";
-		var dbo = newDBObject();
-		for(key in data){
-			dbo.put(key,toJavaType(data[key]));
-		}
-		return dbo;
+	function toCF(BasicDBObject){
+		var s = {};
+		s.putAll(BasicDBObject);
+		return s;
 	}
 
 	function newObjectIDFromID(String id){
@@ -36,22 +34,18 @@
 	}
 
 	function newIDCriteriaObject(String id){
-		return newDBObject().init("_id",newObjectIDFromID(id));
+		return newDBObject().put("_id",newObjectIDFromID(id));
 	}
 
-	function dbObjectToStruct(BasicDBObject){
-		var s = {};
-		s.putAll(BasicDBObject);
-		return s;
-	}
-
+	/*
 	function toJavaType(value){
+		return value;
 		if(isNull(value)) return "";
 		if(not isNumeric(value) AND isBoolean(value)) return javacast("boolean",value);
 		if(isNumeric(value) and find(".",value)) return javacast("double",value);
 		if(isNumeric(value)) return javacast("long",value);
 		return value;
-	}
+	}*/
 
 </cfscript>
 </cfcomponent>

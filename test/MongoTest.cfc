@@ -81,15 +81,17 @@ function updateTest(){
   mongo.save(doc,col);
   results = mongo.query(col).startsWith('name','jabber').search();
 
-  //debug(results.getQuery());
+  debug(results.getQuery().toString());
 
 
   replace_this = results.asArray()[1];
   replace_this['name'] = 'bill';
   mongo.update( replace_this, col );
-  results = mongo.query(col).$eq('name', 'bill' ).search().size();
+  results = mongo.query(col).$eq('name', 'bill' ).search();
+  debug(results.asArray());
+
   mongo.remove( replace_this, col );
-  assert( results == 1, "results should have been 1 but was #results#" );
+  assertEquals(1, results.size(), "results should have been 1 but was #results.size()#" );
 }
 
 
@@ -215,10 +217,10 @@ function findAndModify_should_atomically_update_and_return_new(){
 	assertEquals( cgi.SERVER_NAME, new.owner );
 
 
-	var newinprocess = mongo.query(atomicCol).$eq("INPROCESS",false).search().size();
+	var newinprocess = mongo.query(atomicCol).$eq("INPROCESS",false).search();
+	debug(newinprocess.getQuery().toString());
 
-
-	assertEquals(inprocess-1, newinprocess);
+	assertEquals(inprocess-1, newinprocess.size());
 }
 
 
@@ -270,14 +272,14 @@ function getMongoDBCollection_should_return_underlying_java_DBCollection(){
 
 function poc_profiling(){
 	var u = mongo.getMongoUtil();
-	var command = u.newDBObjectFromStruct({"profile"=2});
+	var command = u.toMongo({"profile"=2});
 	var result = mongo.getMongoDB().command( command );
 	//debug(result);
 
 	var result = mongo.query("system.profile").search(limit=50,sort={"ts"=-1}).asArray();
 	//debug(result);
 
-	command = u.newDBObjectFromStruct({"profile"=0});
+	command = u.toMongo({"profile"=0});
 	result = mongo.getMongoDB().command( command );
 	//debug(result);
 }
@@ -294,7 +296,7 @@ function newDBObject_should_be_acceptably_fast(){
 	var st = {string="string",number=1,float=1.5,date=now(),boolean=true};
 	var startTS = getTickCount();
 	for(i=1; i LTE count; i++){
-		var dbo = u.newDBObjectFromStruct( st );
+		var dbo = u.toMongo( st );
 	}
 	var total = getTickCount() - startTS;
 	assertTrue( total lt 100, "total should be acceptably fast but was #total#" );

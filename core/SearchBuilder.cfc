@@ -37,7 +37,7 @@ mongoUtil = '';
 function init(string coll, any db, any mongoUtil){
  variables.mongoUtil = arguments.mongoUtil;
  variables.mongoFactory = arguments.mongoUtil.getMongoFactory();
- builder = mongoFactory.getObject('com.mongodb.BasicDBObjectBuilder').start();
+ builder = mongoFactory.getObject('com.mongodb.CFBasicDBObjectBuilder');
  pattern = createObject('java', 'java.util.regex.Pattern');
  collection = db.getCollection(coll);
 }
@@ -89,7 +89,7 @@ function where( js_expression ){
 }
 
 function inArray(element, val){
-  builder.add( element, mongoUtil.toJavaType(val) );
+  builder.add( element, val );
   return this;
 }
 
@@ -107,7 +107,7 @@ function $nin(element,vals){
 
 
 function $eq(element,val){
-  builder.add( element, mongoUtil.toJavaType(val) );
+  builder.add( element,val );
   return this;
 }
 
@@ -143,7 +143,7 @@ function $exists(element, exists=true){
 }
 
 function between(element, lower, upper){
-	var criteria = {"$gt" = mongoUtil.toJavaType(lower), "$lt" = mongoUtil.toJavaType(upper)};
+	var criteria = {"$gt" = lower, "$lt" = upper};
 	builder.add( element, criteria );
 	return this;
 }
@@ -176,7 +176,7 @@ function listToStruct(list){
    if( isSimpleValue(sort) ) {
    	sort = createOrderedDBObject( sort );
    } else {
-   	sort = mongoUtil.newDBObjectFromStruct(sort);
+   	sort = mongoUtil.toMongo(sort);
    }
    search_results = collection.find(q,_keys).limit(limit).skip(skip).sort(sort);
 
@@ -256,7 +256,7 @@ But, this also proved to be a very good refactor.
 	<cfloop list="#keyValues#" index="kv">
 		<cfset var key = listFirst(kv,"=")>
 		<cfset var value = listLast(kv,"=")>
-		<cfset dbo.append( key, mongoUtil.toJavaType(value) )>
+		<cfset dbo.append( key, value )>
 	</cfloop>
 	<cfreturn dbo>
 </cffunction>

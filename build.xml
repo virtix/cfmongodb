@@ -70,7 +70,7 @@
 		<mkdir dir="${dist.dir}" />
 	</target>
 
-	<target name="runtests" description="Make output directories and run the MXUnit task" depends="init,clean">
+	<target name="runtests" description="Make output directories and run the MXUnit task" depends="init,clean,jar">
 		<delete dir="${test.output}" failonerror="false" />
 		<delete dir="${dist.dir}" failonerror="false" />
 		<mkdir dir="${test.output.xml}" />
@@ -83,10 +83,19 @@
 	</target>
 
 
-	<target name="dist" depends="init" description="Builds the zip file for deployment">
+	<target name="dist" depends="init,jar" description="Builds the zip file for deployment">
 		<zip destfile="${dist.dir}/${dist.zip}">
-			<zipfileset dir="." excludes="${test.dir.name}/, .git/, .gitignore, deploy/, .project, build.xml, settings.xml, .settings" prefix="${dist.prefixInZip}" casesensitive="false" />
+			<zipfileset dir="." excludes="${test.dir.name}/, .git/, .gitignore, deploy/, .project, build.xml, settings.xml, .settings, java/bin/" prefix="${dist.prefixInZip}" casesensitive="false" />
 		</zip>
+	</target>
+	
+	<target name="compile" depends="init">
+		<javac srcdir="java/src" destdir="java/bin" classpathref="project.classpath" />
+	</target>
+	
+	<target name="jar" depends="compile">
+		<delete file="lib/cfmongodb.jar" />
+		<jar destfile="lib/cfmongodb.jar" basedir="java/bin" />
 	</target>
 
 

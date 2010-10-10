@@ -20,7 +20,7 @@
 	function findById( id, string collectionName, mongoConfig="" ){
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		var result = collection.findOne( mongoUtil.newIDCriteriaObject(id) );
-		return mongoUtil.dbObjectToStruct( result );
+		return mongoUtil.toCF( result );
 	}
 
 	function query(string collectionName, mongoConfig=""){
@@ -30,7 +30,7 @@
 
 	function save(struct doc, string collectionName, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
-	   var bdbo =  mongoUtil.newDBObjectFromStruct(doc);
+	   var bdbo =  mongoUtil.toMongo(doc);
 	   collection.insert([bdbo]);
 	   doc["_id"] =  bdbo.get("_id");
 	   return doc["_id"];
@@ -42,7 +42,7 @@
 		var total = arrayLen(docs);
 		var allDocs = [];
 		for(i=1; i LTE total; i++){
-			arrayAppend( allDocs, mongoUtil.newDBObjectFromStruct(docs[i]) );
+			arrayAppend( allDocs, mongoUtil.toMongo(docs[i]) );
 		}
 		collection.insert(allDocs);
 		return docs;
@@ -54,17 +54,17 @@
 	   if(structIsEmpty(query)){
 		  query = mongoUtil.newIDCriteriaObject(doc['_id'].toString());
 	   } else{
-	   	  query = mongoUtil.newDBObjectFromStruct(query);
+	   	  query = mongoUtil.toMongo(query);
 	   }
 
-	   var dbo = mongoUtil.newDBObjectFromStruct(doc);
+	   var dbo = mongoUtil.toMongo(doc);
 
 	   collection.update( query, dbo, upsert, multi );
 	}
 
 	function remove(doc, collectionName, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
-	   var dbo = mongoUtil.newDBObjectFromStruct(doc);
+	   var dbo = mongoUtil.toMongo(doc);
 	   collection.remove( dbo );
 	}
 
@@ -82,20 +82,20 @@
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		//must apply $set, otherwise old struct is overwritten
 		if(not structKeyExists( update, "$set" ) and NOT overwriteExisting){
-			update = { "$set" = mongoUtil.newDBObjectFromStruct(update)  };
+			update = { "$set" = mongoUtil.toMongo(update)  };
 		}
 		var updated = collection.findAndModify(
-			mongoUtil.newDBObjectFromStruct(query),
-			mongoUtil.newDBObjectFromStruct(fields),
-			mongoUtil.newDBObjectFromStruct(sort),
+			mongoUtil.toMongo(query),
+			mongoUtil.toMongo(fields),
+			mongoUtil.toMongo(sort),
 			remove,
-			mongoUtil.newDBObjectFromStruct(update),
+			mongoUtil.toMongo(update),
 			returnNew,
 			upsert
 		);
 		if( isNull(updated) ) return {};
 
-		return mongoUtil.dbObjectToStruct(updated);
+		return mongoUtil.toCF(updated);
 	}
 
 
@@ -129,7 +129,7 @@
 			indexName = listAppend( indexName, fieldName, "_");
 	 	}
 
-	 	var dbo = mongoUtil.newDBObjectFromStruct( doc );
+	 	var dbo = mongoUtil.toMongo( doc );
 	 	collection.ensureIndex( dbo, "_#indexName#_", unique );
 
 	 	return getIndexes(collectionName, mongoConfig);
