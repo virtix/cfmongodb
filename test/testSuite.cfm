@@ -1,7 +1,6 @@
 ﻿<cfparam name="URL.output" default="html">
 <cfscript>	
 	testSuite = createObject("component","mxunit.framework.TestSuite").TestSuite();
-	testSuite.addAll("cfmongodb.test.BaseTestCase");
 	testSuite.addAll("cfmongodb.test.MongoTest");
    	results = testSuite.run();
 </cfscript>

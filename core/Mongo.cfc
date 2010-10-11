@@ -10,8 +10,9 @@
 		setMongoConfig(arguments.MongoConfig);
 		setMongoFactory(arguments.MongoFactory);
 		variables.mongo = mongofactory.getObject("com.mongodb.Mongo");
-		var cfg = variables.mongoConfig.getDefaults();
-		variables.mongo.init(cfg.server_name,cfg.server_port);
+		
+		variables.mongo.init(variables.mongoConfig.getServers());
+		
 		mongoUtil = new MongoUtil(mongoFactory);
 		return this;
 	}

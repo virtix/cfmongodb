@@ -7,8 +7,9 @@ function setUp(){
 	jarPaths = directoryList( expandPath("/cfmongodb/lib"), false, "path", "*.jar" );
 	javaloader = createObject('component','cfmongodb.lib.javaloader.javaloader').init(jarPaths);
 	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init(javaloader);
+	
 	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(db_name="cfmongodb_tests");
-	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig, javaloaderFactory);
+	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
 
 	col = 'people';
 	atomicCol = 'atomictests';
@@ -25,7 +26,6 @@ function setUp(){
 	    'favorite-foods'=['popcicles','hot-dogs','ice-cream','cotton candy']
 	  };
 }
-
 function tearDown(){
 	var delete = {"name"="unittest"};
 	var atomicDelete = {};
