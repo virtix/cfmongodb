@@ -35,7 +35,7 @@ h2{
 	mongo.remove({},collection);
 
 
-	//here's how to insert one object
+	//here's how to insert one document
 	doc =
 		{
 			name = "Marc",
@@ -53,7 +53,17 @@ h2{
 
 	mongo.save( doc, collection );
 	writeDump( var=doc, label="Saved document", expand="false" );
-	//here's how to insert multiple
+
+	/*
+	* VERY IMPORTANT: ColdFusion will automatically uppercase struct keys if you do not quote them. Consequently, the document will be stored
+	* in MongoDB with upper case keys. Below, where we search, we MUST use uppercase keys.
+	*
+	* mongo.find({name:'Marc'}) != mongo.find({NAME: 'Marc'})
+	*/
+
+
+
+	//here's how to insert multiple documents
 	coolPeople = [];
 	for( i = 1; i LTE 5; i++ ){
 		doc =
