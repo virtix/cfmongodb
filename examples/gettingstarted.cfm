@@ -28,7 +28,7 @@ h2{
 	//initialize the core cfmongodb Mongo object
 	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig, javaloaderFactory);
 
-	//insert some documents into the 'people' collection
+	//we'll create/use a 'people' collection
 	collection = "people";
 
 	//clear out the collection so we always start fresh, for demo purposes
