@@ -143,6 +143,12 @@ function $exists(element, exists=true){
 }
 
 function between(element, lower, upper){
+	var criteria = {"$gte" = lower, "$lte" = upper};
+	builder.add( element, criteria );
+	return this;
+}
+
+function betweenExclusive(element, lower, upper){
 	var criteria = {"$gt" = lower, "$lt" = upper};
 	builder.add( element, criteria );
 	return this;
@@ -180,7 +186,7 @@ function listToStruct(list){
    }
    search_results = collection.find(q,_keys).limit(limit).skip(skip).sort(sort);
 
-   return createObject("component", "SearchResult").init( search_results, mongoUtil );
+   return createObject("component", "SearchResult").init( search_results, sort, mongoUtil );
   </cfscript>
 </cffunction>
 
@@ -251,7 +257,7 @@ But, this also proved to be a very good refactor.
 
 <cffunction name="createOrderedDBObject" output="false" access="public" returntype="any" hint="">
 	<cfargument name="keyValues" type="string" required="true"/>
-	<cfset var dbo = mongoFactory.getObject('com.mongodb.BasicDBObject')>
+	<cfset var dbo = mongoUtil.newDBObject()>
 	<cfset var kv = "">
 	<cfloop list="#keyValues#" index="kv">
 		<cfset var key = listFirst(kv,"=")>
