@@ -14,8 +14,8 @@ function beforeTests(){
 	jarPaths = directoryList( expandPath("/cfmongodb/lib"), false, "path", "*.jar" );
 	javaloader = createObject('component','cfmongodb.lib.javaloader.javaloader').init(jarPaths);
 	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init(javaloader);
-	
-	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(db_name="cfmongodb_tests");
+
+	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(db_name="cfmongodb_tests", mongoFactory=javaloaderFactory);
 	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
 
 	col = 'people';
@@ -312,7 +312,7 @@ function newDBObject_should_be_acceptably_fast(){
 	assertTrue( total lt 200, "total should be acceptably fast but was #total#" );
 }
 
-function cheapJavaloaderBenchmark(){
+private function cheapJavaloaderBenchmark(){
 	var i = 1;
 	var startTS = getTickCount();
 	var jdbo = "";

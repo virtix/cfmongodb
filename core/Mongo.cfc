@@ -6,13 +6,12 @@
 
 <cfscript>
 
-	function init(MongoConfig="#createObject('MongoConfig')#", MongoFactory="#createObject('DefaultFactory')#"){
+	function init(MongoConfig="#createObject('MongoConfig')#"){
 		setMongoConfig(arguments.MongoConfig);
-		setMongoFactory(arguments.MongoFactory);
+		setMongoFactory(mongoConfig.getMongoFactory());
 		variables.mongo = mongofactory.getObject("com.mongodb.Mongo");
-		
 		variables.mongo.init(variables.mongoConfig.getServers());
-		
+
 		mongoUtil = new MongoUtil(mongoFactory);
 		return this;
 	}
