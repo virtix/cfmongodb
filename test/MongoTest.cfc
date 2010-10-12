@@ -1,4 +1,10 @@
+<!---
+NOTE: a number of these unit tests run ensureIndex(). This is because Marc likes to run mongo with --notablescan during development, and queries
+against unindexed fields will fail, thus throwing off the tests.
 
+You should absolutely NOT run an ensureIndex on your columns every time you run a query!
+
+ --->
 <cfcomponent output="false" extends="mxunit.framework.TestCase">
 <cfscript>
 import cfmongodb.core.*;
