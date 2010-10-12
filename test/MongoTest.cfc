@@ -3,7 +3,8 @@
 <cfscript>
 import cfmongodb.core.*;
 
-function setUp(){
+
+function beforeTests(){
 	jarPaths = directoryList( expandPath("/cfmongodb/lib"), false, "path", "*.jar" );
 	javaloader = createObject('component','cfmongodb.lib.javaloader.javaloader').init(jarPaths);
 	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init(javaloader);
@@ -13,7 +14,9 @@ function setUp(){
 	col = 'people';
 	atomicCol = 'atomictests';
 	deleteCol = 'deletetests';
+}
 
+function setUp(){
 	doc = {
 	    'name'='joe-joe',
 	    'address' =  {
@@ -156,6 +159,7 @@ function search_skip_should_be_applied(){
 }
 
 function count_should_consider_query(){
+	mongo.ensureIndex(["nowaythiscolumnexists"], col);
 	var all = mongo.query(col).count();
 	assertTrue( all GT 0 );
 
