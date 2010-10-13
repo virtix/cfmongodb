@@ -161,7 +161,7 @@
 
 	function getMongoDB(mongoConfig=""){
 		var jMongo = getMongo(mongoConfig);
-		return jMongo.getDb(getMongoConfig(mongoConfig).getDefaults().db_name);
+		return jMongo.getDb(getMongoConfig(mongoConfig).getDefaults().dbName);
 	}
 
 	function getMongoDBCollection(collectionName="", mongoConfig=""){

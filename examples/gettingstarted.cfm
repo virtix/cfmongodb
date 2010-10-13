@@ -12,21 +12,15 @@ h2{
 	//the fastest way to try out cfmongodb is using Mark Mandel's javaloader, which we ship with cfmongodb. Thanks Mark!
 	//http://javaloader.riaforge.org
 
-	//get the MongoDB Java Driver jar, and the CFMongoDB helper jar; cfmongodb ships with both
-	jarPaths = directoryList( expandPath("/cfmongodb/lib"), false, "path", "*.jar" );
-
-	//create an instance of javaloader and init it
-	javaloader = createObject('component','cfmongodb.lib.javaloader.javaloader').init(jarPaths);
-
 	//use the cfmongodb javaloader factory
-	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init(javaloader);
+	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
 
 	//create a default MongoConfig instance; in your real apps, you'll create an object that extends MongoConfig and put your environment specific config in there
 	//here we initialize it with a db named 'mongorocks'
-	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(db_name="mongorocks");
+	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="mongorocks", mongoFactory=javaloaderFactory);
 
 	//initialize the core cfmongodb Mongo object
-	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig, javaloaderFactory);
+	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
 
 	//we'll create/use a 'people' collection
 	collection = "people";

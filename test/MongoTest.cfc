@@ -11,11 +11,8 @@ import cfmongodb.core.*;
 
 
 function beforeTests(){
-	jarPaths = directoryList( expandPath("/cfmongodb/lib"), false, "path", "*.jar" );
-	javaloader = createObject('component','cfmongodb.lib.javaloader.javaloader').init(jarPaths);
-	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init(javaloader);
-
-	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(db_name="cfmongodb_tests", mongoFactory=javaloaderFactory);
+	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
+	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_tests", mongoFactory=javaloaderFactory);
 	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
 
 	col = 'people';
@@ -301,12 +298,14 @@ private function flush(){
 
 function newDBObject_should_be_acceptably_fast(){
 	var i = 1;
-	var count = 1000;
+	var count = 500;
 	var u = mongo.getMongoUtil();
 	var st = {string="string",number=1,float=1.5,date=now(),boolean=true};
+	//get the first one out of its system
+	var dbo = u.toMongo( st );
 	var startTS = getTickCount();
 	for(i=1; i LTE count; i++){
-		var dbo = u.toMongo( st );
+		dbo = u.toMongo( st );
 	}
 	var total = getTickCount() - startTS;
 	assertTrue( total lt 200, "total should be acceptably fast but was #total#" );
