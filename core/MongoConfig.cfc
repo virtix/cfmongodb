@@ -6,7 +6,7 @@
 	<cfscript>
 
 	 variables.environment = "local";
-	 variables.conf = {"local" = {serverName = 'localhost', serverPort = 27017, dbName = 'default_db'}};
+	 variables.conf = {"local" = {}};
 	 variables.conf.dev = variables.conf[environment];
 	 variables.conf.uat = variables.conf[environment];
 	 variables.conf.staging = variables.conf[environment];
@@ -14,7 +14,7 @@
 
 
 
-	 public struct function init(Array hosts = [{serverName='localhost',serverPort='27017'}], dbName='default_db', MongoFactory="#createObject('DefaultFactory')#"){
+	 public function init(Array hosts = [{serverName='localhost',serverPort='27017'}], dbName='default_db', MongoFactory="#createObject('DefaultFactory')#"){
 
 		variables.mongoFactory = arguments.mongoFactory;
 	 	establishHostInfo();
@@ -26,9 +26,9 @@
 	 		variables.conf[environment].servers = mongoFactory.getObject('java.util.ArrayList').init();
 	 	}
 
+		var item = "";
 	 	for(item in arguments.hosts){
-	 		var sa = mongoFactory.getObject("com.mongodb.ServerAddress").init(item.serverName,item.serverPort);
-	 		variables.conf[environment].servers.add(sa);
+	 		addServer( environment, item.serverName, item.serverPort );
 	 	}
 
 
@@ -36,6 +36,17 @@
 		environment = configureEnvironment();
 
 	 	return this;
+	 }
+
+	 public function addServer(environment, serverName, serverPort){
+	 	var sa = mongoFactory.getObject("com.mongodb.ServerAddress").init( serverName, serverPort );
+	 	variables.conf[arguments.environment].servers.add( sa );
+		return this;
+	 }
+
+
+	 public function removeAllServers(){
+	 	variables.conf[environment].servers.clear();
 	 }
 
 	  public void function establishHostInfo(){
@@ -55,8 +66,6 @@
 	 	return "local";
 	 }
 
-	 public string function getServerName(){ return getDefaults().serverName; }
-	 public string function getServerPort(){ return getDefaults().serverPort; }
 	 public string function getDBName(){ return getDefaults().dbName; }
 
 	 public Array function getServers(){return getDefaults().servers; }
