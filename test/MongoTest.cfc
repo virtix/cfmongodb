@@ -169,12 +169,15 @@ function count_should_consider_query(){
 	assertTrue( all GT 0 );
 
 	var none = mongo.query(col).$eq("nowaythiscolumnexists", "I'm no tree... I am an Ent!").count();
+	debug(none);
 	assertEquals( 0, none );
 
 	var people = createPeople(2, true);
+
 	var some = mongo.query(col).$eq("name", "unittest").count();
+	all = mongo.query(col).count();
 	assertTrue( some GTE 2 );
-	assertTrue( some LT all );
+	assertTrue( some LT all, "Some [#some#] should have been less than all [#all#]");
 }
 
 private function createPeople( count=5, save="true" ){
