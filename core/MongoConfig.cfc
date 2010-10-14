@@ -5,32 +5,21 @@
 
 	<cfscript>
 
-	 variables.environment = "local";
-	 variables.conf = {"local" = {}};
-	 variables.conf.dev = variables.conf[environment];
-	 variables.conf.uat = variables.conf[environment];
-	 variables.conf.staging = variables.conf[environment];
-	 variables.conf.prod = variables.conf[environment];
+	variables.environment = "local";
+	variables.conf = {};
 
 
 
 	 public function init(Array hosts = [{serverName='localhost',serverPort='27017'}], dbName='default_db', MongoFactory="#createObject('DefaultFactory')#"){
-
 		variables.mongoFactory = arguments.mongoFactory;
 	 	establishHostInfo();
 
-	 	//initialize the defaults with incoming args
-		structAppend( variables.conf[environment], arguments );
-
-	 	if(not structKeyExists(variables.conf[environment],'servers')){
-	 		variables.conf[environment].servers = mongoFactory.getObject('java.util.ArrayList').init();
-	 	}
+		variables.conf = { dbname = dbName, servers = mongoFactory.getObject('java.util.ArrayList').init() };
 
 		var item = "";
 	 	for(item in arguments.hosts){
-	 		addServer( environment, item.serverName, item.serverPort );
+	 		addServer( item.serverName, item.serverPort );
 	 	}
-
 
 		//main entry point for environment-aware configuration; subclasses should do their work in here
 		environment = configureEnvironment();
@@ -38,15 +27,14 @@
 	 	return this;
 	 }
 
-	 public function addServer(environment, serverName, serverPort){
+	 public function addServer(serverName, serverPort){
 	 	var sa = mongoFactory.getObject("com.mongodb.ServerAddress").init( serverName, serverPort );
-	 	variables.conf[arguments.environment].servers.add( sa );
+	 	variables.conf.servers.add( sa );
 		return this;
 	 }
 
-
 	 public function removeAllServers(){
-	 	variables.conf[environment].servers.clear();
+	 	variables.conf.servers.clear();
 	 }
 
 	  public void function establishHostInfo(){
@@ -70,7 +58,8 @@
 
 	 public Array function getServers(){return getDefaults().servers; }
 
-	 public struct function getDefaults(){ return conf[environment]; }
+	 public struct function getDefaults(){ return conf; }
+
 
 
 	</cfscript>
