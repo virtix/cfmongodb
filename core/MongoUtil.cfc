@@ -30,6 +30,7 @@
 	}
 
 	function newObjectIDFromID(String id){
+		if( not isSimpleValue( id ) ) return id;
 		return mongoFactory.getObject("org.bson.types.ObjectId").init(id);
 	}
 

@@ -10,7 +10,15 @@
 		setMongoConfig(arguments.MongoConfig);
 		setMongoFactory(mongoConfig.getMongoFactory());
 		variables.mongo = mongofactory.getObject("com.mongodb.Mongo");
-		variables.mongo.init(variables.mongoConfig.getServers());
+
+		if( arrayLen( mongoConfig.getServers() ) GT 1 ){
+			variables.mongo.init(variables.mongoConfig.getServers());
+		} else {
+			var server = mongoConfig.getServers()[1];
+			variables.mongo.init( server.getHost(), server.getPort() );
+		}
+
+
 
 		mongoUtil = new MongoUtil(mongoFactory);
 		return this;
@@ -64,8 +72,17 @@
 
 	function remove(doc, collectionName, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
+	   if( structKeyExists(doc, "_id") ){
+	   	return removeById( doc["_id"], collectionName, mongoConfig );
+	   }
 	   var dbo = mongoUtil.toMongo(doc);
-	   collection.remove( dbo );
+	   var writeResult = collection.remove( dbo );
+	   return writeResult;
+	}
+
+	function removeById( id, collectionName, mongoConfig="" ){
+		var collection = getMongoDBCollection(collectionName, mongoConfig);
+		return collection.remove( mongoUtil.newIDCriteriaObject(id) );
 	}
 
 	/**

@@ -46,32 +46,31 @@ function deleteTest(){
   mongo.ensureIndex(["name"], deleteCol);
   var doc = {
     'name'='delete me',
+	'somenumber' = 1,
     'address' =  {
        'street'='123 bye bye ln',
        'city'='where-ever',
        'state'='??',
        'country'='USA'
-    },
-	'somenumber' = 1
+    }
   };
 
   doc['_id'] = mongo.save( doc, deleteCol );
   debug(doc);
 
   results = mongo.query(deleteCol).$eq('somenumber',1).search();
-  //debug(results.getQuery().toString());
-  //debug(results.asArray());
+  debug(results.getQuery().toString());
+  debug(results.asArray());
 
-
-  mongo.remove( doc, deleteCol );
+  var writeResult = mongo.remove( doc, deleteCol );
   results = mongo.query(deleteCol).$eq('name','delete me').search();
-  //debug(results.getQuery().toString());
+  debug(results.getQuery().toString());
   assertEquals( 0, results.size() );
 }
 
 
 function updateTest(){
-
+  var originalCount = results = mongo.query(col).$eq('name', 'bill' ).count();
   var doc = {
     'name'='jabber-walkie',
     'address' =  {
@@ -82,6 +81,8 @@ function updateTest(){
     },
     'favorite-foods'=['munchies']
   };
+
+
   mongo.save(doc,col);
   results = mongo.query(col).startsWith('name','jabber').search();
 
@@ -96,8 +97,9 @@ function updateTest(){
   debug(results.asArray());
   var finalSize = results.size();
   debug(finalSize);
-  mongo.remove( replace_this, col );
-  assertEquals(1, finalSize, "results should have been 1 but was #results.size()#" );
+  var writeResult = mongo.remove( replace_this, col );
+
+  assertEquals(originalCount+1, finalSize, "results should have been 1 but was #results.size()#" );
 }
 
 
@@ -116,7 +118,7 @@ function testSearch(){
 function testStoreDoc(){
   //debug(doc);
   id = mongo.save( doc, col );
-  assert( id is not '' );
+  assert( NOT isSimpleValue(id) );
   mongo.remove( doc, col );
 }
 
