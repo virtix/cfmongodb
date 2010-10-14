@@ -175,10 +175,10 @@ function listToStruct(list){
   <cfargument name="sort" type="any" required="false" default="#structNew()#" hint="A struct or string representing how the items are to be sorted" />
   <cfscript>
    var key_exp = listToStruct(arguments.keys);
-   var _keys = mongoFactory.getObject('com.mongodb.BasicDBObject').init(key_exp);
+   var _keys = mongoFactory.getObject('com.mongodb.CFBasicDBObject').init(key_exp);
    var search_results = [];
    var criteria = get();
-   var q = mongoFactory.getObject('com.mongodb.BasicDBObject').init(criteria);
+   var q = mongoFactory.getObject('com.mongodb.CFBasicDBObject').init(criteria);
    if( isSimpleValue(sort) ) {
    	sort = createOrderedDBObject( sort );
    } else {
@@ -192,7 +192,7 @@ function listToStruct(list){
 
 <cffunction name="count" output="false" access="public" returntype="numeric" hint="">
 	<cfset var criteria = get()>
-	<cfset var query = mongoFactory.getObject('com.mongodb.BasicDBObject').init(criteria)>
+	<cfset var query = mongoFactory.getObject('com.mongodb.CFBasicDBObject').init(criteria)>
 	<cfreturn collection.count(query)>
 </cffunction>
 

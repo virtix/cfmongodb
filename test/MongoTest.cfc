@@ -10,17 +10,15 @@ You should absolutely NOT run an ensureIndex on your columns every time you run 
 import cfmongodb.core.*;
 
 
-function beforeTests(){
 	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
 	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_tests", mongoFactory=javaloaderFactory);
 	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
 
+
+function setUp(){
 	col = 'people';
 	atomicCol = 'atomictests';
 	deleteCol = 'deletetests';
-}
-
-function setUp(){
 	doc = {
 	    'name'='joe-joe',
 	    'address' =  {
@@ -87,17 +85,19 @@ function updateTest(){
   mongo.save(doc,col);
   results = mongo.query(col).startsWith('name','jabber').search();
 
+
   debug(results.getQuery().toString());
 
-
   replace_this = results.asArray()[1];
+  debug(replace_this);
   replace_this['name'] = 'bill';
   mongo.update( replace_this, col );
   results = mongo.query(col).$eq('name', 'bill' ).search();
   debug(results.asArray());
-
+  var finalSize = results.size();
+  debug(finalSize);
   mongo.remove( replace_this, col );
-  assertEquals(1, results.size(), "results should have been 1 but was #results.size()#" );
+  assertEquals(1, finalSize, "results should have been 1 but was #results.size()#" );
 }
 
 
@@ -163,6 +163,8 @@ function search_skip_should_be_applied(){
 
 function count_should_consider_query(){
 	mongo.ensureIndex(["nowaythiscolumnexists"], col);
+	var allresults = mongo.query(col).search();
+	debug(allresults.size());
 	var all = mongo.query(col).count();
 	assertTrue( all GT 0 );
 
@@ -310,7 +312,7 @@ function newDBObject_should_be_acceptably_fast(){
 	var total = getTickCount() - startTS;
 	assertTrue( total lt 200, "total should be acceptably fast but was #total#" );
 }
-
+/*
 private function cheapJavaloaderBenchmark(){
 	var i = 1;
 	var startTS = getTickCount();
@@ -361,7 +363,7 @@ private function cheapJavaloaderBenchmark(){
 	//debug(allMethods);
 
 }
-
+*/
  </cfscript>
 </cfcomponent>
 
