@@ -1,7 +1,6 @@
-<<<<<<< HEAD
 h1. CFMongoDB
 
-CFMongoDB is both partial wrapper for the MongoDB Java driver and a document-struct mapper for ColdFusion. Additionally, there's a simple DSL which provides ColdFusion developers the ability to easily search MongoDB document collections.
+CFMongoDB is both partial wrapper for the MongoDB Java driver and a document-struct mapper for ColdFusion. It attempts to remove the need for constant javacasting in your CFML when working with MongoDB. Additionally, there's a simple DSL which provides ColdFusion developers the ability to easily search MongoDB document collections.
 
 One of the most appealing aspects is that data can be created as a ColdFusion structure and persisted almost verbatim. Example:
 
@@ -46,54 +45,3 @@ Check out the wiki for additional info : "http://wiki.github.com/marcesher/cfmon
 
 Collaboration is welcome. 
 
-
-=======
-h1. CFMongoDB
-
-CFMongoDB is both partial wrapper for the MongoDB Java driver and a document-struct mapper for ColdFusion. Additionally, there's a simple DSL which provides ColdFusion developers the ability to easily search MongoDB document collections.
-
-One of the most appealing aspects is that data can be created as a ColdFusion structure and persisted almost verbatim. Example:
-
-<pre>
-<cfscript>
-
-//save
-col = 'my_collection':
-my_struct = {
-  name = 'Orc #getTickCount()#'
-  foo = 'bar'
-  bar = 123
-  'tags'=[ 'cool', 'distributed', 'fast' ]
-};
-
-mongo.save(my_struct, col);
-
-//query
-result = mongo.query(col).startsWith('name','Orc').search(limit=20);
-writeOutput("Found #results.size()# of #results.totalCount()# Orcs");
-
-//use the native mongo cursor. it is case sensitive!
-cursor = result.asCursor();
-while( cursor.hasNext() ){
-  thisOrc = cursor.next();
-  writeOutput(" name = #thisOrc['name'] <br>");
-}
-
-//use a ColdFusion array of structs. this is not case sensitive
-orcs = result.asArray();
-for(orc in orcs){
-  writeOutput(" name = #orc.name# <br>");
-}
-
-</cfscript>
-</pre>
-
-See examples/gettingstarted.cfm to start.
-
-Check out the wiki for additional info : "http://wiki.github.com/marcesher/cfmongodb/":http://wiki.github.com/marcesher/cfmongodb/
-
-
-Collaboration is welcome. 
-
-
->>>>>>> 8f1490582856118d290c41552821cb850510fe22
