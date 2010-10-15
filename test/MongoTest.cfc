@@ -10,8 +10,9 @@ You should absolutely NOT run an ensureIndex on your columns every time you run 
 import cfmongodb.core.*;
 
 
-	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
-	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_tests", mongoFactory=javaloaderFactory);
+	//javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
+	//mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_tests", mongoFactory=javaloaderFactory);
+	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_tests");
 	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
 
 

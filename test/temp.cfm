@@ -1,4 +1,5 @@
-
+<!---<cfset structclear(server)>--->
+<cfdump var="#server#">
 <cfscript>
 
 
