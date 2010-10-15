@@ -24,6 +24,15 @@
 		return this;
 	}
 
+	function close(){
+		try{
+			variables.mongo.close();
+		}catch(any e){
+			//the error that this throws *appears* to be harmless.
+			//writeLog("Error closing Mongo: " & e.message);
+		}
+	}
+
 	//for simple mongo _id searches.
 	function findById( id, string collectionName, mongoConfig="" ){
 		var collection = getMongoDBCollection(collectionName, mongoConfig);

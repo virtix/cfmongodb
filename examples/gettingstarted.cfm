@@ -104,6 +104,10 @@ h2{
 	showResult( kidSearch, "People with kids aged between 2 and 30" );
 
 
+	//close the Mongo instance. Very important!
+	mongo.close();
+
+
 	function showResult( searchResult, label ){
 		writeOutput("<h2>#label#</h2>");
 		writeDump( var=searchResult.asArray(), label=label, expand="false" );

@@ -13,10 +13,10 @@ import cfmongodb.core.*;
 	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
 	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_tests", mongoFactory=javaloaderFactory);
 	//mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_tests");
-	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
 
 
 function setUp(){
+	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
 	col = 'people';
 	atomicCol = 'atomictests';
 	deleteCol = 'deletetests';
@@ -36,6 +36,7 @@ function tearDown(){
 	var atomicDelete = {};
 	mongo.remove( delete, col );
 
+	mongo.close();
 
 	//mongo.remove(atomicDelete, atomicCol);
 }
