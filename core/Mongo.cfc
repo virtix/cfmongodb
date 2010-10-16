@@ -102,16 +102,24 @@
 	This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
 
 	*/
-	function findAndModify(struct query, struct fields={}, struct sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean overwriteExisting=false, string collectionName, mongoConfig=""){
+	function findAndModify(struct query, struct fields={}, any sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean overwriteExisting=false, string collectionName, mongoConfig=""){
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		//must apply $set, otherwise old struct is overwritten
 		if(not structKeyExists( update, "$set" ) and NOT overwriteExisting){
 			update = { "$set" = mongoUtil.toMongo(update)  };
 		}
+		if( not isStruct( sort ) ){
+			sort = mongoUtil.createOrderedDBObject(sort);
+		} else {
+			sort = mongoUtil.toMongo( sort );
+		}
+
+		writeLog(sort.toString());
+
 		var updated = collection.findAndModify(
 			mongoUtil.toMongo(query),
 			mongoUtil.toMongo(fields),
-			mongoUtil.toMongo(sort),
+			sort,
 			remove,
 			mongoUtil.toMongo(update),
 			returnNew,

@@ -38,6 +38,19 @@
 		return newDBObject().put("_id",newObjectIDFromID(id));
 	}
 
+	function createOrderedDBObject( keyValues ){
+		var dbo = newDBObject();
+		var kv = "";
+		keyValues = listToArray(keyValues);
+		for(kv in keyValues){
+			var key = listFirst(kv, "=");
+			var value = listLast(kv, "=");
+			dbo.append( key, value );
+		}
+		return dbo;
+	}
+
+
 	/*
 	function toJavaType(value){
 		return value;

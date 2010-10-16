@@ -179,7 +179,7 @@ function listToStruct(list){
    var search_results = [];
    var criteria = get();
    if( isSimpleValue(sort) ) {
-   	sort = createOrderedDBObject( sort );
+   	sort = mongoUtil.createOrderedDBObject( sort );
    } else {
    	sort = mongoUtil.toMongo(sort);
    }
@@ -252,19 +252,5 @@ But, this also proved to be a very good refactor.
 		return this;
 	</cfscript>
 </cffunction>
-
-<cffunction name="createOrderedDBObject" output="false" access="public" returntype="any" hint="">
-	<cfargument name="keyValues" type="string" required="true"/>
-	<cfset var dbo = mongoUtil.newDBObject()>
-	<cfset var kv = "">
-	<cfloop list="#keyValues#" index="kv">
-		<cfset var key = listFirst(kv,"=")>
-		<cfset var value = listLast(kv,"=")>
-		<cfset dbo.append( key, value )>
-	</cfloop>
-	<cfreturn dbo>
-</cffunction>
-
-
 
 </cfcomponent>
