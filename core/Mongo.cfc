@@ -18,8 +18,6 @@
 			variables.mongo.init( server.getHost(), server.getPort() );
 		}
 
-
-
 		mongoUtil = new MongoUtil(mongoFactory);
 		return this;
 	}
@@ -29,7 +27,7 @@
 			variables.mongo.close();
 		}catch(any e){
 			//the error that this throws *appears* to be harmless.
-			//writeLog("Error closing Mongo: " & e.message);
+			writeLog("Error closing Mongo: " & e.message);
 		}
 	}
 

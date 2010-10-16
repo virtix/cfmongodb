@@ -2,15 +2,18 @@ package com.mongodb;
 
 import java.util.Map;
 
+import net.marcesher.CFStrictTyper;
+import net.marcesher.Typer;
+
 public class CFBasicDBObject extends com.mongodb.BasicDBObject{
 
 	private static final long serialVersionUID = 1L;
-	private CFStrictTyper typer = CFStrictTyper.getInstance();
+	private Typer typer = CFStrictTyper.getInstance();
 
 	public static CFBasicDBObject newInstance(){
 		return new CFBasicDBObject();
 	}
-	public static CFBasicDBObject newInstance(CFStrictTyper typer){
+	public static CFBasicDBObject newInstance(Typer typer){
 		return new CFBasicDBObject(typer);
 	}
 	
@@ -18,7 +21,7 @@ public class CFBasicDBObject extends com.mongodb.BasicDBObject{
 	}
 	
 	//in the event that someone wishes to write and inject their own typer object
-	public CFBasicDBObject(CFStrictTyper typer){
+	public CFBasicDBObject(Typer typer){
 		this.typer = typer;
 	}
 	

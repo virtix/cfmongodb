@@ -20,16 +20,25 @@ function setUp(){
 	col = 'people';
 	atomicCol = 'atomictests';
 	deleteCol = 'deletetests';
+	types = {
+		'number' = 100,
+		'israd' = true,
+		'numbers' = [1,2,3],
+		'booleans' = [true, false],
+		'floats' = [1.3,2.5]
+	};
 	doc = {
-	    'name'='joe-joe',
+	    'name'='unittest',
 	    'address' =  {
 	       'street'='123 big top lane',
 	       'city'='anytowne',
 	       'state'='??',
 	       'country'='USA'
 	    },
-	    'favorite-foods'=['popcicles','hot-dogs','ice-cream','cotton candy']
+	    'favorite-foods'=['popcicles','hot-dogs','ice-cream','cotton candy'],
+		'types' = types
 	  };
+	structAppend( doc, types );
 }
 function tearDown(){
 	var delete = {"name"="unittest"};
@@ -58,15 +67,15 @@ function deleteTest(){
   };
 
   doc['_id'] = mongo.save( doc, deleteCol );
-  debug(doc);
+  //debug(doc);
 
   results = mongo.query(deleteCol).$eq('somenumber',1).search();
-  debug(results.getQuery().toString());
-  debug(results.asArray());
+  //debug(results.getQuery().toString());
+  //debug(results.asArray());
 
   var writeResult = mongo.remove( doc, deleteCol );
   results = mongo.query(deleteCol).$eq('name','delete me').search();
-  debug(results.getQuery().toString());
+  //debug(results.getQuery().toString());
   assertEquals( 0, results.size() );
 }
 
@@ -89,16 +98,16 @@ function updateTest(){
   results = mongo.query(col).startsWith('name','jabber').search();
 
 
-  debug(results.getQuery().toString());
+  //debug(results.getQuery().toString());
 
   replace_this = results.asArray()[1];
-  debug(replace_this);
+  //debug(replace_this);
   replace_this['name'] = 'bill';
   mongo.update( replace_this, col );
   results = mongo.query(col).$eq('name', 'bill' ).search();
-  debug(results.asArray());
+  //debug(results.asArray());
   var finalSize = results.size();
-  debug(finalSize);
+  //debug(finalSize);
   var writeResult = mongo.remove( replace_this, col );
 
   assertEquals(originalCount+1, finalSize, "results should have been 1 but was #results.size()#" );
@@ -168,12 +177,12 @@ function search_skip_should_be_applied(){
 function count_should_consider_query(){
 	mongo.ensureIndex(["nowaythiscolumnexists"], col);
 	var allresults = mongo.query(col).search();
-	debug(allresults.size());
+	//debug(allresults.size());
 	var all = mongo.query(col).count();
 	assertTrue( all GT 0 );
 
 	var none = mongo.query(col).$eq("nowaythiscolumnexists", "I'm no tree... I am an Ent!").count();
-	debug(none);
+	//debug(none);
 	assertEquals( 0, none );
 
 	var people = createPeople(2, true);
@@ -234,7 +243,7 @@ function findAndModify_should_atomically_update_and_return_new(){
 
 
 	var newinprocess = mongo.query(atomicCol).$eq("INPROCESS",false).search();
-	debug(newinprocess.getQuery().toString());
+	//debug(newinprocess.getQuery().toString());
 
 	assertEquals(inprocess-1, newinprocess.size());
 }
@@ -319,58 +328,36 @@ function newDBObject_should_be_acceptably_fast(){
 	var total = getTickCount() - startTS;
 	assertTrue( total lt 200, "total should be acceptably fast but was #total#" );
 }
-/*
-private function cheapJavaloaderBenchmark(){
-	var i = 1;
-	var startTS = getTickCount();
-	var jdbo = "";
-	var dbo = "";
 
-	for(i=1; i LTE 100; i++){
-		jdbo = javaloaderFactory.getObject("com.mongodb.BasicDBObject");
-	}
-	var total = getTickCount() - startTS;
-	debug("javaloader total: #total#");
+function newDBObject_should_create_correct_datatypes(){
+	var origNums = mongo.query( col ).$eq("number", types.number).count();
+	var origNestedNums = mongo.query( col ).$eq("types.number", types.number).count();
+	var origBool = mongo.query( col ).$eq("israd", true).count();
+	var origNestedBool = mongo.query( col ).$eq("types.israd", true).count();
+	var origFloats = mongo.query( col ).$eq("floats",1.3).count();
+	var origNestedFloats = mongo.query( col ).$eq("types.floats",1.3).count();
+	var origString = mongo.query( col ).$eq("address.street", "123 big top lane").count();
 
-	var defaultFactory = createObject("cfmongodb.core.DefaultFactory");
+	mongo.save( doc, col );
 
-	startTS = getTickCount();
-	for(i=1; i LTE 100; i++){
-		dbo = defaultFactory.getObject("com.mongodb.BasicDBObject");
-	}
-	var total = getTickCount() - startTS;
-	debug("default total: #total#");
+	var newNums = mongo.query( col ).$eq("number", types.number).count();
+	var newNestedNums = mongo.query( col ).$eq("types.number", types.number).count();
+	var newBool = mongo.query( col ).$eq("israd", true).count();
+	var newNestedBool = mongo.query( col ).$eq("types.israd", true).count();
+	var newFloats = mongo.query( col ).$eq("floats",1.3).count();
+	var newNestedFloats = mongo.query( col ).$eq("types.floats",1.3).count();
+	var newString = mongo.query( col ).$eq("address.street", "123 big top lane").count();
 
-	//clone the last javaloader dbo
-	startTS = getTickCount();
-	for(i=1; i LTE 100; i++){
-		jdboc = jdbo.clone();
-	}
-	var total = getTickCount() - startTS;
-	debug("jdbo clone total: #total#");
-
-	//clone the last cf dbo
-	startTS = getTickCount();
-	for(i=1; i LTE 100; i++){
-		jdboc = dbo.clone();
-	}
-	var total = getTickCount() - startTS;
-	debug("dbo clone total: #total#");
-
-	//debug(getMetadata(jdbo));
-	//debug(getMetadata(dbo));
-
-	var dmethods = jdbo.getClass().getMethods();
-	//debug(dmethods);
-	var allMethods = {};
-	for(i = 1; i LTE arrayLen(dmethods); i++){
-		allMethods[dMethods[i].getName()] = true;
-	}
-
-	//debug(allMethods);
+	assertEquals( origNums+1, newNums );
+	assertEquals( origNestedNums+1, newNestedNums );
+	assertEquals( origBool+1, newBool );
+	assertEquals( origNestedBool+1, newNestedBool );
+	assertEquals( origFloats+1, newFloats );
+	assertEquals( origNestedFloats+1, newNestedFloats );
+	assertEquals( origString+1, newString );
 
 }
-*/
+
  </cfscript>
 </cfcomponent>
 
