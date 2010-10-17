@@ -114,8 +114,6 @@
 			sort = mongoUtil.toMongo( sort );
 		}
 
-		writeLog(sort.toString());
-
 		var updated = collection.findAndModify(
 			mongoUtil.toMongo(query),
 			mongoUtil.toMongo(fields),
