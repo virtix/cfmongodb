@@ -6,24 +6,46 @@
 
 <cfscript>
 
-	function init(MongoConfig="#createObject('MongoConfig')#", MongoFactory="#createObject('DefaultFactory')#"){
+	function init(MongoConfig="#createObject('MongoConfig')#"){
 		setMongoConfig(arguments.MongoConfig);
-		setMongoFactory(arguments.MongoFactory);
+		setMongoFactory(mongoConfig.getMongoFactory());
 		variables.mongo = mongofactory.getObject("com.mongodb.Mongo");
-		var cfg = variables.mongoConfig.getDefaults();
-		variables.mongo.init(cfg.server_name,cfg.server_port);
+
+		if( arrayLen( mongoConfig.getServers() ) GT 1 ){
+			variables.mongo.init(variables.mongoConfig.getServers());
+		} else {
+			var server = mongoConfig.getServers()[1];
+			variables.mongo.init( server.getHost(), server.getPort() );
+		}
+
 		mongoUtil = new MongoUtil(mongoFactory);
 		return this;
 	}
 
-	function query(string coll, mongoConfig=""){
+	function close(){
+		try{
+			variables.mongo.close();
+		}catch(any e){
+			//the error that this throws *appears* to be harmless.
+			writeLog("Error closing Mongo: " & e.message);
+		}
+	}
+
+	//for simple mongo _id searches.
+	function findById( id, string collectionName, mongoConfig="" ){
+		var collection = getMongoDBCollection(collectionName, mongoConfig);
+		var result = collection.findOne( mongoUtil.newIDCriteriaObject(id) );
+		return mongoUtil.toCF( result );
+	}
+
+	function query(string collectionName, mongoConfig=""){
 	   var db = getMongoDB(mongoConfig);
-	   return new SearchBuilder(coll,db,mongoUtil);
+	   return new SearchBuilder(collectionName,db,mongoUtil);
 	}
 
 	function save(struct doc, string collectionName, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
-	   var bdbo =  mongoUtil.newDBObjectFromStruct(doc);
+	   var bdbo =  mongoUtil.toMongo(doc);
 	   collection.insert([bdbo]);
 	   doc["_id"] =  bdbo.get("_id");
 	   return doc["_id"];
@@ -35,7 +57,7 @@
 		var total = arrayLen(docs);
 		var allDocs = [];
 		for(i=1; i LTE total; i++){
-			arrayAppend( allDocs, mongoUtil.newDBObjectFromStruct(docs[i]) );
+			arrayAppend( allDocs, mongoUtil.toMongo(docs[i]) );
 		}
 		collection.insert(allDocs);
 		return docs;
@@ -47,18 +69,27 @@
 	   if(structIsEmpty(query)){
 		  query = mongoUtil.newIDCriteriaObject(doc['_id'].toString());
 	   } else{
-	   	  query = mongoUtil.newDBObjectFromStruct(query);
+	   	  query = mongoUtil.toMongo(query);
 	   }
 
-	   var dbo = mongoUtil.newDBObjectFromStruct(doc);
+	   var dbo = mongoUtil.toMongo(doc);
 
 	   collection.update( query, dbo, upsert, multi );
 	}
 
 	function remove(doc, collectionName, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
-	   var dbo = mongoUtil.newDBObjectFromStruct(doc);
-	   collection.remove( dbo );
+	   if( structKeyExists(doc, "_id") ){
+	   	return removeById( doc["_id"], collectionName, mongoConfig );
+	   }
+	   var dbo = mongoUtil.toMongo(doc);
+	   var writeResult = collection.remove( dbo );
+	   return writeResult;
+	}
+
+	function removeById( id, collectionName, mongoConfig="" ){
+		var collection = getMongoDBCollection(collectionName, mongoConfig);
+		return collection.remove( mongoUtil.newIDCriteriaObject(id) );
 	}
 
 	/**
@@ -71,24 +102,30 @@
 	This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
 
 	*/
-	function findAndModify(struct query, struct fields={}, struct sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean overwriteExisting=false, string collectionName, mongoConfig=""){
+	function findAndModify(struct query, struct fields={}, any sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean overwriteExisting=false, string collectionName, mongoConfig=""){
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		//must apply $set, otherwise old struct is overwritten
 		if(not structKeyExists( update, "$set" ) and NOT overwriteExisting){
-			update = { "$set" = mongoUtil.newDBObjectFromStruct(update)  };
+			update = { "$set" = mongoUtil.toMongo(update)  };
 		}
+		if( not isStruct( sort ) ){
+			sort = mongoUtil.createOrderedDBObject(sort);
+		} else {
+			sort = mongoUtil.toMongo( sort );
+		}
+
 		var updated = collection.findAndModify(
-			mongoUtil.newDBObjectFromStruct(query),
-			mongoUtil.newDBObjectFromStruct(fields),
-			mongoUtil.newDBObjectFromStruct(sort),
+			mongoUtil.toMongo(query),
+			mongoUtil.toMongo(fields),
+			sort,
 			remove,
-			mongoUtil.newDBObjectFromStruct(update),
+			mongoUtil.toMongo(update),
 			returnNew,
 			upsert
 		);
 		if( isNull(updated) ) return {};
 
-		return mongoUtil.dbObjectToStruct(updated);
+		return mongoUtil.toCF(updated);
 	}
 
 
@@ -122,7 +159,7 @@
 			indexName = listAppend( indexName, fieldName, "_");
 	 	}
 
-	 	var dbo = mongoUtil.newDBObjectFromStruct( doc );
+	 	var dbo = mongoUtil.toMongo( doc );
 	 	collection.ensureIndex( dbo, "_#indexName#_", unique );
 
 	 	return getIndexes(collectionName, mongoConfig);
@@ -154,7 +191,7 @@
 
 	function getMongoDB(mongoConfig=""){
 		var jMongo = getMongo(mongoConfig);
-		return jMongo.getDb(getMongoConfig(mongoConfig).getDefaults().db_name);
+		return jMongo.getDb(getMongoConfig(mongoConfig).getDefaults().dbName);
 	}
 
 	function getMongoDBCollection(collectionName="", mongoConfig=""){

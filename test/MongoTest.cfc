@@ -1,71 +1,87 @@
+<!---
+NOTE: a number of these unit tests run ensureIndex(). This is because Marc likes to run mongo with --notablescan during development, and queries
+against unindexed fields will fail, thus throwing off the tests.
 
+You should absolutely NOT run an ensureIndex on your columns every time you run a query!
+
+ --->
 <cfcomponent output="false" extends="mxunit.framework.TestCase">
 <cfscript>
 import cfmongodb.core.*;
 
-function setUp(){
-	mongoConfig = createObject('component','cfmongodb.core.MongoConfig');
-	mongoConfig.setDefaults(db_name="cfmongodb_tests");
-	javaloader = createObject('component','javaloader.javaloader').init([ expandPath("/cfmongodb/lib/mongo-2.1.jar") ]);
-	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init(javaloader);
-	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig, javaloaderFactory);
 
+	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
+	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_tests", mongoFactory=javaloaderFactory);
+	//mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_tests");
+
+
+function setUp(){
+	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
 	col = 'people';
 	atomicCol = 'atomictests';
-
+	deleteCol = 'deletetests';
+	types = {
+		'number' = 100,
+		'israd' = true,
+		'numbers' = [1,2,3],
+		'booleans' = [true, false],
+		'floats' = [1.3,2.5]
+	};
 	doc = {
-	    'name'='joe-joe',
+	    'name'='unittest',
 	    'address' =  {
 	       'street'='123 big top lane',
 	       'city'='anytowne',
 	       'state'='??',
 	       'country'='USA'
 	    },
-	    'favorite-foods'=['popcicles','hot-dogs','ice-cream','cotton candy']
+	    'favorite-foods'=['popcicles','hot-dogs','ice-cream','cotton candy'],
+		'types' = types
 	  };
+	structAppend( doc, types );
 }
-
 function tearDown(){
 	var delete = {"name"="unittest"};
 	var atomicDelete = {};
 	mongo.remove( delete, col );
+
+	mongo.close();
+
 	//mongo.remove(atomicDelete, atomicCol);
 }
 
 
-
 function deleteTest(){
-  mongo.ensureIndex(["somenumber"], col);
-  mongo.ensureIndex(["name"], col);
+  mongo.getMongoDbCollection(deleteCol).drop();
+  mongo.ensureIndex(["somenumber"], deleteCol);
+  mongo.ensureIndex(["name"], deleteCol);
   var doc = {
     'name'='delete me',
+	'somenumber' = 1,
     'address' =  {
        'street'='123 bye bye ln',
        'city'='where-ever',
        'state'='??',
        'country'='USA'
-    },
-	'somenumber' = 1
+    }
   };
 
-  doc['_id'] = mongo.save( doc, col );
-  debug(doc);
+  doc['_id'] = mongo.save( doc, deleteCol );
+  //debug(doc);
 
-  results = mongo.query(col).$eq('somenumber',1).search();
-  debug(results.getQuery().toString());
-  debug(results.asArray());
+  results = mongo.query(deleteCol).$eq('somenumber',1).search();
+  //debug(results.getQuery().toString());
+  //debug(results.asArray());
 
-
-  mongo.remove( doc, col );
-  results = mongo.query(col).$eq('name','delete me').search();
-  debug(results.getQuery().toString());
+  var writeResult = mongo.remove( doc, deleteCol );
+  results = mongo.query(deleteCol).$eq('name','delete me').search();
+  //debug(results.getQuery().toString());
   assertEquals( 0, results.size() );
 }
 
 
-
 function updateTest(){
-
+  var originalCount = results = mongo.query(col).$eq('name', 'bill' ).count();
   var doc = {
     'name'='jabber-walkie',
     'address' =  {
@@ -76,24 +92,31 @@ function updateTest(){
     },
     'favorite-foods'=['munchies']
   };
+
+
   mongo.save(doc,col);
   results = mongo.query(col).startsWith('name','jabber').search();
 
-  //debug(results.getQuery());
 
+  //debug(results.getQuery().toString());
 
   replace_this = results.asArray()[1];
+  //debug(replace_this);
   replace_this['name'] = 'bill';
   mongo.update( replace_this, col );
-  results = mongo.query(col).$eq('name', 'bill' ).search().size();
-  mongo.remove( replace_this, col );
-  assert( results == 1, "results should have been 1 but was #results#" );
+  results = mongo.query(col).$eq('name', 'bill' ).search();
+  //debug(results.asArray());
+  var finalSize = results.size();
+  //debug(finalSize);
+  var writeResult = mongo.remove( replace_this, col );
+
+  assertEquals(originalCount+1, finalSize, "results should have been 1 but was #results.size()#" );
 }
 
 
 function testSearch(){
   var initial = mongo.query(col).startsWith('name','unittest').search().asArray();
-  debug(initial);
+  //debug(initial);
 
   var addNew = 5;
   var people = createPeople( addNew, true );
@@ -104,10 +127,17 @@ function testSearch(){
 
 
 function testStoreDoc(){
-  debug(doc);
+  //debug(doc);
   id = mongo.save( doc, col );
-  assert( id is not '' );
+  assert( NOT isSimpleValue(id) );
   mongo.remove( doc, col );
+}
+
+function findById_should_return_doc_for_id(){
+	var id = mongo.save( doc, col );
+
+	var fetched = mongo.findById(id.toString(), col);
+	assertEquals(id, fetched._id.toString());
 }
 
 function search_sort_should_be_applied(){
@@ -117,10 +147,10 @@ function search_sort_should_be_applied(){
 
 	var ascResults = asc.asArray();
 	var descResults = desc.asArray();
-	debug( desc.getQuery().toString() );
+	//debug( desc.getQuery().toString() );
 
-	debug(ascResults);
-	debug(descResults);
+	//debug(ascResults);
+	//debug(descResults);
 
 	assertEquals( ascResults[1].age, descResults[ desc.size() ].age  );
 }
@@ -142,6 +172,25 @@ function search_skip_should_be_applied(){
 	var skipped = mongo.query(col).$eq("name","unittest").search(skip=skip);
 
 	assertEquals(full.asArray()[2] , skipped.asArray()[1], "lemme splain, Lucy: since we're skipping 1, then the first element of skipped should be the second element of full" );
+}
+
+function count_should_consider_query(){
+	mongo.ensureIndex(["nowaythiscolumnexists"], col);
+	var allresults = mongo.query(col).search();
+	//debug(allresults.size());
+	var all = mongo.query(col).count();
+	assertTrue( all GT 0 );
+
+	var none = mongo.query(col).$eq("nowaythiscolumnexists", "I'm no tree... I am an Ent!").count();
+	//debug(none);
+	assertEquals( 0, none );
+
+	var people = createPeople(2, true);
+
+	var some = mongo.query(col).$eq("name", "unittest").count();
+	all = mongo.query(col).count();
+	assertTrue( some GTE 2 );
+	assertTrue( some LT all, "Some [#some#] should have been less than all [#all#]");
 }
 
 private function createPeople( count=5, save="true" ){
@@ -183,7 +232,7 @@ function findAndModify_should_atomically_update_and_return_new(){
 	var update = {inprocess=true, started=now(),owner=cgi.SERVER_NAME};
 	var new = mongo.findAndModify(query=query, update=update, collectionName=atomicCol);
 	flush();
-	debug(new);
+	//debug(new);
 
 	assertTrue( structKeyExists(new, "age") );
 	assertTrue( structKeyExists(new, "name") );
@@ -193,10 +242,10 @@ function findAndModify_should_atomically_update_and_return_new(){
 	assertEquals( cgi.SERVER_NAME, new.owner );
 
 
-	var newinprocess = mongo.query(atomicCol).$eq("INPROCESS",false).search().size();
+	var newinprocess = mongo.query(atomicCol).$eq("INPROCESS",false).search();
+	//debug(newinprocess.getQuery().toString());
 
-
-	assertEquals(inprocess-1, newinprocess);
+	assertEquals(inprocess-1, newinprocess.size());
 }
 
 
@@ -208,14 +257,14 @@ function testGetIndexes(){
 	mongo.ensureIndex( collectionName=col, fields=["name"]);
 	mongo.ensureIndex( collectionName=col, fields=[{"name"=1},{"address.state"=-1}]);
 	result = mongo.getIndexes( col );
-	debug(result);
+	//debug(result);
 
 	assertTrue( arrayLen(result) GT 1, "Should be at least 2: 1 for the _id, and one for the index we just added");
 }
 
 function testListCommandsViaMongoDriver(){
 	var result = mongo.getMongoDB().command("listCommands");
-	debug(result);
+	//debug(result);
 	assertTrue( structKeyExists(result, "commands") );
 	//NOTE: this is not a true CF struct, but a regular java hashmap; consequently, it is case sensitive!
 	assertTrue( structCount(result["commands"]) GT 1);
@@ -247,17 +296,17 @@ function getMongoDBCollection_should_return_underlying_java_DBCollection(){
 /** dumping grounnd for proof of concept tests */
 
 function poc_profiling(){
-	u = mongo.getMongoUtil();
-	var command = u.newDBObjectFromStruct({"profile"=2});
+	var u = mongo.getMongoUtil();
+	var command = u.toMongo({"profile"=2});
 	var result = mongo.getMongoDB().command( command );
-	debug(result);
+	//debug(result);
 
 	var result = mongo.query("system.profile").search(limit=50,sort={"ts"=-1}).asArray();
-	debug(result);
+	//debug(result);
 
-	command = u.newDBObjectFromStruct({"profile"=0});
+	command = u.toMongo({"profile"=0});
 	result = mongo.getMongoDB().command( command );
-	debug(result);
+	//debug(result);
 }
 
 private function flush(){
@@ -265,55 +314,47 @@ private function flush(){
 	mongo.getMongoDB().getLastError();
 }
 
-
-function cheapJavaloaderBenchmark(){
+function newDBObject_should_be_acceptably_fast(){
 	var i = 1;
+	var count = 500;
+	var u = mongo.getMongoUtil();
+	var st = {string="string",number=1,float=1.5,date=now(),boolean=true};
+	//get the first one out of its system
+	var dbo = u.toMongo( st );
 	var startTS = getTickCount();
-	var jdbo = "";
-	var dbo = "";
-
-	for(i=1; i LTE 100; i++){
-		jdbo = javaloaderFactory.getObject("com.mongodb.BasicDBObject");
+	for(i=1; i LTE count; i++){
+		dbo = u.toMongo( st );
 	}
 	var total = getTickCount() - startTS;
-	debug("javaloader total: #total#");
+	assertTrue( total lt 200, "total should be acceptably fast but was #total#" );
+}
 
-	var defaultFactory = createObject("cfmongodb.core.DefaultFactory");
+function newDBObject_should_create_correct_datatypes(){
+	var origNums = mongo.query( col ).$eq("number", types.number).count();
+	var origNestedNums = mongo.query( col ).$eq("types.number", types.number).count();
+	var origBool = mongo.query( col ).$eq("israd", true).count();
+	var origNestedBool = mongo.query( col ).$eq("types.israd", true).count();
+	var origFloats = mongo.query( col ).$eq("floats",1.3).count();
+	var origNestedFloats = mongo.query( col ).$eq("types.floats",1.3).count();
+	var origString = mongo.query( col ).$eq("address.street", "123 big top lane").count();
 
-	startTS = getTickCount();
-	for(i=1; i LTE 100; i++){
-		dbo = defaultFactory.getObject("com.mongodb.BasicDBObject");
-	}
-	var total = getTickCount() - startTS;
-	debug("default total: #total#");
+	mongo.save( doc, col );
 
-	//clone the last javaloader dbo
-	startTS = getTickCount();
-	for(i=1; i LTE 100; i++){
-		jdboc = jdbo.clone();
-	}
-	var total = getTickCount() - startTS;
-	debug("jdbo clone total: #total#");
+	var newNums = mongo.query( col ).$eq("number", types.number).count();
+	var newNestedNums = mongo.query( col ).$eq("types.number", types.number).count();
+	var newBool = mongo.query( col ).$eq("israd", true).count();
+	var newNestedBool = mongo.query( col ).$eq("types.israd", true).count();
+	var newFloats = mongo.query( col ).$eq("floats",1.3).count();
+	var newNestedFloats = mongo.query( col ).$eq("types.floats",1.3).count();
+	var newString = mongo.query( col ).$eq("address.street", "123 big top lane").count();
 
-	//clone the last cf dbo
-	startTS = getTickCount();
-	for(i=1; i LTE 100; i++){
-		jdboc = dbo.clone();
-	}
-	var total = getTickCount() - startTS;
-	debug("dbo clone total: #total#");
-
-	debug(getMetadata(jdbo));
-	debug(getMetadata(dbo));
-
-	var dmethods = jdbo.getClass().getMethods();
-	//debug(dmethods);
-	var allMethods = {};
-	for(i = 1; i LTE arrayLen(dmethods); i++){
-		allMethods[dMethods[i].getName()] = true;
-	}
-
-	debug(allMethods);
+	assertEquals( origNums+1, newNums );
+	assertEquals( origNestedNums+1, newNestedNums );
+	assertEquals( origBool+1, newBool );
+	assertEquals( origNestedBool+1, newNestedBool );
+	assertEquals( origFloats+1, newFloats );
+	assertEquals( origNestedFloats+1, newNestedFloats );
+	assertEquals( origString+1, newString );
 
 }
 

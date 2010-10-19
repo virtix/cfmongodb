@@ -37,7 +37,7 @@ mongoUtil = '';
 function init(string coll, any db, any mongoUtil){
  variables.mongoUtil = arguments.mongoUtil;
  variables.mongoFactory = arguments.mongoUtil.getMongoFactory();
- builder = mongoFactory.getObject('com.mongodb.BasicDBObjectBuilder').start();
+ builder = mongoFactory.getObject('com.mongodb.CFBasicDBObjectBuilder');
  pattern = createObject('java', 'java.util.regex.Pattern');
  collection = db.getCollection(coll);
 }
@@ -89,9 +89,10 @@ function where( js_expression ){
 }
 
 function inArray(element, val){
-  builder.add( element, mongoUtil.toJavaType(val) );
+  builder.add( element, val );
   return this;
 }
+
 
  //vals should be list or array
 function $in(element,vals){
@@ -106,7 +107,7 @@ function $nin(element,vals){
 
 
 function $eq(element,val){
-  builder.add( element, mongoUtil.toJavaType(val) );
+  builder.add( element,val );
   return this;
 }
 
@@ -142,8 +143,15 @@ function $exists(element, exists=true){
 }
 
 function between(element, lower, upper){
-	$gte(element, lower);
-	return $lte(element, upper);
+	var criteria = {"$gte" = lower, "$lte" = upper};
+	builder.add( element, criteria );
+	return this;
+}
+
+function betweenExclusive(element, lower, upper){
+	var criteria = {"$gt" = lower, "$lt" = upper};
+	builder.add( element, criteria );
+	return this;
 }
 
 function listToStruct(list){
@@ -164,17 +172,26 @@ function listToStruct(list){
   <cfargument name="keys" type="string" required="false" default="" hint="A list of keys to return" />
   <cfargument name="skip" type="numeric" required="false" default="0" hint="the number of items to skip"/>
   <cfargument name="limit" type="numeric" required="false" default="0" hint="Number of the maximum items to return" />
-  <cfargument name="sort" type="struct" required="false" default="#structNew()#" hint="A struct representing how the items are to be sorted" />
+  <cfargument name="sort" type="any" required="false" default="#structNew()#" hint="A struct or string representing how the items are to be sorted" />
   <cfscript>
    var key_exp = listToStruct(arguments.keys);
-   var _keys = mongoFactory.getObject('com.mongodb.BasicDBObject').init(key_exp);
+   var _keys = mongoUtil.toMongo(key_exp);
    var search_results = [];
    var criteria = get();
-   var q = mongoFactory.getObject('com.mongodb.BasicDBObject').init(criteria);
-   search_results = collection.find(q,_keys).limit(limit).skip(skip).sort(mongoUtil.newDBObjectFromStruct(sort));
+   if( isSimpleValue(sort) ) {
+   	sort = mongoUtil.createOrderedDBObject( sort );
+   } else {
+   	sort = mongoUtil.toMongo(sort);
+   }
+   search_results = collection.find(criteria, _keys).limit(limit).skip(skip).sort(sort);
 
-   return createObject("component", "SearchResult").init( search_results, mongoUtil );
+   return createObject("component", "SearchResult").init( search_results, sort, mongoUtil );
   </cfscript>
+</cffunction>
+
+<cffunction name="count" output="false" access="public" returntype="numeric" hint="">
+	<cfset var criteria = get()>
+	<cfreturn collection.count(criteria)>
 </cffunction>
 
 
@@ -219,7 +236,7 @@ But, this also proved to be a very good refactor.
 	<cfscript>
 		var exp = {};
 		exp[type] = val;
-		builder.add( element, exp );
+		builder.append( element, exp );
 		return this;
 	</cfscript>
 </cffunction>
@@ -235,6 +252,5 @@ But, this also proved to be a very good refactor.
 		return this;
 	</cfscript>
 </cffunction>
-
 
 </cfcomponent>

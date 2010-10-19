@@ -1,55 +1,66 @@
-<cfcomponent output="false" hint="Main configuration information for MongoDb connections. Defaults are provided, but should be changed as needed. ">
-<cfscript>
- variables.conf = {};
- 
- public struct function init(server_name='localhost',server_port='27017',db_name='default_db'){
- 	setDefaults( argumentcollection = arguments );
- 	return this;
- }
- 
- public struct function setDefaults(server_name='localhost',server_port='27017',db_name='default_db'){
- 	structAppend(conf.defaults,arguments);
- 	return conf.defaults;
- }
- 
- public struct function getDefaults(){ return conf.defaults; }
- 
- 
- public struct function getDevDefaults(){ return conf.dev_defaults; }
- public struct function getUATDefaults(){ return conf.uat_defaults; }
- public struct function getProductionDefaults(){ return conf.prod_defaults; }
- 
+<cfcomponent accessors="true" output="false" hint="Main configuration information for MongoDb connections. Defaults are provided, but should be overridden as needed in subclasses. ">
 
- 
- //Default values for server, port, database, and collection
- conf.defaults = {
-  server_name = 'localhost',
-  server_port = 27017,
-  db_name = 'default_db'
- };
+	<cfproperty name="environment" default="local">
+	<cfproperty name="mongoFactory">
 
-//Default props for dev
-conf.dev_defaults = {
-  server_name = 'localhost',
-  server_port = 27017,
-  db_name = 'default_db'
- };
+	<cfscript>
+
+	variables.environment = "local";
+	variables.conf = {};
 
 
-//Default props for production
-conf.prod_defaults = {
-  server_name = 'localhost',
-  server_port = 27017,
-  db_name = 'default_db'
- };
- 
- 
- //Default props for staging
-conf.uat_defaults = {
-  server_name = 'localhost',
-  server_port = 27017,
-  db_name = 'default_db'
- };
- 
-</cfscript>
+
+	 public function init(Array hosts = [{serverName='localhost',serverPort='27017'}], dbName='default_db', MongoFactory="#createObject('DefaultFactory')#"){
+		variables.mongoFactory = arguments.mongoFactory;
+	 	establishHostInfo();
+
+		variables.conf = { dbname = dbName, servers = mongoFactory.getObject('java.util.ArrayList').init() };
+
+		var item = "";
+	 	for(item in arguments.hosts){
+	 		addServer( item.serverName, item.serverPort );
+	 	}
+
+		//main entry point for environment-aware configuration; subclasses should do their work in here
+		environment = configureEnvironment();
+
+	 	return this;
+	 }
+
+	 public function addServer(serverName, serverPort){
+	 	var sa = mongoFactory.getObject("com.mongodb.ServerAddress").init( serverName, serverPort );
+	 	variables.conf.servers.add( sa );
+		return this;
+	 }
+
+	 public function removeAllServers(){
+	 	variables.conf.servers.clear();
+	 }
+
+	  public void function establishHostInfo(){
+		// environment decisions can often be made from this information
+		var inetAddress = createObject( "java", "java.net.InetAddress");
+		variables.hostAddress = inetAddress.getLocalHost().getHostAddress();
+		variables.hostName = inetAddress.getLocalHost().getHostName();
+	  }
+
+	 /**
+	 * Main extension point: do whatever it takes to decide environment;
+	 * set environment-specific defaults by overriding the environment-specific
+	 * structure keyed on the environment name you decide
+	 */
+	 public string function configureEnvironment(){
+	 	//overriding classes could do all manner of interesting things here... read config from properties file, etc.
+	 	return "local";
+	 }
+
+	 public string function getDBName(){ return getDefaults().dbName; }
+
+	 public Array function getServers(){return getDefaults().servers; }
+
+	 public struct function getDefaults(){ return conf; }
+
+
+
+	</cfscript>
 </cfcomponent>

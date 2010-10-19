@@ -1,6 +1,6 @@
 h1. CFMongoDB
 
-CFMongoDB is both partial wrapper for the MongoDB Java driver and a document-object mapper for ColdFusion. Additionally, there's a simple DSL which provides ColdFusion developers the ability to easily search MongoDB document collections.
+CFMongoDB is both partial wrapper for the MongoDB Java driver and a document-struct mapper for ColdFusion. It attempts to remove the need for constant javacasting in your CFML when working with MongoDB. Additionally, there's a simple DSL which provides ColdFusion developers the ability to easily search MongoDB document collections.
 
 One of the most appealing aspects is that data can be created as a ColdFusion structure and persisted almost verbatim. Example:
 
@@ -19,7 +19,7 @@ my_struct = {
 mongo.save(my_struct, col);
 
 //query
-result = mongo.query(col).startsWith('name','Orc').search().limit(20);
+result = mongo.query(col).startsWith('name','Orc').search(limit=20);
 writeOutput("Found #results.size()# of #results.totalCount()# Orcs");
 
 //use the native mongo cursor. it is case sensitive!
@@ -38,9 +38,10 @@ for(orc in orcs){
 </cfscript>
 </pre>
 
-Check out the wiki for additional info : "http://wiki.github.com/virtix/cfmongodb/":http://wiki.github.com/virtix/cfmongodb/
+See examples/gettingstarted.cfm to start.
+
+Check out the wiki for additional info : "http://wiki.github.com/marcesher/cfmongodb/":http://wiki.github.com/marcesher/cfmongodb/
 
 
 Collaboration is welcome. 
-
 

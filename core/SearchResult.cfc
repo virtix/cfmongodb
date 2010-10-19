@@ -5,7 +5,7 @@
 	query = "";
 	mongoUtil = "";
 
-	function init ( mongoCursor, mongoUtil ){
+	function init ( mongoCursor, sort, mongoUtil ){
 		structAppend( variables, arguments );
 		query = mongoCursor.getQuery();
 		return this;
@@ -27,7 +27,7 @@
 	function asArray(){
 		res = [];
 		while(mongoCursor.hasNext()){
-			arrayAppend( res, mongoUtil.dbObjectToStruct( mongoCursor.next() ) );
+			arrayAppend( res, mongoUtil.toCF( mongoCursor.next() ) );
 		}
 		return res;
 	}
@@ -58,6 +58,13 @@
 	*/
 	function getQuery(){
 		return query;
+	}
+
+	/**
+	* The sort used for the query. use getSort().toString() to get a copy/paste string for the Mongo shell
+	*/
+	function getSort(){
+		return sort;
 	}
 
 </cfscript>
