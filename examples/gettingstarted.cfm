@@ -32,17 +32,17 @@ h2{
 	//here's how to insert one document
 	doc =
 		{
-			name = "Marc",
-			wife = "Heather",
-			kids = [
-				{name="Alexis", age=7, hair="blonde", description="crazy" },
-				{name="Sidney", age=2, hair="dirty blonde", description="ornery" }
+			NAME = "Marc",
+			WIFE = "Heather",
+			KIDS = [
+				{NAME="Alexis", AGE=7, HAIR="blonde", DESCRIPTION="crazy" },
+				{NAME="Sidney", AGE=2, HAIR="dirty blonde", DESCRIPTION="ornery" }
 			],
-			bike = "Felt",
-			lovessql = true,
-			lovesmongo=true,
-			ts = now(),
-			counter = 1
+			BIKE = "Felt",
+			LOVESSQL = true,
+			LOVESMONGO=true,
+			TS = now(),
+			COUNTER = 1
 		};
 
 	mongo.save( doc, collection );
@@ -60,17 +60,17 @@ h2{
 	//here's how to insert multiple documents
 	coolPeople = [];
 	for( i = 1; i LTE 5; i++ ){
-		doc =
+		DOC =
 		{
-			name = "Cool Dude #i#",
-			wife = "Smokin hot wife #i#",
-			kids = [
-					{name="kid #i#", age=randRange(1,80), hair="strawberry", description="fun" },
-					{name="kid #i+1#", age=randRange(1,80), hair="raven", description="joyful" }
+			NAME = "Cool Dude #i#",
+			WIFE = "Smokin hot wife #i#",
+			KIDS = [
+					{NAME="kid #i#", age=randRange(1,80), hair="strawberry", description="fun" },
+					{NAME="kid #i+1#", age=randRange(1,80), hair="raven", description="joyful" }
 			],
-			bike = "Specialized",
-			ts = now(),
-			counter = i
+			BIKE = "Specialized",
+			TS = now(),
+			COUNTER = i
 		};
 		sleep(5);//to give our ts some space
 		arrayAppend( coolPeople, doc );
