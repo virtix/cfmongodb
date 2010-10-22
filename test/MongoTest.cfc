@@ -175,6 +175,8 @@ function search_skip_should_be_applied(){
 }
 
 function count_should_consider_query(){
+	createPeople(2, true, "not unit test");
+
 	mongo.ensureIndex(["nowaythiscolumnexists"], col);
 	var allresults = mongo.query(col).search();
 	//debug(allresults.size());
@@ -193,12 +195,12 @@ function count_should_consider_query(){
 	assertTrue( some LT all, "Some [#some#] should have been less than all [#all#]");
 }
 
-private function createPeople( count=5, save="true" ){
+private function createPeople( count=5, save="true", name="unittest" ){
 	var i = 1;
 	var people = [];
 	for(i = 1; i LTE count; i++){
 		var person = {
-			"name"="unittest",
+			"name"=name,
 			"age"=randRange(10,100),
 			"now"=getTickCount(),
 			"counter"=i,
