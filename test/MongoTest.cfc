@@ -101,11 +101,11 @@ function updateTest(){
   //debug(results.getQuery().toString());
 
   replace_this = results.asArray()[1];
-  //debug(replace_this);
+  debug(replace_this);
   replace_this['name'] = 'bill';
   mongo.update( replace_this, col );
   results = mongo.query(col).$eq('name', 'bill' ).search();
-  //debug(results.asArray());
+  debug(results.asArray());
   var finalSize = results.size();
   //debug(finalSize);
   var writeResult = mongo.remove( replace_this, col );
