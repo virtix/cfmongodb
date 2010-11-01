@@ -11,12 +11,12 @@
 		setMongoFactory(mongoConfig.getMongoFactory());
 		variables.mongo = mongofactory.getObject("com.mongodb.Mongo");
 
-		if( arrayLen( mongoConfig.getServers() ) GT 1 ){
+		//if( arrayLen( mongoConfig.getServers() ) GT 1 ){
 			variables.mongo.init(variables.mongoConfig.getServers());
-		} else {
-			var server = mongoConfig.getServers()[1];
-			variables.mongo.init( server.getHost(), server.getPort() );
-		}
+		//} else {
+			//var server = mongoConfig.getServers()[1];
+			//variables.mongo.init( server.getHost(), server.getPort() );
+		//}
 
 		mongoUtil = new MongoUtil(mongoFactory);
 		return this;
