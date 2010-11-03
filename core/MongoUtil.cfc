@@ -50,6 +50,11 @@
 		return dbo;
 	}
 
+	function getDateFromDoc( doc ){
+		var ts = doc["_id"].getTime();
+		return createObject("java", "java.util.Date").init(ts);
+	}
+
 
 	/*
 	function toJavaType(value){

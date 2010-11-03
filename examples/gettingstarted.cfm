@@ -103,6 +103,13 @@ h2{
 	kidSearch = mongo.query( collection ).between("KIDS.AGE", 2, 30).search(keys="NAME,COUNTER,KIDS", sort="COUNTER=-1");
 	showResult( kidSearch, "People with kids aged between 2 and 30" );
 
+	//show how you get timestamp creation on all documents, for free, when using the default ObjectID
+	mongoUtil = mongo.getMongoUtil();
+	all = mongo.query( collection ).search().asArray();
+	first = all[1];
+	last = all[ arrayLen(all) ];
+	writeOutput("Timestamp on first doc: #first['_id'].getTime()# = #mongoUtil.getDateFromDoc(first)#   <br>");
+	writeOutput("Timestamp on first doc: #last['_id'].getTime()# = #mongoUtil.getDateFromDoc(last)#   <br>");
 
 	//close the Mongo instance. Very important!
 	mongo.close();
@@ -114,7 +121,7 @@ h2{
 		writeOutput( "<br>Total #label# in this result, accounting for skip and limit: " & searchResult.size() );
 		writeOutput( "<br>Total #label#, ignoring skip and limit: " & searchResult.totalCount() );
 		writeOutput( "<br>Query: " & searchResult.getQuery().toString() );
-		writeOutput( "<br>Sort: " & searchResult.getSort().toString() );
+		writeOutput( "<br>Sort: " & searchResult.getSort().toString() & "<br>");
 	}
 
 </cfscript>
