@@ -54,12 +54,16 @@
 	function saveAll(array docs, string collectionName, mongoConfig=""){
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		var i = 1;
-		var total = arrayLen(docs);
-		var allDocs = [];
-		for(i=1; i LTE total; i++){
-			arrayAppend( allDocs, mongoUtil.toMongo(docs[i]) );
+		if( getMetadata(docs[1]).getCanonicalName() eq "com.mongodb.CFBasicDBObject" ){
+			collection.insert(docs);
+		} else {
+			var total = arrayLen(docs);
+			var allDocs = [];
+			for(i=1; i LTE total; i++){
+				arrayAppend( allDocs, mongoUtil.toMongo(docs[i]) );
+			}
+			collection.insert(allDocs);
 		}
-		collection.insert(allDocs);
 		return docs;
 	}
 
