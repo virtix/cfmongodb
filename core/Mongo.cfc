@@ -14,8 +14,8 @@
 		if( arrayLen( mongoConfig.getServers() ) GT 1 ){
 			variables.mongo.init(variables.mongoConfig.getServers());
 		} else {
-			var server = mongoConfig.getServers()[1];
-			variables.mongo.init( server.getHost(), server.getPort() );
+			var _server = mongoConfig.getServers()[1];
+			variables.mongo.init( _server.getHost(), _server.getPort() );
 		}
 
 		mongoUtil = new MongoUtil(mongoFactory);
