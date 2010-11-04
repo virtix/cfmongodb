@@ -36,7 +36,8 @@
 			BIKE = "Specialized",
 			TS = now(),
 			COUNTER = i,
-			MONGOROCKS = true
+			MONGOROCKS = true,
+			PRODUCT = serverName
 		};
 		arrayAppend( coolPeople, doc );
 	}
@@ -66,7 +67,8 @@
 			BIKE = "Specialized",
 			TS = now(),
 			COUNTER = i,
-			MONGOROCKS = true
+			MONGOROCKS = true,
+			PRODUCT = serverName
 		};
 		arrayAppend( coolPeople, mongoUtil.toMongo(doc) );
 	}
