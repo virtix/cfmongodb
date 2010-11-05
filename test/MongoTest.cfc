@@ -81,7 +81,7 @@ function deleteTest(){
 
 
 function updateTest(){
-  var originalCount = results = mongo.query(col).$eq('name', 'bill' ).count();
+  var originalCount = mongo.query(col).$eq('name', 'bill' ).count();
   var doc = {
     'name'='jabber-walkie',
     'address' =  {

@@ -7,7 +7,7 @@
 
 	documents = "";
 	count = "";
-	totalCount = "";
+	tCount = "";
 
 	function init ( mongoCursor, sort, mongoUtil ){
 		structAppend( variables, arguments );
@@ -58,10 +58,10 @@
 	* The total number of elements for the query, before limit and skip are applied
 	*/
 	function totalCount(){
-		if( variables.totalCount eq "" ){
-			variables.totalCount = mongoCursor.count();
+		if( variables.tCount eq "" ){
+			variables.tCount = mongoCursor.count();
 		}
-		return variables.totalCount;
+		return variables.tCount;
 	}
 
 	/**

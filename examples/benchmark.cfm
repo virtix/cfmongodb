@@ -4,6 +4,8 @@
 
 <cfscript>
 
+	serverName = server.coldfusion.productname & "_" & server.coldfusion.productversion;
+
 	if( url.useJavaLoader ){
 		javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
 		mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_benchmarks", mongoFactory=javaloaderFactory);
@@ -33,7 +35,9 @@
 			],
 			BIKE = "Specialized",
 			TS = now(),
-			COUNTER = i
+			COUNTER = i,
+			MONGOROCKS = true,
+			PRODUCT = serverName
 		};
 		arrayAppend( coolPeople, doc );
 	}
@@ -45,7 +49,7 @@
 
 	saveTotal = getTickCount() - saveStart;
 
-	stat = { DATATOTAL=dataCreateTotal, SAVETOTAL=saveTotal, COUNT=totalDocs, SAVETYPE='structs', USEJL=url.useJavaLoader };
+	stat = { DATATOTAL=dataCreateTotal, SAVETOTAL=saveTotal, COUNT=totalDocs, SAVETYPE='structs', USEJL=url.useJavaLoader, PRODUCT=serverName };
 	mongo.save( stat, metricColl );
 
 
@@ -62,7 +66,9 @@
 			],
 			BIKE = "Specialized",
 			TS = now(),
-			COUNTER = i
+			COUNTER = i,
+			MONGOROCKS = true,
+			PRODUCT = serverName
 		};
 		arrayAppend( coolPeople, mongoUtil.toMongo(doc) );
 	}
@@ -75,7 +81,7 @@
 
 	saveTotal = getTickCount() - saveStart;
 
-	stat = { DATATOTAL=dataCreateTotal, SAVETOTAL=saveTotal, COUNT=totalDocs, SAVETYPE='dbos', USEJL=url.useJavaLoader };
+	stat = { DATATOTAL=dataCreateTotal, SAVETOTAL=saveTotal, COUNT=totalDocs, SAVETYPE='dbos', USEJL=url.useJavaLoader, PRODUCT=serverName };
 	mongo.save( stat, metricColl );
 
 
