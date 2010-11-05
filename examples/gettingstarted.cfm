@@ -74,8 +74,8 @@ h2{
 			NAME = "Cool Dude #i#",
 			WIFE = "Smokin hot wife #i#",
 			KIDS = [
-					{NAME="kid #i#", age=randRange(1,80), hair="strawberry", description="fun" },
-					{NAME="kid #i+1#", age=randRange(1,80), hair="raven", description="joyful" }
+					{NAME="kid #i#", age=randRange(1,80), HAIR="strawberry", DESCRIPTION="fun" },
+					{NAME="kid #i+1#", age=randRange(1,80), HAIR="raven", DESCRIPTION="joyful" }
 			],
 			BIKE = "Specialized",
 			TS = now(),
