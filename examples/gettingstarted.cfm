@@ -61,7 +61,7 @@ h2{
 	* VERY IMPORTANT: ColdFusion will automatically uppercase struct keys if you do not quote them. Consequently, the document will be stored
 	* in MongoDB with upper case keys. Below, where we search, we MUST use uppercase keys.
 	*
-	* mongo.find({name:'Marc'}) != mongo.find({NAME: 'Marc'})
+	* at the shell, mongo.find({name:'Marc'}) != mongo.find({NAME: 'Marc'})
 	*/
 
 
@@ -81,7 +81,6 @@ h2{
 			TS = now(),
 			COUNTER = i
 		};
-		sleep(5);//to give our ts some space
 		arrayAppend( coolPeople, doc );
 	}
 
