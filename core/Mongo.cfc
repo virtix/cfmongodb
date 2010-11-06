@@ -43,6 +43,10 @@
 	   return new SearchBuilder(collectionName,db,mongoUtil);
 	}
 
+	function distinct(string key, string collectionName, mongoConfig=""){
+		return getMongoDBCollection(collectionName, mongoConfig).distinct( key );
+	}
+
 	function save(struct doc, string collectionName, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 	   var bdbo =  mongoUtil.toMongo(doc);
