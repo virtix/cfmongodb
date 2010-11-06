@@ -29,7 +29,7 @@
 	* Converts all cursor elements into a ColdFusion structure and returns them as an array of structs.
 	*/
 	function asArray(){
-		if( documents eq "" ){
+		if( isSimpleValue(documents) ){
 			documents = [];
 			while(mongoCursor.hasNext()){
 				var doc = mongoUtil.toCF( mongoCursor.next() );

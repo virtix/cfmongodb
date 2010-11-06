@@ -49,12 +49,13 @@ h2{
 			],
 			BIKE = "Felt",
 			LOVESSQL = true,
-			LOVESMONGO=true,
+			LOVESMONGO = true,
 			TS = now(),
 			COUNTER = 1
 		};
 
 	mongo.save( doc, collection );
+
 	writeDump( var=doc, label="Saved document", expand="false" );
 
 	/*
@@ -100,25 +101,42 @@ h2{
 	showResult( specialized, "Specialized riders, skipping to 2, limiting to 2, sorting by ts desc (skip is 0-based!)" );
 
 	//find riders with counter between 1 and 3, sorted by "ts" descending
-	specialized = mongo.query( collection ).between("COUNTER", 1, 3).search( sort="TS=-1" );
+	specialized = mongo.query( collection )
+						.$eq("BIKE", "Specialized")
+						.between("COUNTER", 1, 3)
+						.search( sort="TS=-1" );
 	showResult( specialized, "Specialized riders, COUNTER between 1 and 3" );
 
 	//find riders with counter between 1 and 3 Exclusive, sorted by "ts" descending
-	specialized = mongo.query( collection ).betweenExclusive("COUNTER", 1, 3).search( sort="TS=-1" );
+	specialized = mongo.query( collection )
+						.$eq("BIKE", "Specialized")
+						.betweenExclusive("COUNTER", 1, 3)
+						.search( sort="TS=-1" );
 	showResult( specialized, "Specialized riders, COUNTER between 1 and 3 Exclusive" );
 
 	//find people with kids aged between 2 and 30
 	kidSearch = mongo.query( collection ).between("KIDS.AGE", 2, 30).search(keys="NAME,COUNTER,KIDS", sort="COUNTER=-1");
 	showResult( kidSearch, "People with kids aged between 2 and 30" );
 
+
+	//find a document by ObjectID... note that it returns the document, NOT a SearchResult object; here, we'll "spoof" what your app would do if the id were in the URL scope
+	url.personId = specialized.asArray()[1]["_id"].toString();
+
+	byID = mongo.findById( url.personId, collection );
+	writeOutput("<h2>Find by ID</h2>");
+	writeDump(var=byID, label="Find by ID: #url.personID#", expand="false");
+
+
+
 	//show how you get timestamp creation on all documents, for free, when using the default ObjectID
 	mongoUtil = mongo.getMongoUtil();
 	all = mongo.query( collection ).search().asArray();
 	first = all[1];
 	last = all[ arrayLen(all) ];
-	writeOutput("Timestamp on first doc: #first['_id'].getTime()# = #mongoUtil.getDateFromDoc(first)#   <br>");
-	writeOutput("Timestamp on first doc: #last['_id'].getTime()# = #mongoUtil.getDateFromDoc(last)#   <br>");
-writeoutput(first["_id"].toString());
+	writeOutput("<h2>Timestamps from Doc</h2>");
+	writeOutput("<br><br>Timestamp on first doc: #first['_id'].getTime()# = #mongoUtil.getDateFromDoc(first)#   <br>");
+	writeOutput("Timestamp on last doc: #last['_id'].getTime()# = #mongoUtil.getDateFromDoc(last)#   <br>");
+
 	//close the Mongo instance. Very important!
 	mongo.close();
 
