@@ -42,7 +42,7 @@ h2{
 	doc =
 		{
 			NAME = "Marc",
-			WIFE = "Heather",
+			SPOUSE = "Heather",
 			KIDS = [
 				{NAME="Alexis", AGE=7, HAIR="blonde", DESCRIPTION="crazy" },
 				{NAME="Sidney", AGE=2, HAIR="dirty blonde", DESCRIPTION="ornery" }
@@ -66,14 +66,13 @@ h2{
 	*/
 
 
-
 	//here's how to insert multiple documents
 	coolPeople = [];
 	for( i = 1; i LTE 5; i++ ){
 		DOC =
 		{
-			NAME = "Cool Dude #i#",
-			WIFE = "Smokin hot wife #i#",
+			NAME = "Cool Person #i#",
+			SPOUSE = "Cool Spouse #i#",
 			KIDS = [
 					{NAME="kid #i#", age=randRange(1,80), HAIR="strawberry", DESCRIPTION="fun" },
 					{NAME="kid #i+1#", age=randRange(1,80), HAIR="raven", DESCRIPTION="joyful" }
@@ -96,9 +95,9 @@ h2{
 	specialized = mongo.query( collection ).$eq("BIKE", "Specialized").search();
 	showResult( specialized, "Specialized riders" );
 
-	//find the 2nd and 3rd Specialized bike riders, sorted by "ts" descending
+	//find the 3rd and 4th Specialized bike riders, sorted by "ts" descending
 	specialized = mongo.query( collection ).$eq("BIKE", "Specialized").search( skip=2, limit=2, sort="TS=-1" );
-	showResult( specialized, "Specialized riders, skipping to 2, limiting to 2, sorting by ts desc (skip is 0-based!)" );
+	showResult( specialized, "Specialized riders, skipping to 3, limiting to 2, sorting by ts desc (skip is 0-based!)" );
 
 	//find riders with counter between 1 and 3, sorted by "ts" descending
 	specialized = mongo.query( collection )
@@ -146,6 +145,13 @@ h2{
 
 	writeOutput("<h2>findAndModify()</h2>");
 	writeDump(var=nowScheduled, label="findAndModify", expand="false");
+
+	writeOutput("<h2>Indexes</h2>");
+	//here's how to add indexes onto collections for faster querying
+	mongo.ensureIndex( ["NAME"], collection );
+	mongo.ensureIndex( ["BIKE"], collection );
+	mongo.ensureIndex( ["KIDS.AGE"], collection );
+	writeDump(var=mongo.getIndexes(collection), label="Indexes", expand="false");
 
 
 

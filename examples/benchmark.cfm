@@ -1,21 +1,11 @@
 
-<!--- pass 'false' in the URL to use the mongo jars in your cfusion lib directory --->
-<cfparam name="url.useJavaLoader" default="true">
-
+<!--- create the mongo objects --->
+<cfset variables.dbName = "cfmongodb_benchmarks">
+<cfinclude template="initMongo.cfm">
+<cfset mongoUtil = mongo.getMongoUtil()>
 <cfscript>
 
 	serverName = server.coldfusion.productname & "_" & server.coldfusion.productversion;
-
-	if( url.useJavaLoader ){
-		javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
-		mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_benchmarks", mongoFactory=javaloaderFactory);
-	}
-	else
-	{
-		mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="cfmongodb_benchmarks");
-	}
-	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
-	mongoUtil = mongo.getMongoUtil();
 
 	//we'll create/use a 'people' collection
 	collection = "datadump";
