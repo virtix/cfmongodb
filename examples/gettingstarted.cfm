@@ -127,6 +127,27 @@ h2{
 	writeDump(var=byID, label="Find by ID: #url.personID#", expand="false");
 
 
+	//findAndModify: Great for Queuing!
+	//insert docs into a work queue; find the first 'pending' one and modify it to 'running'
+	mongo.remove( {}, "tasks" );
+	jobs = [
+		{STATUS = 'P', N = 1, DATA = 'Let it be'},
+		{STATUS = 'P', N = 2, DATA = 'Hey Jude!'},
+		{STATUS = 'P', N = 3, DATA = 'Ebony and Ivory'},
+		{STATUS = 'P', N = 4, DATA = 'Bang your head'}
+	];
+	mongo.saveAll( jobs, "tasks" );
+
+	query = {STATUS = 'P'};
+	update = {STATUS = 'R', started = now(), owner = cgi.server_name};
+
+	nowScheduled = mongo.findAndModify( query = query, update = update,
+										sort = "N", collectionName = "tasks" );
+
+	writeOutput("<h2>findAndModify()</h2>");
+	writeDump(var=nowScheduled, label="findAndModify", expand="false");
+
+
 
 	//show how you get timestamp creation on all documents, for free, when using the default ObjectID
 	mongoUtil = mongo.getMongoUtil();
@@ -134,7 +155,7 @@ h2{
 	first = all[1];
 	last = all[ arrayLen(all) ];
 	writeOutput("<h2>Timestamps from Doc</h2>");
-	writeOutput("<br><br>Timestamp on first doc: #first['_id'].getTime()# = #mongoUtil.getDateFromDoc(first)#   <br>");
+	writeOutput("Timestamp on first doc: #first['_id'].getTime()# = #mongoUtil.getDateFromDoc(first)#   <br>");
 	writeOutput("Timestamp on last doc: #last['_id'].getTime()# = #mongoUtil.getDateFromDoc(last)#   <br>");
 
 	//close the Mongo instance. Very important!
