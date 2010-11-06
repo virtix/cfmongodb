@@ -125,6 +125,75 @@ h2{
 	writeOutput("<h2>Find by ID</h2>");
 	writeDump(var=byID, label="Find by ID: #url.personID#", expand="false");
 
+	//here's how to update. You'll generally do two kinds of updating:
+	// 1) updating a single pre-fetched document... this is the most common. It's a find/modify/resave
+	// 2) updating one or more documents based on criteria. You almost always need to use a $set in this situation!!!
+
+	//updating a single pre-fetched document
+	person = mongo.query( collection ).search(limit="1").asArray()[1];
+	person.FAVORITECIGAR = "H. Upmann Cubano";
+	person.MODTS = now();
+	arrayAppend( person.KIDS, {NAME = "Pauly", AGE = 0} );
+	mongo.update( person, collection );
+
+	writeOutput("<h2>Updated Person</h2>");
+	writeDump( var=person, label="updated person", expand="false");
+
+	//updating a single document. by default it'll wrap the "doc" arg in "$set" as a convenience
+	person = {NAME = "Ima PHP dev", AGE=12};
+	mongo.save( person, collection );
+
+	mongo.update( doc={NAME = "Ima CF Dev", HAPPY = true}, query= {NAME = "Ima PHP dev"}, collectionName = collection );
+	afterUpdate = mongo.findById( person["_id"], collection );
+
+	writeOutput("<h2>Updated person by criteria</h2>");
+	writeDump(var = person, label="Original", expand=false);
+	writeDump(var = afterUpdate, label = "After update", expand=false);
+
+	//updating a single document based on criteria and overwriting instead of updating
+	person = {NAME = "Ima PHP dev", AGE=12};
+	mongo.save( person, collection );
+
+	mongo.update( doc={NAME = "Ima CF Dev", HAPPY = true}, query= {NAME = "Ima PHP dev"}, overwriteExisting = true, collectionName = collection );
+	afterUpdate = mongo.findById( person["_id"], collection );
+
+	writeOutput("<h2>Updated person by criteria. Notice it OVERWROTE the entire document</h2>");
+	writeDump(var = person, label="Original", expand=false);
+	writeDump(var = afterUpdate, label = "After update without using $set", expand=false);
+
+
+	//updating multiple documents
+	mongo.saveAll(
+		[{NAME = "EmoHipster", AGE=16},
+		{NAME = "EmoHipster", AGE=15},
+		{NAME = "EmoHipster", AGE=18}],
+		collection
+	);
+
+	mongo.update( doc = {NAME = "Oldster", AGE=76, REALIZED="tempus fugit"}, query = {NAME = "EmoHipster"}, multi=true, collectionName = collection );
+
+	oldsters = mongo.query( collection ).$eq("NAME","Oldster").search().asArray();
+
+	writeOutput("<h2>Updating multiple documents</h2>");
+	writeDump( var=oldsters, label="Even EmoHipsters get old some day", expand="false");
+
+	//perform an $inc update
+	cast = [{NAME = "Wesley", LIFELEFT=50, TORTUREMACHINE=true},
+		{NAME = "Spaniard", LIFELEFT=42, TORTUREMACHINE=false},
+		{NAME = "Giant", LIFELEFT=6, TORTUREMACHINE=false},
+		{NAME = "Poor Forest Walker", LIFELEFT=60, TORTUREMACHINE=true}];
+	
+	mongo.saveAll( cast, collection	);
+
+	suckLifeOut = {"$inc" = {LIFELEFT = -1}}; 
+	victims = {TORTUREMACHINE = true};
+	mongo.update( doc = suckLifeOut, query = victims, multi = true, collectionName = collection );
+	
+	rugenVictims = mongo.query( collection ).$eq("TORTUREMACHINE", true).search().asArray();
+	
+	writeOutput("<h2>Atomically incrementing with $inc</h2>");
+	writeDump( var = cast, label="Before the movie started", expand=false);
+	writeDump( var = rugenVictims, label="Instead of sucking water, I'm sucking life", expand=false);
 
 	//findAndModify: Great for Queuing!
 	//insert docs into a work queue; find the first 'pending' one and modify it to 'running'

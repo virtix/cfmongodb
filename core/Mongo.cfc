@@ -71,16 +71,22 @@
 		return docs;
 	}
 
-	function update(doc, collectionName, query={}, upsert=false, multi=false, mongoConfig=""){
+	function update(doc, collectionName, query={}, upsert=false, multi=false, overwriteExisting=false, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 
 	   if(structIsEmpty(query)){
 		  query = mongoUtil.newIDCriteriaObject(doc['_id'].toString());
+		  var dbo = mongoUtil.toMongo(doc);
 	   } else{
 	   	  query = mongoUtil.toMongo(query);
-	   }
+		  var keys = structkeyList(doc);
+		  if(not find("$",keys) and NOT overwriteExisting){
+		  	doc = { "$set" = mongoUtil.toMongo(doc)  };
+		  }
 
+	   }
 	   var dbo = mongoUtil.toMongo(doc);
+
 
 	   collection.update( query, dbo, upsert, multi );
 	}
