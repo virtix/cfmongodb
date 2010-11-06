@@ -71,7 +71,7 @@
 		return docs;
 	}
 
-	function update(doc, collectionName, query={}, upsert=false, multi=false, overwriteExisting=false, mongoConfig=""){
+	function update(doc, collectionName, query={}, upsert=false, multi=false, applySet=true, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 
 	   if(structIsEmpty(query)){
@@ -80,7 +80,7 @@
 	   } else{
 	   	  query = mongoUtil.toMongo(query);
 		  var keys = structkeyList(doc);
-		  if(not find("$",keys) and NOT overwriteExisting){
+		  if( applySet ){
 		  	doc = { "$set" = mongoUtil.toMongo(doc)  };
 		  }
 
@@ -116,10 +116,10 @@
 	This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
 
 	*/
-	function findAndModify(struct query, struct fields={}, any sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean overwriteExisting=false, string collectionName, mongoConfig=""){
+	function findAndModify(struct query, struct fields={}, any sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean applySet=true, string collectionName, mongoConfig=""){
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		//must apply $set, otherwise old struct is overwritten
-		if(not structKeyExists( update, "$set" ) and NOT overwriteExisting){
+		if( applySet ){
 			update = { "$set" = mongoUtil.toMongo(update)  };
 		}
 		if( not isStruct( sort ) ){

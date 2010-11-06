@@ -154,10 +154,10 @@ h2{
 	person = {NAME = "Ima PHP dev", AGE=12};
 	mongo.save( person, collection );
 
-	mongo.update( doc={NAME = "Ima CF Dev", HAPPY = true}, query= {NAME = "Ima PHP dev"}, overwriteExisting = true, collectionName = collection );
+	mongo.update( doc={NAME = "Ima CF Dev", HAPPY = true}, query= {NAME = "Ima PHP dev"}, applySet = false, collectionName = collection );
 	afterUpdate = mongo.findById( person["_id"], collection );
 
-	writeOutput("<h2>Updated person by criteria. Notice it OVERWROTE the entire document</h2>");
+	writeOutput("<h2>Updated person by criteria with applySet=false. Notice it OVERWROTE the entire document</h2>");
 	writeDump(var = person, label="Original", expand=false);
 	writeDump(var = afterUpdate, label = "After update without using $set", expand=false);
 
