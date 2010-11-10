@@ -170,7 +170,12 @@ h2{
 		collection
 	);
 
-	mongo.update( doc = {NAME = "Oldster", AGE=76, REALIZED="tempus fugit"}, query = {NAME = "EmoHipster"}, multi=true, collectionName = collection );
+	update = {NAME = "Oldster", AGE=76, REALIZED="tempus fugit"};
+	query = {NAME = "EmoHipster"};
+
+	mongo.update( doc = update, query = query,
+				  multi=true,
+				  collectionName = collection );
 
 	oldsters = mongo.query( collection ).$eq("NAME","Oldster").search().asArray();
 
@@ -182,18 +187,40 @@ h2{
 		{NAME = "Spaniard", LIFELEFT=42, TORTUREMACHINE=false},
 		{NAME = "Giant", LIFELEFT=6, TORTUREMACHINE=false},
 		{NAME = "Poor Forest Walker", LIFELEFT=60, TORTUREMACHINE=true}];
-	
+
 	mongo.saveAll( cast, collection	);
 
-	suckLifeOut = {"$inc" = {LIFELEFT = -1}}; 
+	suckLifeOut = {"$inc" = {LIFELEFT = -1}};
 	victims = {TORTUREMACHINE = true};
 	mongo.update( doc = suckLifeOut, query = victims, multi = true, collectionName = collection );
-	
+
 	rugenVictims = mongo.query( collection ).$eq("TORTUREMACHINE", true).search().asArray();
-	
+
 	writeOutput("<h2>Atomically incrementing with $inc</h2>");
 	writeDump( var = cast, label="Before the movie started", expand=false);
 	writeDump( var = rugenVictims, label="Instead of sucking water, I'm sucking life", expand=false);
+
+
+	//Upserting
+	doc = {
+		NAME = "Marc",
+		BIKE = "Felt",
+		JOYFUL = true
+	};
+	mongo.save(doc = doc, collectionName = collection);
+
+	writeOutput("<h2>Upserted document after saving initially</h2>");
+	writeDump( var = doc, label = "Upserted doc: #doc['_id'].toString()#", expand = false);
+
+	doc.WANTSSTOGIE = true;
+	mongo.save(doc = doc, collectionName = collection);
+
+	writeOutput("<h2>Upserted document after updating</h2>");
+	writeDump( var = doc, label = "Upserted doc: #doc['_id'].toString()#", expand = false);
+
+
+
+
 
 	//findAndModify: Great for Queuing!
 	//insert docs into a work queue; find the first 'pending' one and modify it to 'running'

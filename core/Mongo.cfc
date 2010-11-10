@@ -49,9 +49,13 @@
 
 	function save(struct doc, string collectionName, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
-	   var bdbo =  mongoUtil.toMongo(doc);
-	   collection.insert([bdbo]);
-	   doc["_id"] =  bdbo.get("_id");
+	   if( structKeyExists(doc, "_id") ){
+	       update( doc = doc, collectionName = collectionName, mongoConfig = mongoConfig);
+	   } else {
+		   var bdbo =  mongoUtil.toMongo(doc);
+		   collection.insert([bdbo]);
+		   doc["_id"] =  bdbo.get("_id");
+	   }
 	   return doc["_id"];
 	}
 
@@ -86,8 +90,6 @@
 
 	   }
 	   var dbo = mongoUtil.toMongo(doc);
-
-
 	   collection.update( query, dbo, upsert, multi );
 	}
 
