@@ -60,6 +60,8 @@
 	}
 
 	function saveAll(array docs, string collectionName, mongoConfig=""){
+		if( arrayIsEmpty(docs) ) return docs;
+
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		var i = 1;
 		if( getMetadata(docs[1]).getCanonicalName() eq "com.mongodb.CFBasicDBObject" ){

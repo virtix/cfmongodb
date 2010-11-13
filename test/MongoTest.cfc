@@ -126,11 +126,15 @@ function testSearch(){
 }
 
 
-function testStoreDoc(){
+function save_should_add_id_to_doc(){
   //debug(doc);
   id = mongo.save( doc, col );
   assert( NOT isSimpleValue(id) );
   mongo.remove( doc, col );
+}
+
+function saveAll_should_return_immediately_if_no_docs_present(){
+	assertEquals( [], mongo.saveAll([],col)   );
 }
 
 function findById_should_return_doc_for_id(){

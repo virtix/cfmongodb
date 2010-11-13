@@ -5,9 +5,12 @@
 
 <cfparam name="url.limit" default="25">
 <cfparam name="url.skip" default="0">
+<cfparam name="url.sort" default="NAME">
+<cfparam name="url.direction" default="1">
 
 <cfset results = mongo.query("people")
-						.search(skip=url.skip, limit = url.limit)>
+						.$exists("COUNTER")
+						.search(skip=url.skip, limit = url.limit, sort="#url.sort#=#url.direction#")>
 
 <cfset people = results.asArray()>
 
