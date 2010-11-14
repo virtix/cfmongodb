@@ -3,7 +3,7 @@ component{
 
 
 	function onApplicationStart(){
-		variables.dbname = "mongorocks";
+		variables.dbname = "cfmongodb_examples";
 		include "../initMongo.cfm";
 		application.mongo = mongo;
 		application.collection = "people_list";
