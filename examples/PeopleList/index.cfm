@@ -1,33 +1,34 @@
 
-<cfinclude template="initMongo.cfm">
-
-<!--- <cfinclude template="loadPeople.cfm"> --->
 
 <cfparam name="url.limit" default="25">
 <cfparam name="url.skip" default="0">
 <cfparam name="url.sort" default="NAME">
 <cfparam name="url.direction" default="1">
 
-<cfset results = mongo.query("people")
+<cfset results = application.mongo.query(application.collection)
 						.$exists("COUNTER")
 						.search(skip=url.skip, limit = url.limit, sort="#url.sort#=#url.direction#")>
 
 <cfset people = results.asArray()>
 
 <cfoutput>
-<p align="center">Showing #url.skip+1# through #results.size()# of #results.totalCount()# People</p>
+<p align="center">Showing #url.skip+1# through #results.size()+url.skip# of #results.totalCount()# People</p>
 
 
 <cfsavecontent variable="navlinks">
 	<cfif results.totalCount() GT results.size()>
 		<p align="center" class="pagination">
+		<cfif url.skip GT 0>
 		<span>
-			<a href="peopleList.cfm?skip=#url.skip-url.limit#">Previous</a>
+			<a href="?skip=#url.skip-url.limit#">Previous</a>
 		</span>
+		</cfif>
 
+		<cfif results.size()+url.skip LT results.totalCount()>
 		<span>
-			<a href="peopleList.cfm?skip=#url.skip+url.limit#">Next</a>
+			<a href="?skip=#url.skip+url.limit#">Next</a>
 		</span>
+		</cfif>
 		</p>
 	</cfif>
 </cfsavecontent>
@@ -49,9 +50,9 @@
 	<tbody>
 	<cfloop array="#people#" index="person">
 		<tr>
-			<td>  #IIF( structKeyExists(person, "counter") , DE("#person.counter#"), DE('&nbsp;') )#  </td>
-			<td> <a href="personDetail.cfm?id=#person['_id'].toString()#">#person.name#</a> </td>
-			<td>  #IIF( structKeyExists(person, "spouse") , DE("#person.spouse#"), DE('&nbsp;') )#  </td>
+			<td>  #person.counter# </td>
+			<td> <a href="detail.cfm?id=#person['_id'].toString()#">#person.name#</a> </td>
+			<td>  #person.spouse# </td>
 			<td>
 				<cfif structKeyExists(person, "kids")>
 					<cfloop array="#person.kids#" index="kid">
@@ -69,5 +70,4 @@
 #navlinks#
 
 </cfoutput>
-<cfset mongo.close()>
 

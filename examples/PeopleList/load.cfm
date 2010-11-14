@@ -1,11 +1,8 @@
-<cfset dbName = "mongorocks">
-<cfset collection = "people">
 
-<cfif not structKeyExists(variables, "mongo")>
-	<cfinclude template="initMongo.cfm">
-</cfif>
 
 <cfscript>
+mongo = application.mongo;
+collection = application.collection;
 
 counters = mongo.distinct( "COUNTER",collection );
 arraySort( counters, "numeric", "desc"  );
