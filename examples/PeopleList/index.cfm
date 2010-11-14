@@ -6,7 +6,6 @@
 <cfparam name="url.direction" default="1">
 
 <cfset results = application.mongo.query(application.collection)
-						.$exists("COUNTER")
 						.search(skip = url.skip, limit = url.limit, sort = "#ucase(url.sort)#=#url.direction#")>
 
 <cfset people = results.asArray()>
@@ -43,8 +42,8 @@
 	<thead>
 		<tr>
 			<th> <a href="#baseHeaderURL#&sort=counter">N</a> </th>
-			<th> <a href="#baseHeaderURL#&sort=name">Name</a></th>
-			<th> <a href="#baseHeaderURL#&sort=spouse">Spouse</a></th>
+			<th> <a href="#baseHeaderURL#&sort=name">Name</a> </th>
+			<th> <a href="#baseHeaderURL#&sort=spouse">Spouse</a> </th>
 			<th>Kids</th>
 		</tr>
 	</thead>
