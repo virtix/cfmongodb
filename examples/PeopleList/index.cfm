@@ -7,9 +7,12 @@
 
 <cfset results = application.mongo.query(application.collection)
 						.$exists("COUNTER")
-						.search(skip=url.skip, limit = url.limit, sort="#url.sort#=#url.direction#")>
+						.search(skip = url.skip, limit = url.limit, sort = "#ucase(url.sort)#=#url.direction#")>
 
 <cfset people = results.asArray()>
+
+<cfset newDir = url.direction eq 1 ? -1 : 1>
+<cfset baseHeaderURL = "?skip=#url.skip#&limit=#url.limit#&direction=#newDir#">
 
 <cfoutput>
 <p align="center">Showing #url.skip+1# through #results.size()+url.skip# of #results.totalCount()# People</p>
@@ -39,9 +42,9 @@
 <table border="1" align="center">
 	<thead>
 		<tr>
-			<th>N</th>
-			<th>Name</th>
-			<th>Spouse</th>
+			<th> <a href="#baseHeaderURL#&sort=counter">N</a> </th>
+			<th> <a href="#baseHeaderURL#&sort=name">Name</a></th>
+			<th> <a href="#baseHeaderURL#&sort=spouse">Spouse</a></th>
 			<th>Kids</th>
 		</tr>
 	</thead>
