@@ -5,6 +5,10 @@
 	query = "";
 	mongoUtil = "";
 
+	documents = "";
+	count = "";
+	tCount = "";
+
 	function init ( mongoCursor, sort, mongoUtil ){
 		structAppend( variables, arguments );
 		query = mongoCursor.getQuery();
@@ -25,25 +29,39 @@
 	* Converts all cursor elements into a ColdFusion structure and returns them as an array of structs.
 	*/
 	function asArray(){
-		res = [];
-		while(mongoCursor.hasNext()){
-			arrayAppend( res, mongoUtil.toCF( mongoCursor.next() ) );
+		if( isSimpleValue(documents) ){
+			documents = [];
+			while(mongoCursor.hasNext()){
+				var doc = mongoUtil.toCF( mongoCursor.next() );
+				arrayAppend( documents, doc );
+			}
 		}
-		return res;
+		return documents;
 	}
 
 	/**
 	* The number of elements in the result, after limit and skip are applied
 	*/
 	function size(){
-		return mongoCursor.size();
+		if( count eq "" ){
+			//designed to reduce calls to mongo... mongoCursor.size() will additionally query the database, and arrayLen() is faster
+			if( isArray( documents ) ){
+				count = arrayLen( documents );
+			} else {
+				count = mongoCursor.size();
+			}
+		}
+		return count;
 	}
 
 	/**
 	* The total number of elements for the query, before limit and skip are applied
 	*/
 	function totalCount(){
-		return mongoCursor.count();
+		if( variables.tCount eq "" ){
+			variables.tCount = mongoCursor.count();
+		}
+		return variables.tCount;
 	}
 
 	/**

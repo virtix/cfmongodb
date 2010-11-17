@@ -81,7 +81,7 @@ function deleteTest(){
 
 
 function updateTest(){
-  var originalCount = results = mongo.query(col).$eq('name', 'bill' ).count();
+  var originalCount = mongo.query(col).$eq('name', 'bill' ).count();
   var doc = {
     'name'='jabber-walkie',
     'address' =  {
@@ -101,11 +101,11 @@ function updateTest(){
   //debug(results.getQuery().toString());
 
   replace_this = results.asArray()[1];
-  //debug(replace_this);
+  debug(replace_this);
   replace_this['name'] = 'bill';
   mongo.update( replace_this, col );
   results = mongo.query(col).$eq('name', 'bill' ).search();
-  //debug(results.asArray());
+  debug(results.asArray());
   var finalSize = results.size();
   //debug(finalSize);
   var writeResult = mongo.remove( replace_this, col );
@@ -126,11 +126,15 @@ function testSearch(){
 }
 
 
-function testStoreDoc(){
+function save_should_add_id_to_doc(){
   //debug(doc);
   id = mongo.save( doc, col );
   assert( NOT isSimpleValue(id) );
   mongo.remove( doc, col );
+}
+
+function saveAll_should_return_immediately_if_no_docs_present(){
+	assertEquals( [], mongo.saveAll([],col)   );
 }
 
 function findById_should_return_doc_for_id(){
@@ -175,6 +179,8 @@ function search_skip_should_be_applied(){
 }
 
 function count_should_consider_query(){
+	createPeople(2, true, "not unit test");
+
 	mongo.ensureIndex(["nowaythiscolumnexists"], col);
 	var allresults = mongo.query(col).search();
 	//debug(allresults.size());
@@ -193,12 +199,12 @@ function count_should_consider_query(){
 	assertTrue( some LT all, "Some [#some#] should have been less than all [#all#]");
 }
 
-private function createPeople( count=5, save="true" ){
+private function createPeople( count=5, save="true", name="unittest" ){
 	var i = 1;
 	var people = [];
 	for(i = 1; i LTE count; i++){
 		var person = {
-			"name"="unittest",
+			"name"=name,
 			"age"=randRange(10,100),
 			"now"=getTickCount(),
 			"counter"=i,

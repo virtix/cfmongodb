@@ -10,10 +10,10 @@ public class CFBasicDBObject extends com.mongodb.BasicDBObject{
 	private static final long serialVersionUID = 1L;
 	private Typer typer = CFStrictTyper.getInstance();
 
-	public static CFBasicDBObject newInstance(){
+	public static BasicDBObject newInstance(){
 		return new CFBasicDBObject();
 	}
-	public static CFBasicDBObject newInstance(Typer typer){
+	public static BasicDBObject newInstance(Typer typer){
 		return new CFBasicDBObject(typer);
 	}
 	
@@ -30,11 +30,11 @@ public class CFBasicDBObject extends com.mongodb.BasicDBObject{
 	}
 	
 	public CFBasicDBObject(CFBasicDBObject other){
-		super.putAll((Map)other);
+		putAll((Map)other);
 	}
 	
 	public CFBasicDBObject(Map map) {
-		super.putAll(map);
+		putAll(map);
 	}
 
 	public Object put(String key, Object val){

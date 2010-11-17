@@ -9,6 +9,7 @@
 	arrayappend(javaPaths, binPath);
 	javaloader = createObject('component','cfmongodb.lib.javaloader.javaloader').init(javaPaths);
 	javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init(javaloader);
+
 	mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(db_name="cfmongodb_tests", mongoFactory=javaloaderFactory);
 	mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
 

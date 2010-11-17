@@ -10,10 +10,20 @@
 		}
 		variables.mongoFactory = arguments.mongoFactory;
 		variables.dboFactory = mongoFactory.getObject('com.mongodb.CFBasicDBObject');
+		variables.typerClass = getTyperClass();
+		variables.typer = mongoFactory.getObject(typerClass).getInstance();
+	}
+
+	/**
+	* Returns a passthrough typer for Railo b/c it knows that 1 is 1 and not "1"; returns the CFStrictTyper otherwise
+	*/
+	public function getTyperClass(){
+		if( server.coldfusion.productname eq "Railo") return "net.marcesher.NoTyper";
+		return "net.marcesher.CFStrictTyper";
 	}
 
 	function newDBObject(){
-		return dboFactory.newInstance();
+		return dboFactory.newInstance(variables.typer);
 	}
 
 	function toMongo(any data){
@@ -48,6 +58,11 @@
 			dbo.append( key, value );
 		}
 		return dbo;
+	}
+
+	function getDateFromDoc( doc ){
+		var ts = doc["_id"].getTime();
+		return createObject("java", "java.util.Date").init(ts);
 	}
 
 

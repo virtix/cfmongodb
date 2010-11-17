@@ -2,7 +2,6 @@ package net.marcesher;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 
 public class TypedStruct extends HashMap {

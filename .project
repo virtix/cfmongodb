@@ -4,17 +4,16 @@
 	<comment></comment>
 	<projects>
 	</projects>
-<buildSpec>
+	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
-	
 	<natures>
 		<nature>com.adobe.ide.coldfusion.projectNature</nature>
-		<nature>org.cfeclipse.cfml.CFENature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.cfeclipse.cfml.CFENature</nature>
 	</natures>
 </projectDescription>

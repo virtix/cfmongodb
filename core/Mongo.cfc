@@ -14,8 +14,8 @@
 		if( arrayLen( mongoConfig.getServers() ) GT 1 ){
 			variables.mongo.init(variables.mongoConfig.getServers());
 		} else {
-			var server = mongoConfig.getServers()[1];
-			variables.mongo.init( server.getHost(), server.getPort() );
+			var _server = mongoConfig.getServers()[1];
+			variables.mongo.init( _server.getHost(), _server.getPort() );
 		}
 
 		mongoUtil = new MongoUtil(mongoFactory);
@@ -43,37 +43,55 @@
 	   return new SearchBuilder(collectionName,db,mongoUtil);
 	}
 
+	function distinct(string key, string collectionName, mongoConfig=""){
+		return getMongoDBCollection(collectionName, mongoConfig).distinct( key );
+	}
+
 	function save(struct doc, string collectionName, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
-	   var bdbo =  mongoUtil.toMongo(doc);
-	   collection.insert([bdbo]);
-	   doc["_id"] =  bdbo.get("_id");
+	   if( structKeyExists(doc, "_id") ){
+	       update( doc = doc, collectionName = collectionName, mongoConfig = mongoConfig);
+	   } else {
+		   var bdbo =  mongoUtil.toMongo(doc);
+		   collection.insert([bdbo]);
+		   doc["_id"] =  bdbo.get("_id");
+	   }
 	   return doc["_id"];
 	}
 
 	function saveAll(array docs, string collectionName, mongoConfig=""){
+		if( arrayIsEmpty(docs) ) return docs;
+
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		var i = 1;
-		var total = arrayLen(docs);
-		var allDocs = [];
-		for(i=1; i LTE total; i++){
-			arrayAppend( allDocs, mongoUtil.toMongo(docs[i]) );
+		if( getMetadata(docs[1]).getCanonicalName() eq "com.mongodb.CFBasicDBObject" ){
+			collection.insert(docs);
+		} else {
+			var total = arrayLen(docs);
+			var allDocs = [];
+			for(i=1; i LTE total; i++){
+				arrayAppend( allDocs, mongoUtil.toMongo(docs[i]) );
+			}
+			collection.insert(allDocs);
 		}
-		collection.insert(allDocs);
 		return docs;
 	}
 
-	function update(doc, collectionName, query={}, upsert=false, multi=false, mongoConfig=""){
+	function update(doc, collectionName, query={}, upsert=false, multi=false, applySet=true, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 
 	   if(structIsEmpty(query)){
 		  query = mongoUtil.newIDCriteriaObject(doc['_id'].toString());
+		  var dbo = mongoUtil.toMongo(doc);
 	   } else{
 	   	  query = mongoUtil.toMongo(query);
+		  var keys = structkeyList(doc);
+		  if( applySet ){
+		  	doc = { "$set" = mongoUtil.toMongo(doc)  };
+		  }
+
 	   }
-
 	   var dbo = mongoUtil.toMongo(doc);
-
 	   collection.update( query, dbo, upsert, multi );
 	}
 
@@ -102,10 +120,10 @@
 	This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
 
 	*/
-	function findAndModify(struct query, struct fields={}, any sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean overwriteExisting=false, string collectionName, mongoConfig=""){
+	function findAndModify(struct query, struct fields={}, any sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean applySet=true, string collectionName, mongoConfig=""){
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		//must apply $set, otherwise old struct is overwritten
-		if(not structKeyExists( update, "$set" ) and NOT overwriteExisting){
+		if( applySet ){
 			update = { "$set" = mongoUtil.toMongo(update)  };
 		}
 		if( not isStruct( sort ) ){
