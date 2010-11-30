@@ -22,10 +22,13 @@ function setUp(){
 	deleteCol = 'deletetests';
 	types = {
 		'number' = 100,
+		'negativefloat' = -987.097654,
+		'positivefloat' = 9654.5555555,
 		'israd' = true,
+		'stringwithnum' = 'string ending with 1',
 		'numbers' = [1,2,3],
 		'booleans' = [true, false],
-		'floats' = [1.3,2.5]
+		'floats' = [1.3,2.59870,-148.27654]
 	};
 	doc = {
 	    'name'='unittest',

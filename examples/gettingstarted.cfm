@@ -125,6 +125,9 @@ h2{
 	writeOutput("<h2>Find by ID</h2>");
 	writeDump(var=byID, label="Find by ID: #url.personID#", expand="false");
 
+	//using count()
+
+
 	//here's how to update. You'll generally do two kinds of updating:
 	// 1) updating a single pre-fetched document... this is the most common. It's a find/modify/resave
 	// 2) updating one or more documents based on criteria. You almost always need to use a $set in this situation!!!

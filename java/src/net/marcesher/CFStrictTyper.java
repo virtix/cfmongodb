@@ -1,5 +1,6 @@
 package net.marcesher;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,9 @@ public class CFStrictTyper implements Typer {
 		} else if ( val instanceof List ){			
 			return handleArray(val);		
 		} else if( val instanceof Map ){			
-			return handleMap(val);			
+			return handleMap(val);		
+		} else if( val instanceof BigDecimal ){
+			return ((BigDecimal) val).floatValue()  ;
 		}
 		
 		return val;
