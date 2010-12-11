@@ -9,7 +9,7 @@
 	collectionName = "tasks";
 	collection = mongo.getMongoDBCollection(collectionName);
 	mongoUtil = mongo.getMongoUtil();
-	keys = mongoUtil.toMongo( {STATUS=true} );
+	keys = mongoUtil.toMongo( {STATUS=true, OWNER=true} );
 	initial = mongoUtil.toMongo( {TOTAL=0, TOTALTIMETOCOMPLETE=0, TOTALPENDINGTIME=0, VALS=[]} );
 	//writeDump(initial.toString());
 	emptyCondition = mongoUtil.toMongo({});
@@ -44,7 +44,7 @@
 	<p>This shows how to use MongoDB's group() function directly, without going through cfmongodb. Note that it uses mongoUtil to ensure proper datatype conversion</p>
 	<p>The data are randomly generated in load.cfm. </p>
 	<cfloop array="#statusGroups#" index="group">
-		<h2>Group #group.STATUS#</h2>
+		<h2>Group #group.STATUS#, OWNER: #group.OWNER#</h2>
 		 Total: #group.TOTAL#<br>
 		 Total Pending Time: #(group.TOTALPENDINGTIME/1000)/group.TOTAL# seconds <br>
 		 Total Time to Complete:
