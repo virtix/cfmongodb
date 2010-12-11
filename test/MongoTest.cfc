@@ -140,6 +140,31 @@ function saveAll_should_return_immediately_if_no_docs_present(){
 	assertEquals( [], mongo.saveAll([],col)   );
 }
 
+function saveAll_should_save_ArrayOfDBObjects(){
+	var i = 1;
+	var people = [];
+	var u = mongo.getMongoUtil();
+	var purpose = "SaveAllDBObjectsTest";
+	for( i = 1; i <= 2; i++ ){
+		arrayAppend( people, u.toMongo( {"name"="unittest", "purpose"=purpose} ) );
+	}
+	mongo.saveAll( people, col );
+	var result = mongo.query( col ).$eq("purpose",purpose).count();
+	assertEquals(2,result,"We inserted 2 pre-created BasicDBObjects with purpose #purpose# but only found #result#");
+}
+
+function saveAll_should_save_ArrayOfStructs(){
+	var i = 1;
+	var people = [];
+	var purpose = "SaveAllStructsTest";
+	for( i = 1; i <= 2; i++ ){
+		arrayAppend( people, {"name"="unittest", "purpose"=purpose} );
+	}
+	mongo.saveAll( people, col );
+	var result = mongo.query( col ).$eq("purpose",purpose).count();
+	assertEquals(2,result,"We inserted 2 structs with purpose #purpose# but only found #result#");
+}
+
 function findById_should_return_doc_for_id(){
 	var id = mongo.save( doc, col );
 

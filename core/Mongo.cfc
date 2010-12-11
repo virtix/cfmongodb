@@ -52,9 +52,9 @@
 	   if( structKeyExists(doc, "_id") ){
 	       update( doc = doc, collectionName = collectionName, mongoConfig = mongoConfig);
 	   } else {
-		   var bdbo =  mongoUtil.toMongo(doc);
-		   collection.insert([bdbo]);
-		   doc["_id"] =  bdbo.get("_id");
+		   var dbObject =  mongoUtil.toMongo(doc);
+		   collection.insert([dbObject]);
+		   doc["_id"] =  dbObject.get("_id");
 	   }
 	   return doc["_id"];
 	}
@@ -80,7 +80,7 @@
 	function update(doc, collectionName, query={}, upsert=false, multi=false, applySet=true, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 
-	   if(structIsEmpty(query)){
+	   if( structIsEmpty(query) ){
 		  query = mongoUtil.newIDCriteriaObject(doc['_id'].toString());
 		  var dbo = mongoUtil.toMongo(doc);
 	   } else{
