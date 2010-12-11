@@ -15,25 +15,25 @@
 	emptyCondition = mongoUtil.toMongo({});
 
 	statusGroups = collection.group(
-          	keys,
-			emptyCondition,
-		   	initial,
-           	"function(obj,agg) {
-				agg.TOTAL++;
+		keys,
+		emptyCondition,
+		initial,
+		"function(obj,agg) {
+			agg.TOTAL++;
 
-				if( obj.COMPLETETS ){
-					agg.TOTALTIMETOCOMPLETE += ( obj.COMPLETETS.getTime() - obj.ADDEDTS.getTime() );
-				}
+			if( obj.COMPLETETS ){
+				agg.TOTALTIMETOCOMPLETE += ( obj.COMPLETETS.getTime() - obj.ADDEDTS.getTime() );
+			}
 
-				if( obj.STARTTS ){
-					//it's been started... calculate from the STARTTS
-					agg.TOTALPENDINGTIME += ( obj.STARTTS.getTime() - obj.ADDEDTS.getTime() );
-				} else {
-					//it's not yet started... calculate from now
-					agg.TOTALPENDINGTIME += ( new Date().getTime() - obj.ADDEDTS.getTime() );
-				}
-				//agg.VALS.push(obj); //uncomment this to see all the objects that came through here; warning, this will add a lot of time to the writeDump
-			}"
+			if( obj.STARTTS ){
+				//it's been started... calculate from the STARTTS
+				agg.TOTALPENDINGTIME += ( obj.STARTTS.getTime() - obj.ADDEDTS.getTime() );
+			} else {
+				//it's not yet started... calculate from now
+				agg.TOTALPENDINGTIME += ( new Date().getTime() - obj.ADDEDTS.getTime() );
+			}
+			//agg.VALS.push(obj); //uncomment this to see all the objects that came through here; warning, this will add a lot of time to the writeDump
+		}"
      );
 
 	mongo.close();
