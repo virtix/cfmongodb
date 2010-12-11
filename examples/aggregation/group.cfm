@@ -34,7 +34,7 @@
 			}
 			//agg.VALS.push(obj); //uncomment this to see all the objects that came through here; warning, this will add a lot of time to the writeDump
 		}"
-     );
+	);
 
 	mongo.close();
 </cfscript>
