@@ -1,12 +1,16 @@
 <cfinclude template="../initMongo.cfm">
 
+<!---
+run load.cfm to get the data that this group() will use!
+ --->
+
 <cfscript>
 	collectionName = "tasks";
 	collection = mongo.getMongoDBCollection(collectionName);
 	mongoUtil = mongo.getMongoUtil();
 	keys = mongoUtil.toMongo( {STATUS=true} );
 	initial = mongoUtil.toMongo( {TOTAL=0, VALS=[]} );
-	writeDump(initial.toString());
+	//writeDump(initial.toString());
 	emptyCondition = mongoUtil.toMongo({});
 
 	statusGroups = collection.group(
