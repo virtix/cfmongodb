@@ -30,9 +30,7 @@ public class CFStrictTyper implements Typer {
 			return handleArray(val);		
 		} else if( val instanceof Map ){			
 			return handleMap(val);		
-		} else if( val instanceof BigDecimal ){
-			return ((BigDecimal) val).floatValue()  ;
-		}
+		} 
 		
 		return val;
 	}
@@ -48,8 +46,14 @@ public class CFStrictTyper implements Typer {
 		//CF numbers
 		//my testing showed that it was faster to let these fall through rather than check for alpha characters via string.matches() and then parse the numbers. 
 		try {
-			return Long.parseLong(sval);
+			return Integer.parseInt(sval);
 		} catch (Exception e) {
+			//nothing; it's not an int
+		}
+		
+		try {
+			return Long.parseLong(sval);
+		} catch (Exception e){
 			//nothing; it's not a long
 		}
 		
