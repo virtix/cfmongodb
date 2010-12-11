@@ -6,6 +6,21 @@
 
 <cfscript>
 
+	/**
+	* You can init CFMongoDB in two ways:
+	   1) drop the included jars into your CF's lib path (restart CF)
+	   2) use Mark Mandel's javaloader (included). You needn't restart CF)
+
+	   --1: putting the jars into CF's lib path
+		mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="mongorocks");
+		mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
+
+	   --2: using javaloader
+		javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
+		mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="mongorocks", mongoFactory=javaloaderFactory);
+		mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
+	*
+	*/
 	function init(MongoConfig="#createObject('MongoConfig')#"){
 		setMongoConfig(arguments.MongoConfig);
 		setMongoFactory(mongoConfig.getMongoFactory());
@@ -22,6 +37,17 @@
 		return this;
 	}
 
+	/**
+	* Closes the underlying mongodb object. Once closed, you cannot perform additional mongo operations and you'll need to init a new mongo.
+	  Best practice is to close mongo in your Application.cfc's onApplicationStop() method. Something like:
+	  getBeanFactory().getBean("mongo").close();
+	  or
+	  application.mongo.close()
+
+	  depending on how you're initializing and making mongo available to your app
+
+	  NOTE: If you do not close your mongo object, you WILL leak connections!
+	*/
 	function close(){
 		try{
 			variables.mongo.close();
@@ -31,18 +57,38 @@
 		}
 	}
 
-	//for simple mongo _id searches.
+	/**
+	* For simple mongo _id searches, use findById(), like so:
+
+	  byID = mongo.findById( url.personId, collection );
+	*/
 	function findById( id, string collectionName, mongoConfig="" ){
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		var result = collection.findOne( mongoUtil.newIDCriteriaObject(id) );
 		return mongoUtil.toCF( result );
 	}
 
+	/**
+	* Run a query against MongoDB.
+	  Query returns a SearchBuilder object, which you'll call functions on.
+	  Finally, you'll use various "execution" functions on the SearchBuilder to get a SearchResult object,
+	  which provides useful functions for working with your results.
+
+	  kidSearch = mongo.query( collection ).between("KIDS.AGE", 2, 30).search();
+	  writeDump( kidSearch.asArray() );
+
+	  See gettingstarted.cfm for many examples
+	*/
 	function query(string collectionName, mongoConfig=""){
 	   var db = getMongoDB(mongoConfig);
 	   return new SearchBuilder(collectionName,db,mongoUtil);
 	}
 
+	/**
+	* Runs mongodb's distinct() command. Returns an array of distinct values
+	*
+	  distinctAges = mongo.distinct( "KIDS.AGE" );
+	*/
 	function distinct(string key, string collectionName, mongoConfig=""){
 		return getMongoDBCollection(collectionName, mongoConfig).distinct( key );
 	}

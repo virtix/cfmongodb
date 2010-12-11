@@ -128,6 +128,26 @@ function testSearch(){
   assertEquals( arrayLen(afterSave), arrayLen(initial) + addNew );
 }
 
+function distinct_should_return_array_of_distinct_values(){
+	var collection = "distincts";
+	var all = [
+		{val=1},
+		{val=1},
+		{val=2},
+		{val=1},
+		{val=100}
+	];
+	mongo.remove({}, collection);
+	var initial = mongo.distinct("VAL", collection);
+	assertEquals(0,arrayLen(initial));
+
+	mongo.saveAll( all, collection );
+	var distincts = mongo.distinct("VAL", collection);
+	assertEquals(1, distincts[1]);
+	assertEquals(2, distincts[2]);
+	assertEquals(100, distincts[3]);
+}
+
 
 function save_should_add_id_to_doc(){
   //debug(doc);
