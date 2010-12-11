@@ -125,7 +125,20 @@ h2{
 	writeOutput("<h2>Find by ID</h2>");
 	writeDump(var=byID, label="Find by ID: #url.personID#", expand="false");
 
-	//using count()
+	//using count(), SearchResult.totalCount(), and SearchResult.size()
+	totalPeople = mongo.query( collection ).between("KIDS.AGE", 2, 100).count();
+	searchResult =  mongo.query( collection ).between("KIDS.AGE", 2, 100).search(limit=3);//using limit to show difference between SearchResult.size() and totalCount()
+	alsoTotalPeople = searchResult.totalCount(); //equivalent to query().count()!
+	sizeWithLimit = searchResult.size();
+	writeOutput("<h2>How to count things</h2>");
+	writeOutput("Total People with kids aged between 2 and 100: #totalPeople#; Also Total People, fetched via the SearchResult object, which does not care about limit and skip: #alsoTotalPeople#<br>");
+	writeOutput("SearchResult.size() will respect the skip and limit arguments: #sizeWithLimit#<br>");
+
+	//using distinct() to return an array of unique values
+	kidAges = mongo.distinct( "KIDS.AGE", collection );
+	writeOutput("<h2>Distinct values</h2>");
+	writeDump(var=kidAges, label="Distinct kid ages", expand="false");
+
 
 
 	//here's how to update. You'll generally do two kinds of updating:
