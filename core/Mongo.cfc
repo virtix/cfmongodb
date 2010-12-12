@@ -87,7 +87,7 @@
 	/**
 	* Runs mongodb's distinct() command. Returns an array of distinct values
 	*
-	  distinctAges = mongo.distinct( "KIDS.AGE" );
+	  distinctAges = mongo.distinct( "KIDS.AGE", "people" );
 	*/
 	function distinct(string key, string collectionName, mongoConfig=""){
 		return getMongoDBCollection(collectionName, mongoConfig).distinct( key );
@@ -140,10 +140,10 @@
 
 	The "doc" argument will either be an existing Mongo document to be updated based on its _id, or it will be a document that will be "applied" to any documents that match the "query" argument
 
-	To update a single existing document, keep query as an empty struct and update will update the document by its _id:
+	To update a single existing document, simply pass that document and update() will update the document by its _id:
 	 person = person.findById(url.id);
 	 person.something = "something else";
-	 mongo.update( person, people );
+	 mongo.update( person, "people" );
 
 	To update a document by a criteria query and have the "doc" argument applied to a single found instance:
 	update = {STATUS = "running"};
