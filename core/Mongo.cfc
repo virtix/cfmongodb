@@ -93,6 +93,12 @@
 		return getMongoDBCollection(collectionName, mongoConfig).distinct( key );
 	}
 
+	/**
+	*  Saves a struct into the collection; Returns the newly-saved Document's _id; populates the struct with that _id
+
+		person = {name="bill", badmofo=true};
+		mongo.save( person, "coolpeople" );
+	*/
 	function save(struct doc, string collectionName, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 	   if( structKeyExists(doc, "_id") ){
@@ -105,6 +111,12 @@
 	   return doc["_id"];
 	}
 
+	/**
+	* Saves an array of structs into the collection. Can also save an array of pre-created CFBasicDBObjects
+
+		people = [{name="bill", badmofo=true}, {name="marc", badmofo=true}];
+		mongo.saveAll( people, "coolpeople" );
+	*/
 	function saveAll(array docs, string collectionName, mongoConfig=""){
 		if( arrayIsEmpty(docs) ) return docs;
 
@@ -123,6 +135,26 @@
 		return docs;
 	}
 
+	/**
+	* Updates a document in the collection.
+
+	The "doc" argument will either be an existing Mongo document to be updated based on its _id, or it will be a document that will be "applied" to any documents that match the "query" argument
+
+	To update a single existing document, keep query as an empty struct and update will update the document by its _id:
+	 person = person.findById(url.id);
+	 person.something = "something else";
+	 mongo.update( person, people );
+
+	To update a document by a criteria query and have the "doc" argument applied to a single found instance:
+	update = {STATUS = "running"};
+	query = {STATUS = "pending"};
+	mongo.update( update, "tasks", query );
+
+	To update multiple documents by a criteria query and have the "doc" argument applied to all matching instances, pass multi=true
+	mongo.update( update, "tasks", query, false, true )
+
+	Pass upsert=true to create a document if no documents are found that match the query criteria
+	*/
 	function update(doc, collectionName, query={}, upsert=false, multi=false, applySet=true, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 
@@ -141,6 +173,15 @@
 	   collection.update( query, dbo, upsert, multi );
 	}
 
+	/**
+	* Remove one or more documents from the collection.
+
+	  If the document has an "_id", this will remove that single document by its _id.
+
+	  Otherwise, "doc" is treated as a "criteria" object. For example, if doc is {STATUS="complete"}, then all documents matching that criteria would be removed.
+
+	  pass an empty struct to remove everything from the collection: mongo.remove({}, collection);
+	*/
 	function remove(doc, collectionName, mongoConfig=""){
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 	   if( structKeyExists(doc, "_id") ){
@@ -151,6 +192,11 @@
 	   return writeResult;
 	}
 
+	/**
+	* Convenience for removing a document from the collection by the String representation of its ObjectId
+
+		mongo.removeById(url.id, somecollection);
+	*/
 	function removeById( id, collectionName, mongoConfig="" ){
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		return collection.remove( mongoUtil.newIDCriteriaObject(id) );
@@ -229,12 +275,18 @@
 	 	return getIndexes(collectionName, mongoConfig);
 	}
 
+	/**
+	* Returns an array with information about all of the indexes for the collection
+	*/
 	public array function getIndexes(collectionName, mongoConfig=""){
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		var indexes = collection.getIndexInfo().toArray();
 		return indexes;
 	}
 
+	/**
+	* Drops all indexes from the collection
+	*/
 	public array function dropIndexes(collectionName, mongoConfig=""){
 		getMongoDBCollection( collectionName, mongoConfig ).dropIndexes();
 		return getIndexes( collectionName, mongoConfig );
@@ -248,16 +300,24 @@
 		return mongoConfig;
 	}
 
-	/* Provide access to the most common java objects */
+	/**
+	 * Get the underlying Java driver's Mongo object
+	 */
 	function getMongo(mongoConfig=""){
 		return variables.mongo;
 	}
 
+	/**
+	 * Get the underlying Java driver's DB object
+	 */
 	function getMongoDB(mongoConfig=""){
 		var jMongo = getMongo(mongoConfig);
 		return jMongo.getDb(getMongoConfig(mongoConfig).getDefaults().dbName);
 	}
 
+	/**
+	* Get the underlying Java driver's DBCollection object for the given collection
+	*/
 	function getMongoDBCollection(collectionName="", mongoConfig=""){
 		var jMongoDB = getMongoDB(mongoConfig);
 		return jMongoDB.getCollection(collectionName);
