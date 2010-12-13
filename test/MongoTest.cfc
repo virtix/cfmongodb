@@ -302,6 +302,39 @@ function findAndModify_should_atomically_update_and_return_new(){
 	assertEquals(inprocess-1, newinprocess.size());
 }
 
+function group_should_honor_optional_command_parameters(){
+	var coll = "groups";
+	mongo.remove({},coll);
+
+	var groups = [
+		{STATUS="P", ACTIVE=1, ADDED=now()},
+		{STATUS="P", ACTIVE=1, ADDED=now()},
+		{STATUS="P", ACTIVE=0, ADDED=now()},
+		{STATUS="R", ACTIVE=1, ADDED=now()},
+		{STATUS="R", ACTIVE=1, ADDED=now()}
+	];
+	mongo.saveAll( groups, coll );
+	var groupResult = mongo.group( coll, "STATUS", {TOTAL=0}, "function(obj,agg){ agg.TOTAL++; }"  );
+	//debug(groupResult);
+
+	assertEquals( arrayLen(groups), groupResult[1].TOTAL + groupResult[2].TOTAL, "Without any query criteria, total number of results for status should match total number of documents in collection" );
+
+	//add a criteria query
+	groupResult = mongo.group( coll, "STATUS", {TOTAL=0}, "function(obj,agg){ agg.TOTAL++; }", {ACTIVE=1}  );
+	assertEquals( arrayLen(groups)-1, groupResult[1].TOTAL + groupResult[2].TOTAL, "Looking at only ACTIVE=1 documents, total number of results for status should match total number of 'ACTIVE' documents in collection" );
+
+	//add a finalize function
+	groupResult = mongo.group( collectionName=coll, keys="STATUS", initial={TOTAL=0}, reduce="function(obj,agg){ agg.TOTAL++; }", finalize="function(out){ out.HI='mom'; }"  );
+	assertTrue( structKeyExists(groupResult[1], "HI"), "output group should have contained the key added by finalize but did not" );
+
+	//use the keyf function to create a composite key
+	groupResult = mongo.group( collectionName=coll, keys="", initial={TOTAL=0}, reduce="function(obj,agg){ agg.TOTAL++; }", keyf="function(doc){ return {'TASK_STATUS' : doc.STATUS }; }"  );
+	debug(groupResult);
+
+	//TODO: get a better example of keyf
+	assertTrue( structKeyExists(groupResult[1], "TASK_STATUS"), "Key should have been TASK_STATUS since we override the key in keyf function" );
+}
+
 
 function testGetIndexes(){
 	var result = mongo.dropIndexes(collectionName=col);

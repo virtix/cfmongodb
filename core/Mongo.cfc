@@ -138,14 +138,32 @@
 
 	  See examples/aggregation/group.cfm for detail
 	*/
-	function group( collectionName, keys, initial, reduce, query={} ){
+	function group( collectionName, keys, initial, reduce, query={}, keyf="", finalize="" ){
 		var collection = getMongoDBCollection(collectionName);
+		var dbCommand =
+			{ "group" =
+				{"ns" = collectionName,
+				"key" = mongoUtil.createOrderedDBObject(keys),
+				"cond" = query,
+				"initial" = initial,
+				"$reduce" = trim(reduce),
+				"finalize" = trim(finalize)
+				}
+			};
+		if( len(trim(keyf)) ){
+			structDelete(dbCommand.group,"key");
+			dbCommand.group["$keyf"] = trim(keyf);
+		}
+		var result = getMongoDB().command( mongoUtil.toMongo(dbCommand) );
+		return result["retval"];
+		/*request.debug(result);
 		return collection.group(
 			mongoUtil.createOrderedDBObject(keys),
 			mongoUtil.toMongo(query),
 			mongoUtil.toMongo(initial),
 			trim(reduce)
-		);
+		);*/
+
 	}
 
 	/**
