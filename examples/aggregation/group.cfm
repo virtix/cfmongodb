@@ -27,12 +27,19 @@
 		}
 	";
 
+	finalize = "
+		function(out){
+			out.AVGPENDINGTIME = out.TOTALPENDINGTIME/out.TOTAL;
+		}
+	";
+
 	//This is how to do it with CFMongoDB. Note that the order of arguments is slightly different from the Java Driver's version
 	newStatusGroups = mongo.group(
-		collectionName,
-		"STATUS,OWNER",
-		{TOTAL=0, TOTALTIMETOCOMPLETE=0, TOTALPENDINGTIME=0, VALS=[]},
-		reduce
+		collectionName=collectionName,
+		keys="STATUS,OWNER",
+		initial={TOTAL=0, TOTALTIMETOCOMPLETE=0, TOTALPENDINGTIME=0, VALS=[]},
+		reduce=reduce,
+		finalize=finalize
 	);
 
 
@@ -59,10 +66,10 @@
 	<h1>CFMongoDB group() Demo</h1>
 	<p>This shows how to use CFMongoDB's group() function</p>
 	<p>The data are randomly generated in load.cfm. </p>
-	<cfloop array="#statusGroups#" index="group">
+	<cfloop array="#newStatusGroups#" index="group">
 		<h2>Group #group.STATUS#, OWNER: #group.OWNER#</h2>
 		 Total: #group.TOTAL#<br>
-		 Total Pending Time: #(group.TOTALPENDINGTIME/1000)/group.TOTAL# seconds <br>
+		Avg Pending Time: #group.AVGPENDINGTIME/1000# seconds <br>
 		 Total Time to Complete:
 
 		 <cfif group.STATUS eq "C">
@@ -72,7 +79,7 @@
 		 </cfif>
 	</cfloop>
 
-	<cfdump var="#statusGroups#" label="Status Groups, via CFMongoDB">
+	<cfdump var="#newStatusGroups#" label="Status Groups, via CFMongoDB">
 
 	<hr>
 
@@ -82,7 +89,7 @@
 	<cfloop array="#statusGroups#" index="group">
 		<h2>Group #group.STATUS#, OWNER: #group.OWNER#</h2>
 		 Total: #group.TOTAL#<br>
-		 Total Pending Time: #(group.TOTALPENDINGTIME/1000)/group.TOTAL# seconds <br>
+		 Avg Pending Time: #(group.TOTALPENDINGTIME/1000)/group.TOTAL# seconds <br>
 		 Total Time to Complete:
 
 		 <cfif group.STATUS eq "C">
