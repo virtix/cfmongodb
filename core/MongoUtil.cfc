@@ -71,9 +71,10 @@
 	/**
 	* Creates a Mongo CFBasicDBObject whose order matches the order of the keyValues argument
 	  keyValues can be:
-	    1) a string in k=v format: STATUS=1,TS=-1
-		2) an array of strings in k=v format: ["STATUS=1","TS=-1"]
-		3) an array of structs (often necessary when creating "command" objects for passing to db.command()):
+	  	1) a string in k,k format: "STATUS,TS". This will set the value for each key to "1". Useful for creating Mongo's 'all true' structs, like the "keys" argument to group()
+	    2) a string in k=v format: STATUS=1,TS=-1
+		3) an array of strings in k=v format: ["STATUS=1","TS=-1"]
+		4) an array of structs (often necessary when creating "command" objects for passing to db.command()):
 		  createOrderedDBObject( [ {"mapreduce"="tasks"}, {"map"=map}, {"reduce"=reduce} ] )
 	*/
 	function createOrderedDBObject( keyValues ){
@@ -85,7 +86,7 @@
 		for(kv in keyValues){
 			if( isSimpleValue( kv ) ){
 				var key = listFirst(kv, "=");
-				var value = listRest(kv, "=");
+				var value = find("=",kv) ? listRest(kv, "=") : 1;
 			} else {
 				var key = structKeyList(kv);
 				var value = kv[key];

@@ -94,6 +94,61 @@
 	}
 
 	/**
+	* So important we need to provide top level access to it and make it as easy to use as possible.
+
+	FindAndModify is critical for queue-like operations. Its atomicity removes the traditional need to synchronize higher-level methods to ensure queue elements only get processed once.
+
+	http://www.mongodb.org/display/DOCS/findandmodify+Command
+
+	This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
+
+	*/
+	function findAndModify(struct query, struct fields={}, any sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean applySet=true, string collectionName, mongoConfig=""){
+		var collection = getMongoDBCollection(collectionName, mongoConfig);
+		//must apply $set, otherwise old struct is overwritten
+		if( applySet ){
+			update = { "$set" = mongoUtil.toMongo(update)  };
+		}
+		if( not isStruct( sort ) ){
+			sort = mongoUtil.createOrderedDBObject(sort);
+		} else {
+			sort = mongoUtil.toMongo( sort );
+		}
+
+		var updated = collection.findAndModify(
+			mongoUtil.toMongo(query),
+			mongoUtil.toMongo(fields),
+			sort,
+			remove,
+			mongoUtil.toMongo(update),
+			returnNew,
+			upsert
+		);
+		if( isNull(updated) ) return {};
+
+		return mongoUtil.toCF(updated);
+	}
+
+	/**
+	* Executes Mongo's group() command. Returns an array of structs.
+
+	  usage, including optional 'query':
+
+	  result = mongo.group( "tasks", "STATUS,OWNER", {TOTAL=0}, "function(obj,agg){ agg.TOTAL++; }, {SOMENUM = {"$gt" = 5}}" );
+
+	  See examples/aggregation/group.cfm for detail
+	*/
+	function group( collectionName, keys, initial, reduce, query={} ){
+		var collection = getMongoDBCollection(collectionName);
+		return collection.group(
+			mongoUtil.createOrderedDBObject(keys),
+			mongoUtil.toMongo(query),
+			mongoUtil.toMongo(initial),
+			trim(reduce)
+		);
+	}
+
+	/**
 	*  Saves a struct into the collection; Returns the newly-saved Document's _id; populates the struct with that _id
 
 		person = {name="bill", badmofo=true};
@@ -201,43 +256,6 @@
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		return collection.remove( mongoUtil.newIDCriteriaObject(id) );
 	}
-
-	/**
-	* So important we need to provide top level access to it and make it as easy to use as possible.
-
-	FindAndModify is critical for queue-like operations. Its atomicity removes the traditional need to synchronize higher-level methods to ensure queue elements only get processed once.
-
-	http://www.mongodb.org/display/DOCS/findandmodify+Command
-
-	This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
-
-	*/
-	function findAndModify(struct query, struct fields={}, any sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean applySet=true, string collectionName, mongoConfig=""){
-		var collection = getMongoDBCollection(collectionName, mongoConfig);
-		//must apply $set, otherwise old struct is overwritten
-		if( applySet ){
-			update = { "$set" = mongoUtil.toMongo(update)  };
-		}
-		if( not isStruct( sort ) ){
-			sort = mongoUtil.createOrderedDBObject(sort);
-		} else {
-			sort = mongoUtil.toMongo( sort );
-		}
-
-		var updated = collection.findAndModify(
-			mongoUtil.toMongo(query),
-			mongoUtil.toMongo(fields),
-			sort,
-			remove,
-			mongoUtil.toMongo(update),
-			returnNew,
-			upsert
-		);
-		if( isNull(updated) ) return {};
-
-		return mongoUtil.toCF(updated);
-	}
-
 
 
 	/**
