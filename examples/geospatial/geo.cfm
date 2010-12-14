@@ -12,7 +12,7 @@
 		indexes = mongo.ensureGeoIndex("LOC", collection);
 		writeDump(indexes);
 
-		//as of this writing, you can perform geo queries easily like so (easier geo support is forthcoming):
+		//as of this writing, you can perform geo queries like so:
 		nearResult = mongo.query( collection ).add( "LOC", {"$near" = [38,-85]} ).search(limit=10);
 		writeDump( var = nearResult.asArray(), label = "$near result" );
     }
