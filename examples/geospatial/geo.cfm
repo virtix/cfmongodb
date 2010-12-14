@@ -15,10 +15,10 @@
 		//as of this writing, you can perform geo queries like so:
 		nearResult = mongo.query( collection ).add( "LOC", {"$near" = [38,-85]} ).search(limit=10);
 		writeDump( var = nearResult.asArray(), label = "$near result" );
-    }
-    catch(Any e){
+	}
+		catch(Any e){
 		writeDump(e);
-    }
+	}
 
 	mongo.close();
 </cfscript>
