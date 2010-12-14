@@ -312,6 +312,24 @@
 	}
 
 	/**
+	* ensures a "2d" index on a single field. If another 2d index exists on the same collection, this will error
+
+
+	*/
+	public array function ensureGeoIndex(field, collectionName, min="", max="", mongoConfig=""){
+		var collection = getMongoDBCollection(collectionName, mongoConfig);
+		var doc = { "#arguments.field#" = "2d" };
+		var options = {};
+		if( isNumeric(arguments.min) and isNumeric(arguments.max) ){
+			options = {"min" = arguments.min, "max" = arguments.max};
+		}
+		//need to do this bit of getObject ugliness b/c the CFBasicDBObject will convert "2d" to a double. whoops.
+		collection.ensureIndex( mongoUtil.getMongoFactory().getObject("com.mongodb.BasicDBObject").init(doc), mongoUtil.toMongo(options) );
+		return getIndexes( collectionName, mongoConfig );
+	}
+
+
+	/**
 	* Returns an array with information about all of the indexes for the collection
 	*/
 	public array function getIndexes(collectionName, mongoConfig=""){
