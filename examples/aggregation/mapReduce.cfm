@@ -29,7 +29,10 @@
 
 	//#1 use CFMongoDB
 	//Can't do that yet b/c there's not yet a mapReduce function
+	result = mongo.mapReduce( collectionName="tasks", map=map, reduce=reduce );
+	writeDump(var=result, label="mongo.cfc mapReduceResult", expand="false");
 
+	writeDump(var=result.asArray(), label="mapReduceResult.asArray() over collection #result.getMapReduceCollectionName()#");
 
 
 
@@ -37,7 +40,7 @@
 	//#2: try it using a command instead of the driver's mapReduce function
 	//have to use the "ordered" stuff here because if we do straight struct creation, CF will order them
 	//indeterminantly. MongoDB, for whatever reason, uses the first key as the command name (as opposed to "command" = "mapreduce", which would be infinitely more sensible)
-	dbCommand = u.createOrderedDBObject( [ {"mapreduce"="tasks"}, {"map"=map}, {"reduce"=reduce}, {"finalize"=finalize} ] );
+	dbCommand = u.createOrderedDBObject( [ {"mapreduce"="tasks"}, {"map"=map}, {"reduce"=reduce}, {"finalize"=finalize}, {"verbose" = true} ] );
 
 	writeDump(dbCommand);
 

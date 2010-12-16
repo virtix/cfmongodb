@@ -167,6 +167,32 @@
 	}
 
 	/**
+	* Executes Mongo's mapReduce command. Returns a MapReduceResult object
+
+	  basic usage:
+
+	  result = mongo.mapReduce( collectionName="tasks", map=map, reduce=reduce );
+
+
+	  See examples/aggregation/mapReduce for detail
+	*/
+	function mapReduce( collectionName, map, reduce, query={}, sort={}, limit="0", out="", keeptemp="false", finalize="", scope={}, verbose="true", outType="normal"  ){
+
+		var dbCommand = mongoUtil.createOrderedDBObject(
+			[
+				{"mapreduce"=collectionName}, {"map"=trim(map)}, {"reduce"=trim(reduce)}
+				, {"query"=query}, {"sort"=sort}, {"limit"=limit}, {"keeptemp"=keeptemp}, {"finalize"=trim(finalize)}, {"scope"=scope}, {"verbose"=verbose}, {"outType"=outType}
+			] );
+		if( trim(arguments.out) neq "" ){
+			dbCommand.append( "out", arguments.out );
+		}
+		var commandResult = getMongoDB().command( dbCommand );
+		var searchResult = this.query( commandResult["result"] ).search();
+		var mapReduceResult = createObject("component", "MapReduceResult").init(dbCommand, commandResult, searchResult, mongoUtil);
+		return mapReduceResult;
+	}
+
+	/**
 	*  Saves a struct into the collection; Returns the newly-saved Document's _id; populates the struct with that _id
 
 		person = {name="bill", badmofo=true};
