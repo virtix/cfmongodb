@@ -44,6 +44,8 @@ h2. More Examples
 
 See examples/gettingstarted.cfm to start.
 
+Additional examples are in the various subdirectories in examples/
+
 h2. The Wiki
 
 Check out the wiki for additional info : "http://wiki.github.com/marcesher/cfmongodb/":http://wiki.github.com/marcesher/cfmongodb/
