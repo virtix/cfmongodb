@@ -28,7 +28,6 @@
 	finalize = "function( key, value ){ return value }";
 
 	//#1 use CFMongoDB
-	//Can't do that yet b/c there's not yet a mapReduce function
 	result = mongo.mapReduce( collectionName="tasks", map=map, reduce=reduce );
 	writeDump(var=result, label="mongo.cfc mapReduceResult", expand="false");
 
