@@ -48,11 +48,13 @@ Additional examples are in the various subdirectories in examples/
 
 h2. The Wiki
 
-Check out the wiki for additional info : "http://wiki.github.com/marcesher/cfmongodb/":http://wiki.github.com/marcesher/cfmongodb/
+Check out the wiki for additional info: "http://wiki.github.com/marcesher/cfmongodb/":http://wiki.github.com/marcesher/cfmongodb/
 
 h2. Getting Help
 
 We have a Google group: "http://groups.google.com/group/cfmongodb":http://groups.google.com/group/cfmongodb
+
+Please limit conversations to MongoDB and ColdFusion. General MongoDB questions are best asked on the MongoDB group at "http://groups.google.com/group/mongodb-user":http://groups.google.com/group/mongodb-user
 
 h2. Posting Issues
 
@@ -60,7 +62,7 @@ Post issues to the github issue tracker for the project. Better: post fixes. Bes
 
 h2. Getting Involved
 
-Collaboration is welcome. Fork -- Commit -- Request a pull.
+Collaboration is welcome. Fork -- Commit -- Request a pull. For bug fixes and feature additions, commits with unit tests are much more likely to be accepted.
 
 Code well.
 
