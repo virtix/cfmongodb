@@ -10,7 +10,16 @@
 
 
 
-	 public function init(Array hosts = [{serverName='localhost',serverPort='27017'}], dbName='default_db', MongoFactory="#createObject('DefaultFactory')#"){
+	 /**
+	 * Constructor
+	 * @hosts Defaults to [{serverName='localhost',serverPort='27017'}]
+	 */
+	 public function init(Array hosts, dbName='default_db', MongoFactory="#createObject('DefaultFactory')#"){
+
+	 	if (!structKeyExist(arguments, 'hosts')) {
+			arguments.hosts = [{serverName='localhost',serverPort='27017'}];
+		}
+
 		variables.mongoFactory = arguments.mongoFactory;
 	 	establishHostInfo();
 
