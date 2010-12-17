@@ -62,13 +62,7 @@
 	*/
 	function getLastError()
 	{
-		try {
-			local.error = getMongoDB().getLastError();
-		} catch (any e) {
-			writeDump(var=e,output='c:\web\debug.log');
-		}
-
-		return local.error;
+		return getMongoDB().getLastError();
 	}
 	/**
 	* For simple mongo _id searches, use findById(), like so:
