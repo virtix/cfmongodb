@@ -16,7 +16,7 @@
 	 */
 	 public function init(Array hosts, dbName='default_db', MongoFactory="#createObject('DefaultFactory')#"){
 
-	 	if (!structKeyExists(arguments, 'hosts')) {
+	 	if (!structKeyExists(arguments, 'hosts') || arrayIsEmpty(arguments.hosts)) {
 			arguments.hosts = [{serverName='localhost',serverPort='27017'}];
 		}
 
