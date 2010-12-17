@@ -43,4 +43,41 @@ component accessors="true"{
 		return searchResult.asArray();
 	}
 
+	/**
+	* The number of elements in the current SearchResult, after limit and skip are applied.
+	  Note that skip and limit would only be relevant when performing additional searches against the temporary
+	  MapReduce collection and setting that SeachResult into the MapReduceResult via mapReduceResult.setSearchResult( searchResult );
+	*/
+	function size(){
+		return searchResult.size();
+	}
+
+	/**
+	* The total number of elements in the SearchResult.
+	*/
+	function totalCount(){
+		return searchResult.totalCount();
+	}
+
+	/**
+	* The criteria used for the query.
+	  Note that a query other than '{}' would only be returned when performing additional searches against the temporary
+	  MapReduce collection and setting that SeachResult into the MapReduceResult via mapReduceResult.setSearchResult( searchResult );
+
+	  Use getQuery().toString() to get a copy/paste string for the Mongo shell
+	*/
+	function getQuery(){
+		return searchResult.getQuery();
+	}
+
+	/**
+	* The sort used for the query.
+	  Note that a sort other than '{}' would only be returned when performing additional searches against the temporary
+	  MapReduce collection and setting that SeachResult into the MapReduceResult via mapReduceResult.setSearchResult( searchResult );
+
+	  Use getSort().toString() to get a copy/paste string for the Mongo shell
+	*/
+	function getSort(){
+		return searchResult.getSort();
+	}
 }
