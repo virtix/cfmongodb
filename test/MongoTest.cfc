@@ -22,10 +22,13 @@ function setUp(){
 	deleteCol = 'deletetests';
 	types = {
 		'number' = 100,
+		'negativefloat' = -987.097654,
+		'positivefloat' = 9654.5555555,
 		'israd' = true,
+		'stringwithnum' = 'string ending with 1',
 		'numbers' = [1,2,3],
 		'booleans' = [true, false],
-		'floats' = [1.3,2.5]
+		'floats' = [1.3,2.59870,-148.27654]
 	};
 	doc = {
 	    'name'='unittest',
@@ -125,6 +128,26 @@ function testSearch(){
   assertEquals( arrayLen(afterSave), arrayLen(initial) + addNew );
 }
 
+function distinct_should_return_array_of_distinct_values(){
+	var collection = "distincts";
+	var all = [
+		{val=1},
+		{val=1},
+		{val=2},
+		{val=1},
+		{val=100}
+	];
+	mongo.remove({}, collection);
+	var initial = mongo.distinct("VAL", collection);
+	assertEquals(0,arrayLen(initial));
+
+	mongo.saveAll( all, collection );
+	var distincts = mongo.distinct("VAL", collection);
+	assertEquals(1, distincts[1]);
+	assertEquals(2, distincts[2]);
+	assertEquals(100, distincts[3]);
+}
+
 
 function save_should_add_id_to_doc(){
   //debug(doc);
@@ -135,6 +158,31 @@ function save_should_add_id_to_doc(){
 
 function saveAll_should_return_immediately_if_no_docs_present(){
 	assertEquals( [], mongo.saveAll([],col)   );
+}
+
+function saveAll_should_save_ArrayOfDBObjects(){
+	var i = 1;
+	var people = [];
+	var u = mongo.getMongoUtil();
+	var purpose = "SaveAllDBObjectsTest";
+	for( i = 1; i <= 2; i++ ){
+		arrayAppend( people, u.toMongo( {"name"="unittest", "purpose"=purpose} ) );
+	}
+	mongo.saveAll( people, col );
+	var result = mongo.query( col ).$eq("purpose",purpose).count();
+	assertEquals(2,result,"We inserted 2 pre-created BasicDBObjects with purpose #purpose# but only found #result#");
+}
+
+function saveAll_should_save_ArrayOfStructs(){
+	var i = 1;
+	var people = [];
+	var purpose = "SaveAllStructsTest";
+	for( i = 1; i <= 2; i++ ){
+		arrayAppend( people, {"name"="unittest", "purpose"=purpose} );
+	}
+	mongo.saveAll( people, col );
+	var result = mongo.query( col ).$eq("purpose",purpose).count();
+	assertEquals(2,result,"We inserted 2 structs with purpose #purpose# but only found #result#");
 }
 
 function findById_should_return_doc_for_id(){
@@ -252,6 +300,39 @@ function findAndModify_should_atomically_update_and_return_new(){
 	//debug(newinprocess.getQuery().toString());
 
 	assertEquals(inprocess-1, newinprocess.size());
+}
+
+function group_should_honor_optional_command_parameters(){
+	var coll = "groups";
+	mongo.remove({},coll);
+
+	var groups = [
+		{STATUS="P", ACTIVE=1, ADDED=now()},
+		{STATUS="P", ACTIVE=1, ADDED=now()},
+		{STATUS="P", ACTIVE=0, ADDED=now()},
+		{STATUS="R", ACTIVE=1, ADDED=now()},
+		{STATUS="R", ACTIVE=1, ADDED=now()}
+	];
+	mongo.saveAll( groups, coll );
+	var groupResult = mongo.group( coll, "STATUS", {TOTAL=0}, "function(obj,agg){ agg.TOTAL++; }"  );
+	//debug(groupResult);
+
+	assertEquals( arrayLen(groups), groupResult[1].TOTAL + groupResult[2].TOTAL, "Without any query criteria, total number of results for status should match total number of documents in collection" );
+
+	//add a criteria query
+	groupResult = mongo.group( coll, "STATUS", {TOTAL=0}, "function(obj,agg){ agg.TOTAL++; }", {ACTIVE=1}  );
+	assertEquals( arrayLen(groups)-1, groupResult[1].TOTAL + groupResult[2].TOTAL, "Looking at only ACTIVE=1 documents, total number of results for status should match total number of 'ACTIVE' documents in collection" );
+
+	//add a finalize function
+	groupResult = mongo.group( collectionName=coll, keys="STATUS", initial={TOTAL=0}, reduce="function(obj,agg){ agg.TOTAL++; }", finalize="function(out){ out.HI='mom'; }"  );
+	assertTrue( structKeyExists(groupResult[1], "HI"), "output group should have contained the key added by finalize but did not" );
+
+	//use the keyf function to create a composite key
+	groupResult = mongo.group( collectionName=coll, keys="", initial={TOTAL=0}, reduce="function(obj,agg){ agg.TOTAL++; }", keyf="function(doc){ return {'TASK_STATUS' : doc.STATUS }; }"  );
+	debug(groupResult);
+
+	//TODO: get a better example of keyf
+	assertTrue( structKeyExists(groupResult[1], "TASK_STATUS"), "Key should have been TASK_STATUS since we override the key in keyf function" );
 }
 
 

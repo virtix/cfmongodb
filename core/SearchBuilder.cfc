@@ -42,6 +42,24 @@ function init(string coll, any db, any mongoUtil){
  collection = db.getCollection(coll);
 }
 
+function builder(){
+  return builder;
+}
+
+function start(){
+  builder.start();
+  return this;
+}
+
+function add( key, value ){
+	builder.add( key, value );
+	return this;
+}
+
+function get(){
+  return builder.get();
+}
+
 function startsWith(element, val){
   var regex = '^' & val;
   builder.add( element, pattern.compile(regex) );
@@ -68,19 +86,6 @@ function regex(element, val){
   return this;
 }
 
-
-function builder(){
-  return builder;
-}
-
-function start(){
-  builder.start();
-  return this;
-}
-
-function get(){
-  return builder.get();
-}
 
 //May need at least some exception handling
 function where( js_expression ){

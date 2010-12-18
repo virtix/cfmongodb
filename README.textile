@@ -2,6 +2,8 @@ h1. CFMongoDB
 
 CFMongoDB is both partial wrapper for the MongoDB Java driver and a document-struct mapper for ColdFusion. It attempts to remove the need for constant javacasting in your CFML when working with MongoDB. Additionally, there's a simple DSL which provides ColdFusion developers the ability to easily search MongoDB document collections.
 
+h2. Some Code
+
 One of the most appealing aspects is that data can be created as a ColdFusion structure and persisted almost verbatim. Example:
 
 <pre>
@@ -38,10 +40,29 @@ for(orc in orcs){
 </cfscript>
 </pre>
 
+h2. More Examples
+
 See examples/gettingstarted.cfm to start.
 
-Check out the wiki for additional info : "http://wiki.github.com/marcesher/cfmongodb/":http://wiki.github.com/marcesher/cfmongodb/
+Additional examples are in the various subdirectories in examples/
 
+h2. The Wiki
 
-Collaboration is welcome. 
+Check out the wiki for additional info: "http://wiki.github.com/marcesher/cfmongodb/":http://wiki.github.com/marcesher/cfmongodb/
+
+h2. Getting Help
+
+We have a Google group: "http://groups.google.com/group/cfmongodb":http://groups.google.com/group/cfmongodb
+
+Please limit conversations to MongoDB and ColdFusion. General MongoDB questions are best asked on the MongoDB group at "http://groups.google.com/group/mongodb-user":http://groups.google.com/group/mongodb-user
+
+h2. Posting Issues
+
+Post issues to the github issue tracker for the project. Better: post fixes. Best: post fixes with unit tests. 
+
+h2. Getting Involved
+
+Collaboration is welcome. Fork -- Commit -- Request a pull. For bug fixes and feature additions, commits with unit tests are much more likely to be accepted.
+
+Code well.
 

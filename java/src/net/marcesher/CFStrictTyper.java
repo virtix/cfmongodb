@@ -1,5 +1,6 @@
 package net.marcesher;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,8 @@ public class CFStrictTyper implements Typer {
 		} else if ( val instanceof List ){			
 			return handleArray(val);		
 		} else if( val instanceof Map ){			
-			return handleMap(val);			
-		}
+			return handleMap(val);		
+		} 
 		
 		return val;
 	}
@@ -45,8 +46,14 @@ public class CFStrictTyper implements Typer {
 		//CF numbers
 		//my testing showed that it was faster to let these fall through rather than check for alpha characters via string.matches() and then parse the numbers. 
 		try {
-			return Long.parseLong(sval);
+			return Integer.parseInt(sval);
 		} catch (Exception e) {
+			//nothing; it's not an int
+		}
+		
+		try {
+			return Long.parseLong(sval);
+		} catch (Exception e){
 			//nothing; it's not a long
 		}
 		
