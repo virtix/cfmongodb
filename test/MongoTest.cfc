@@ -446,9 +446,9 @@ function newDBObject_should_create_correct_datatypes(){
 }
 
 /**
-*	Confirm getLastError works and mongo has not changed it's response.
+*	Confirm getLastError works and mongo has not changed its response.
 */
-function getLastError()
+function getLastError_should_return_error_when_expected()
 {
 	var jColl = mongo.getMongoDBCollection(col, mongoConfig);
 	var mongoUtil = mongo.getMongoUtil();

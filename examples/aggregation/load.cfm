@@ -4,7 +4,8 @@
 collection = "tasks";
 
 total = mongo.query(collection).count();
-if(NOT total OR forceLoad){
+badRecords = mongo.query(collection).$exists("ADDEDTS",false).count();
+if(NOT total OR forceLoad OR badRecords){
 	mongo.remove({},collection);
 	nextNum = 1;
 

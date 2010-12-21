@@ -64,6 +64,7 @@
 	{
 		return getMongoDB().getLastError();
 	}
+
 	/**
 	* For simple mongo _id searches, use findById(), like so:
 
@@ -111,7 +112,7 @@
 
 	*/
 	function findAndModify(struct query, struct fields, any sort, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean applySet=true, string collectionName, mongoConfig=""){
-		// Confirm our complex defaults exist
+		// Confirm our complex defaults exist; need this chunk of muck because CFBuilder 1 breaks with complex datatypes in defaults
 		local.argumentDefaults = {sort={"_id"=1},fields={}};
 		for(local.k in local.argumentDefaults)
 		{
@@ -180,14 +181,6 @@
 		}
 		var result = getMongoDB().command( mongoUtil.toMongo(dbCommand) );
 		return result["retval"];
-		/*request.debug(result);
-		return collection.group(
-			mongoUtil.createOrderedDBObject(keys),
-			mongoUtil.toMongo(query),
-			mongoUtil.toMongo(initial),
-			trim(reduce)
-		);*/
-
 	}
 
 	/**
@@ -202,7 +195,7 @@
 	*/
 	function mapReduce( collectionName, map, reduce, query, sort, limit="0", out="", keeptemp="false", finalize="", scope, verbose="true", outType="normal"  ){
 
-		// Confirm our complex defaults exist
+		// Confirm our complex defaults exist; need this hunk of muck because CFBuilder 1 breaks with complex datatypes as defaults
 		local.argumentDefaults = {
 			 query={}
 			,sort={}
