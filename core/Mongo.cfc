@@ -19,6 +19,8 @@
 		javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
 		mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="mongorocks", mongoFactory=javaloaderFactory);
 		mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
+
+	  Note that authentication credentials, if set in MongoConfig, will be used to authenticate against the database.
 	*
 	*/
 	function init(MongoConfig="#createObject('MongoConfig')#"){
@@ -34,8 +36,31 @@
 		}
 
 		mongoUtil = new MongoUtil(mongoFactory);
+
+		// Check for authentication, and if we have details set call it once on this database instance
+		if ( len(mongoConfig.getAuthDetails().username) and not authenticate(mongoConfig.getAuthDetails().username, mongoConfig.getAuthDetails().password) ) {
+			throw( message="Error authenticating MongoDB database." );
+		}
+
 		return this;
 	}
+
+	/**
+	* authenticates connection/db with given name and password
+
+		Typical usage:
+		mongoConfig.init(...);
+		mongoConfig.setAuthDetails( username, password );
+		mongo = new Mongo(mongoConfig);
+
+		If you set credentials to mongoConfig, Mongo.cfc will use those credentials to authenticate upon initialization.
+		If authentication fails, an error will be thrown
+	*
+	*/
+	boolean function authenticate( string username, string password ){
+		return getMongoDB( variables.mongoConfig ).authenticate( arguments.username, arguments.password.toCharArray() );
+	}
+
 
 	/**
 	* Closes the underlying mongodb object. Once closed, you cannot perform additional mongo operations and you'll need to init a new mongo.
