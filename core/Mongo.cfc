@@ -19,6 +19,8 @@
 		javaloaderFactory = createObject('component','cfmongodb.core.JavaloaderFactory').init();
 		mongoConfig = createObject('component','cfmongodb.core.MongoConfig').init(dbName="mongorocks", mongoFactory=javaloaderFactory);
 		mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
+
+	  Note that authentication credentials, if set in MongoConfig, will be used to authenticate against the database.
 	*
 	*/
 	function init(MongoConfig="#createObject('MongoConfig')#"){
@@ -34,8 +36,31 @@
 		}
 
 		mongoUtil = new MongoUtil(mongoFactory);
+
+		// Check for authentication, and if we have details set call it once on this database instance
+		if ( len(mongoConfig.getAuthDetails().username) and not authenticate(mongoConfig.getAuthDetails().username, mongoConfig.getAuthDetails().password) ) {
+			throw( message="Error authenticating MongoDB database." );
+		}
+
 		return this;
 	}
+
+	/**
+	* authenticates connection/db with given name and password
+
+		Typical usage:
+		mongoConfig.init(...);
+		mongoConfig.setAuthDetails( username, password );
+		mongo = new Mongo(mongoConfig);
+
+		If you set credentials to mongoConfig, Mongo.cfc will use those credentials to authenticate upon initialization.
+		If authentication fails, an error will be thrown
+	*
+	*/
+	boolean function authenticate( string username, string password ){
+		return getMongoDB( variables.mongoConfig ).authenticate( arguments.username, arguments.password.toCharArray() );
+	}
+
 
 	/**
 	* Closes the underlying mongodb object. Once closed, you cannot perform additional mongo operations and you'll need to init a new mongo.
@@ -55,6 +80,14 @@
 			//the error that this throws *appears* to be harmless.
 			writeLog("Error closing Mongo: " & e.message);
 		}
+	}
+
+	/**
+	* Returns the last error for the current connection.
+	*/
+	function getLastError()
+	{
+		return getMongoDB().getLastError();
 	}
 
 	/**
@@ -103,7 +136,17 @@
 	This function assumes you are using this to *apply* additional changes to the "found" document. If you wish to overwrite, pass overwriteExisting=true. One bristles at the thought
 
 	*/
-	function findAndModify(struct query, struct fields={}, any sort={"_id"=1}, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean applySet=true, string collectionName, mongoConfig=""){
+	function findAndModify(struct query, struct fields, any sort, boolean remove=false, struct update, boolean returnNew=true, boolean upsert=false, boolean applySet=true, string collectionName, mongoConfig=""){
+		// Confirm our complex defaults exist; need this chunk of muck because CFBuilder 1 breaks with complex datatypes in defaults
+		local.argumentDefaults = {sort={"_id"=1},fields={}};
+		for(local.k in local.argumentDefaults)
+		{
+			if (!structKeyExists(arguments, local.k))
+			{
+				arguments[local.k] = local.argumentDefaults[local.k];
+			}
+		}
+
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
 		//must apply $set, otherwise old struct is overwritten
 		if( applySet ){
@@ -138,7 +181,14 @@
 
 	  See examples/aggregation/group.cfm for detail
 	*/
-	function group( collectionName, keys, initial, reduce, query={}, keyf="", finalize="" ){
+	function group( collectionName, keys, initial, reduce, query, keyf="", finalize="" ){
+
+		if (!structKeyExists(arguments, 'query'))
+		{
+			arguments.query = {};
+		}
+
+
 		var collection = getMongoDBCollection(collectionName);
 		var dbCommand =
 			{ "group" =
@@ -156,14 +206,6 @@
 		}
 		var result = getMongoDB().command( mongoUtil.toMongo(dbCommand) );
 		return result["retval"];
-		/*request.debug(result);
-		return collection.group(
-			mongoUtil.createOrderedDBObject(keys),
-			mongoUtil.toMongo(query),
-			mongoUtil.toMongo(initial),
-			trim(reduce)
-		);*/
-
 	}
 
 	/**
@@ -176,7 +218,21 @@
 
 	  See examples/aggregation/mapReduce for detail
 	*/
-	function mapReduce( collectionName, map, reduce, query={}, sort={}, limit="0", out="", keeptemp="false", finalize="", scope={}, verbose="true", outType="normal"  ){
+	function mapReduce( collectionName, map, reduce, query, sort, limit="0", out="", keeptemp="false", finalize="", scope, verbose="true", outType="normal"  ){
+
+		// Confirm our complex defaults exist; need this hunk of muck because CFBuilder 1 breaks with complex datatypes as defaults
+		local.argumentDefaults = {
+			 query={}
+			,sort={}
+			,scope={}
+		};
+		for(local.k in local.argumentDefaults)
+		{
+			if (!structKeyExists(arguments, local.k))
+			{
+				arguments[local.k] = local.argumentDefaults[local.k];
+			}
+		}
 
 		var dbCommand = mongoUtil.createOrderedDBObject(
 			[
@@ -254,7 +310,13 @@
 
 	Pass upsert=true to create a document if no documents are found that match the query criteria
 	*/
-	function update(doc, collectionName, query={}, upsert=false, multi=false, applySet=true, mongoConfig=""){
+	function update(doc, collectionName, query, upsert=false, multi=false, applySet=true, mongoConfig=""){
+
+		if (!structKeyExists(arguments, 'query'))
+		{
+			arguments.query = {};
+		}
+
 	   var collection = getMongoDBCollection(collectionName, mongoConfig);
 
 	   if( structIsEmpty(query) ){

@@ -282,7 +282,7 @@ h2{
 
 	function showResult( searchResult, label ){
 		writeOutput("<h2>#label#</h2>");
-		writeDump( var=searchResult.asArray(), label=label, expand="false" );
+		writeDump( var=searchResult.asArray(), label=label & '(Result from MongoDB)', expand="false" );
 		writeOutput( "<br>Total #label# in this result, accounting for skip and limit: " & searchResult.size() );
 		writeOutput( "<br>Total #label#, ignoring skip and limit: " & searchResult.totalCount() );
 		writeOutput( "<br>Query: " & searchResult.getQuery().toString() );

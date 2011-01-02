@@ -445,6 +445,65 @@ function newDBObject_should_create_correct_datatypes(){
 
 }
 
+/**
+*	Confirm getLastError works and mongo has not changed its response.
+*/
+function getLastError_should_return_error_when_expected()
+{
+	var jColl = mongo.getMongoDBCollection(col, mongoConfig);
+	var mongoUtil = mongo.getMongoUtil();
+
+	// Create people to steal an id from
+	createPeople();
+
+	// Get the result of the last activity from CreatePeople()
+	local.lastActivity = mongo.getLastError();
+
+	// Verify the structure returned by Mongo has not changed
+	var expected = listToArray('n,ok,err');
+	local.actualKeys = structKeyArray(local.lastActivity);
+	arraySort(local.actualKeys,'text');
+	arraySort(expected,'text');
+	assertEquals(
+		 local.actualKeys
+		,expected
+		,'Mongo may have changed the getLastError() response.'
+	);
+
+	local.peeps = mongo.query(collectionName=col).search(limit="1").asArray();
+	assertFalse(
+		arrayIsEmpty(local.peeps)
+		,'Some people should have been returned.'
+	);
+
+
+	// Let's duplicate the record.
+	local.person = local.peeps[1];
+	jColl.insert([mongoUtil.toMongo(local.person)]);
+
+	// Get the result of the last activity
+	local.lastActivity = mongo.getLastError();
+
+	// Confirm we did try to duplicate an id.
+	assert(
+		 structKeyExists(local.lastActivity,'code')
+		,'Mongo should be upset a record was duplicated. Check the test.'
+	);
+
+	// We now expect the error code to exist.
+	var expected = listToArray('n,ok,err,code');
+	local.actualKeys = structKeyArray(local.lastActivity);
+	arraySort(local.actualKeys,'text');
+	arraySort(expected,'text');
+	assertEquals(
+		 local.actualKeys
+		,expected
+		,'Mongo may have changed the getLastError() response.'
+	);
+
+	return;
+}
+
  </cfscript>
 </cfcomponent>
 
