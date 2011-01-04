@@ -60,7 +60,21 @@
 	boolean function authenticate( string username, string password ){
 		return getMongoDB( variables.mongoConfig ).authenticate( arguments.username, arguments.password.toCharArray() );
 	}
-
+	
+	/* adds a user to the database 
+	* 
+	*/
+	void function addUser( string username, string password) {
+		getMongoDB( variables.mongoConfig ).addUser(arguments.username, arguments.password.toCharArray());
+	}
+	
+	/* drops the database
+	* 
+	*/
+	void function dropDatabase() {
+		variables.mongo.dropDatabase(variables.mongoConfig.getDBName());
+	}
+	
 
 	/**
 	* Closes the underlying mongodb object. Once closed, you cannot perform additional mongo operations and you'll need to init a new mongo.
