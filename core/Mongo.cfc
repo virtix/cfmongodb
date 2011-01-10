@@ -38,7 +38,7 @@
 		mongoUtil = new MongoUtil(mongoFactory);
 
 		// Check for authentication, and if we have details set call it once on this database instance
-		if ( len(mongoConfig.getAuthDetails().username) and isAuthenticationRequired() ) {
+		if ( isAuthenticationRequired() ) {
 			var authResult = authenticate(mongoConfig.getAuthDetails().username, mongoConfig.getAuthDetails().password);
 			if( structIsEmpty(authResult.error) ) {
 				throw( message="Error authenticating against MongoDB Database", type="AuthenticationFailedException" );
