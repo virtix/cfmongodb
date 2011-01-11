@@ -54,6 +54,15 @@ then attempted to query against it
 		mongo.init(mongoConfig);
 	}
 
+	function init_should_succeed_when_authentication_passes() {
+		var mongo = createObject('component','cfmongodb.core.Mongo');
+		//we entirely spoof the authentication internals
+		injectMethod(mongo, this, "isAuthenticationRequiredOverride", "isAuthenticationRequired");
+		injectMethod(mongo, this, "authenticateSuccessOverride", "authenticate");
+
+		mongo.init(mongoConfig);
+	}
+
 	function tearDown(){
 
 		var mongo = createObject('component','cfmongodb.core.Mongo').init(mongoConfig);
@@ -71,6 +80,7 @@ then attempted to query against it
 
 	private function isAuthenticationRequiredOverride(){ return true; }
 	private function authenticateOverride(){ return {authenticated=false, error={}}; }
+	private function authenticateSuccessOverride(){ return {authenticated=true, error={}}; }
 
 
 </cfscript>
