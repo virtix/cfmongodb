@@ -24,9 +24,8 @@
 
 		variables.conf = { dbname = dbName, servers = mongoFactory.getObject('java.util.ArrayList').init(), auth={username="",password=""} };
 
-		var item = "";
-	 	for(item in arguments.hosts){
-	 		addServer( item.serverName, item.serverPort );
+		for(i=1; i <= ArrayLen(arguments.hosts); i++){
+	 		addServer( arguments.hosts[i].serverName, arguments.hosts[i].serverPort );
 	 	}
 
 		//main entry point for environment-aware configuration; subclasses should do their work in here
