@@ -32,6 +32,8 @@
 			variables.mongo.init(variables.mongoConfig.getServers());
 		} else {
 			var _server = mongoConfig.getServers()[1];
+			writeDump(_server);
+			writeoutput(_server.getHost()); writeOutput(_server.getPort());
 			variables.mongo.init( _server.getHost(), _server.getPort() );
 		}
 

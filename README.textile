@@ -2,6 +2,8 @@ h1. CFMongoDB
 
 CFMongoDB is both partial wrapper for the MongoDB Java driver and a document-struct mapper for ColdFusion. It attempts to remove the need for constant javacasting in your CFML when working with MongoDB. Additionally, there's a simple DSL which provides ColdFusion developers the ability to easily search MongoDB document collections.
 
+CFMongoDB works with Adobe ColdFusion 9.0.1+ and Railo 3.2+
+
 h2. Some Code
 
 One of the most appealing aspects is that data can be created as a ColdFusion structure and persisted almost verbatim. Example:
