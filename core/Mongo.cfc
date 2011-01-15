@@ -32,21 +32,28 @@
 			variables.mongo.init(variables.mongoConfig.getServers());
 		} else {
 			var _server = mongoConfig.getServers()[1];
+			writeDump(_server);
+			writeoutput(_server.getHost()); writeOutput(_server.getPort());
 			variables.mongo.init( _server.getHost(), _server.getPort() );
 		}
 
 		mongoUtil = new MongoUtil(mongoFactory);
 
 		// Check for authentication, and if we have details set call it once on this database instance
-		if ( len(mongoConfig.getAuthDetails().username) and not authenticate(mongoConfig.getAuthDetails().username, mongoConfig.getAuthDetails().password) ) {
-			throw( message="Error authenticating MongoDB database." );
+		if ( isAuthenticationRequired() ) {
+			var authResult = authenticate(mongoConfig.getAuthDetails().username, mongoConfig.getAuthDetails().password);
+			if(not authResult.authenticated and structIsEmpty(authResult.error) ) {
+				throw( message="Error authenticating against MongoDB Database", type="AuthenticationFailedException" );
+			} else if( not authResult.authenticated ) {
+				throw(object=authResult.error);
+			}
 		}
 
 		return this;
 	}
 
 	/**
-	* authenticates connection/db with given name and password
+	* Authenticates connection/db with given name and password
 
 		Typical usage:
 		mongoConfig.init(...);
@@ -57,8 +64,43 @@
 		If authentication fails, an error will be thrown
 	*
 	*/
-	boolean function authenticate( string username, string password ){
-		return getMongoDB( variables.mongoConfig ).authenticate( arguments.username, arguments.password.toCharArray() );
+	struct function authenticate( string username, string password ){
+		var result = {authenticated = false, error={}};
+		try{
+			result.authenticated = getMongoDB( variables.mongoConfig ).authenticate( arguments.username, arguments.password.toCharArray() );
+		}
+		catch( any e ){
+			result.error = e;
+		}
+		return result;
+	}
+
+	/**
+	* Attempts to determine whether mongod is running in auth mode
+	*/
+	boolean function isAuthenticationRequired(){
+		try{
+			getIndexes("foo");
+			return false;
+		}catch(any e){
+			return true;
+		}
+	}
+
+	/**
+	*  Adds a user to the database
+	*/
+	function addUser( string username, string password) {
+		getMongoDB( variables.mongoConfig ).addUser(arguments.username, arguments.password.toCharArray());
+		return this;
+	}
+
+	/**
+	* Drops the database currently specified in MongoConfig
+	*/
+	function dropDatabase() {
+		variables.mongo.dropDatabase(variables.mongoConfig.getDBName());
+		return this;
 	}
 
 
@@ -80,6 +122,7 @@
 			//the error that this throws *appears* to be harmless.
 			writeLog("Error closing Mongo: " & e.message);
 		}
+		return this;
 	}
 
 	/**
@@ -365,7 +408,7 @@
 
 
 	/**
-	* the array of fields can either be
+	* The array of fields can either be
 	a) an array of field names. The sort direction will be "1"
 	b) an array of structs in the form of fieldname=direction. Eg:
 
@@ -400,9 +443,7 @@
 	}
 
 	/**
-	* ensures a "2d" index on a single field. If another 2d index exists on the same collection, this will error
-
-
+	* Ensures a "2d" index on a single field. If another 2d index exists on the same collection, this will error
 	*/
 	public array function ensureGeoIndex(field, collectionName, min="", max="", mongoConfig=""){
 		var collection = getMongoDBCollection(collectionName, mongoConfig);
@@ -434,7 +475,9 @@
 		return getIndexes( collectionName, mongoConfig );
 	}
 
-	//decide whether to use the one in the variables scope, the one being passed around as arguments, or create a new one
+	/**
+	* Decide whether to use the MongoConfig in the variables scope, the one being passed around as arguments, or create a new one
+	*/
 	function getMongoConfig(mongoConfig=""){
 		if(isSimpleValue(arguments.mongoConfig)){
 			mongoConfig = variables.mongoConfig;
