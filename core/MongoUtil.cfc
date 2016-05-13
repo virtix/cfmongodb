@@ -79,17 +79,17 @@
 	*/
 	function createOrderedDBObject( keyValues ){
 		var dbo = newDBObject();
-		var kv = "";
 		if( isSimpleValue(keyValues) ){
 			keyValues = listToArray(keyValues);
 		}
-		for(kv in keyValues){
-			if( isSimpleValue( kv ) ){
-				var key = listFirst(kv, "=");
-				var value = find("=",kv) ? listRest(kv, "=") : 1;
+
+		for(i=1; i <= ArrayLen(keyValues); i++){
+			if( isSimpleValue( keyValues[i] ) ){
+				var key = listFirst(keyValues[i], "=");
+				var value = find("=",keyValues[i]) ? listRest(keyValues[i], "=") : 1;
 			} else {
-				var key = structKeyList(kv);
-				var value = kv[key];
+				var key = structKeyList(keyValues[i]);
+				var value = keyValues[i][key];
 			}
 
 			dbo.append( key, value );
